@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="/js/https.js"></script>
+  <title>A-Frame AR Module</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <script src="js/aframe-ar.js"></script>
+  <!-- <style> .a-enter-vr-button { display: none; } </style> -->
+
+</head>
+
+<body>
+  <a-scene>
+
+  <a-assets>
+        <!--a-asset-item id="tree" src="models/tree.gltf"></a-asset-item-->
+        <a-asset-item id="spinosaurus" src="models/spinosaurus/scene.gltf"></a-asset-item>
+  </a-assets>
+
+        <a-entity   position="0 0 0" 
+                    rotation="0 0 0"
+                    scale="0.10 0.10 0.10"
+                    gltf-model="#spinosaurus" >
+        </a-entity>
+    
+    <!-- <a-sky color="#000"></a-sky> -->
+   
+  </a-scene>
+</body>
+
+</html>
