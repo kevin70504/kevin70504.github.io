@@ -9,11 +9,20 @@
   <body>
     <a-scene background="color: black" webxr="optionalFeatures: hit-test, local-floor, viewer; referenceSpaceType: local">
 
+      <a-assets>
+        <a-asset-item id="tree" src="models/tree.gltf"></a-asset-item>
+      </a-assets>
+
       <a-entity id="world" position="0 0 -3" hide-in-ar-mode>
 
         <a-box  position="0 0.1 0" scale="0.25 0.25 0.25" material="color: red; opacity: 0.9" shadow></a-box>
 
-        
+                <a-entity   position="0 0 0" 
+                    rotation="0 0 0"
+                    scale="0.10 0.10 0.10"
+                    gltf-model="#spinosaurus" >
+                </a-entity>
+                
         <a-plane hide-in-ar-mode position="0 0 0" rotation="-90 0 0" scale="6 3 0" color="gray"></a-plane>
 
         <a-sky hide-in-ar-mode color="white" scale="1 1 1"></a-sky>
