@@ -9,9 +9,21 @@
   </head>
   <body>
     <a-scene background="color: black">
-      
-      <a-entity id="giraffe" position="0 0 -1" rotation="-90 -90 0" scale="0.0025 0.0025 0.0025"
-        gpoly="polyid: aTAr4AayOrB; API_KEY: AIzaSyDsovdrekNH2A-NiKfMtMWA8LXebZQ41nk"></a-entity>
+
+        <a-assets>
+        <!-- Model source: https://sketchfab.com/3d-models/spinosaurus-2135501583704537907645bf723685e7
+             Model author: https://sketchfab.com/VapTor
+             Model license: CC Attribution -->
+        <a-asset-item id="spinosaurus" src="https://cdn.glitch.com/324a5290-5aa7-4efc-92d6-ae0736433b12%2Fspinosaurus.glb" response-type="arraybuffer"></a-asset-item>
+        </a-assets>
+
+      <a-entity id="dino" position="-1 0 -3" scale="0.5 0.5 0.5">
+        <a-entity position="0 2.15 0" rotation="0 55 0"
+                  gltf-model="#spinosaurus"
+                  animation-mixer
+                  ></a-entity>
+      </a-entity>  
+
       
       <a-entity camera position="0 1 0" wasd-controls look-controls></a-entity>
     
