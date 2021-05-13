@@ -42,7 +42,7 @@ class App{
         window.addEventListener('resize', this.resize.bind(this) );
 	}	
     
-    setEnvironment(){
+    /*setEnvironment(){
         const loader = new RGBELoader().setDataType( THREE.UnsignedByteType );
         const pmremGenerator = new THREE.PMREMGenerator( this.renderer );
         pmremGenerator.compileEquirectangularShader();
@@ -58,7 +58,7 @@ class App{
         }, undefined, (err)=>{
             console.error( 'An error occurred setting the environment');
         } );
-    }
+    }*/
     
     loadGLTF(){
         const self = this;
