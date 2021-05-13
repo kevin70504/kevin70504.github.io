@@ -71,14 +71,14 @@ class App{
                 self.scene.add(gltf.scene);
                 self.LoadingBar.visible = false;
                 self.renderer.setAnimationLoop(self.render.bind(self));                
-            }
+            },
             function(xhr){
                     self.LoadingBar.progress = xhr.loaded/xhr.total;
-            }
+            },
             function(err){
                 console.log('An error happened');
             }
-        )
+        );
     }
     
     loadFBX(){
