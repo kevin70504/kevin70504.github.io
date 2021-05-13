@@ -1,7 +1,7 @@
 import * as THREE from '/js/three/three.module.js';
 import { GLTFLoader } from '/js/three/jsm/GLTFLoader.js';
-//import { FBXLoader } from '/js/three/jsm/FBXLoader.js';
-//import { RGBELoader } from '/js/three/jsm/RGBELoader.js';
+import { FBXLoader } from '/js/three/jsm/FBXLoader.js';
+import { RGBELoader } from '/js/three/jsm/RGBELoader.js';
 import { OrbitControls } from '/js/three/jsm/OrbitControls.js';
 import { LoadingBar } from '/js/LoadingBar.js';
 import { vector3ToString } from '/js/DebugUtils.js';
