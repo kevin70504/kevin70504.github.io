@@ -62,7 +62,7 @@ class App{
     
     loadGLTF(){
         const self = this;
-        const loader = new GLTFLoader().setPath('modles/')
+        const loader = new GLTFLoader().setPath('modles/office-chair.glb')
 
         loader.load(
             'office-chair.glb'
