@@ -1,10 +1,10 @@
-import * as THREE from '../../libs/three/three.module.js';
-import { GLTFLoader } from '../../libs/three/jsm/GLTFLoader.js';
-import { FBXLoader } from '../../libs/three/jsm/FBXLoader.js';
-import { RGBELoader } from '../../libs/three/jsm/RGBELoader.js';
-import { OrbitControls } from '../../libs/three/jsm/OrbitControls.js';
-import { LoadingBar } from '../../libs/LoadingBar.js';
-import { vector3ToString } from '../../libs/DebugUtils.js';
+import * as THREE from '/js/three/three.module.js';
+import { GLTFLoader } from '/js/three/jsm/GLTFLoader.js';
+//import { FBXLoader } from '/js/three/jsm/FBXLoader.js';
+import { RGBELoader } from '/js/three/jsm/RGBELoader.js';
+import { OrbitControls } from '/js/three/jsm/OrbitControls.js';
+import { LoadingBar } from '/js/LoadingBar.js';
+import { vector3ToString } from '/js/DebugUtils.js';
 
 class App{
 	constructor(){
