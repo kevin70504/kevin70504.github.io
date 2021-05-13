@@ -65,7 +65,7 @@ class App{
         const loader = new GLTFLoader().setPath('modles/office-chair.glb')
 
         loader.load(
-            'office-chair.glb'
+            'office-chair.glb',
             function(gltf){
                 self.chair = gltf.scene;
                 self.scene.add(gltf.scene);
