@@ -62,7 +62,7 @@ class App{
     
     loadGLTF(){
         const self = this;
-        conset loader = new GLTFLoader().setPath('../../assets');
+        conset loader = new GLTFLoader().setPath('../../assets/');
 
         loader.load(
             'office-chair.glb',
