@@ -30,6 +30,10 @@ class App{
         this.renderer.outputEncoding = THREE.sRGBEncoding;
         this.renderer.physicallyCorrectLights = true;
         this.setEnvironment();
+
+        this.loadingBar = new LoadingBar();
+        this.loadGLTF();
+
 		container.appendChild( this.renderer.domElement );
 		
         //Add code here
