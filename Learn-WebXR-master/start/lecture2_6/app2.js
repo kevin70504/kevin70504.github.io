@@ -30,7 +30,7 @@ class App{
         this.renderer.outputEncoding = THREE.sRGBEncoding;
         this.renderer.physicallyCorrectLights = true;
         container.appendChild( this.renderer.domElement );
-        
+
         this.setEnvironment();
 
         this.loadingBar = new LoadingBar();
@@ -72,6 +72,13 @@ class App{
             'office-chair.glb',
             
             function(gltf){
+
+                gltf.scene.traverse( ( child ) => {
+                    if (child.isMesh){
+                        child.material.metalness = 0.2;
+                    }
+                })
+
                 self.chair = gltf.scene; //將場景設定為椅子，我們可以用Render的方式將椅子旋轉
                 self.scene.add(gltf.scene);  //將gtlf添加到場景內
                 self.loadingBar.visible = false; //隱藏讀取條
