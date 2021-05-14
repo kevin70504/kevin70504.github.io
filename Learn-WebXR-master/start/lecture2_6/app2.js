@@ -61,20 +61,21 @@ class App{
     }
     
     loadGLTF(){
-        const self = this;
         const loader = new GLTFLoader().setPath('../../assets/');
-
+        const self = this;
+        
         loader.load(
             'office-chair.glb',
             
             function(gltf){
                 self.chair = gltf.scene; //將場景設定為椅子，我們可以用Render的方式將椅子旋轉
                 self.scene.add(gltf.scene);  //將gtlf添加到場景內
-                self.LoadingBar.visible = false; //隱藏讀取條
+                self.loadingBar.visible = false; //隱藏讀取條
                 self.renderer.setAnimaitonLoop(self.render.bind(self)); //開始渲染場景
             },
             function(xhr){
-                self.LoadingBar.progress = xhr.loader/xhr.total; //得到0-1的讀取值，用來更新讀取條
+                self.loadingBar.progress = xhr.loaded/xhr.total; //得到0-1的讀取值，用來更新讀取條
+
             },
             function(err){
                 console.log('An error happened'); //當錯誤回傳 An error happened訊息
