@@ -64,7 +64,7 @@ class App{
         } );
     }
     
-    /*loadGLTF(){
+    loadGLTF(){
         const loader = new GLTFLoader().setPath('../../assets/');
         const self = this;
         
@@ -82,57 +82,16 @@ class App{
                 self.chair = gltf.scene; //將場景設定為椅子，我們可以用Render的方式將椅子旋轉
                 self.scene.add(gltf.scene);  //將gtlf添加到場景內
                 self.loadingBar.visible = false; //隱藏讀取條
-                self.renderer.setAnimaitonLoop(self.render.bind(self)); //開始渲染場景
+                self.renderer.setAnimationLoop(self.render.bind(self)); //開始渲染場景
             },
             function(xhr){
-                self.loadingBar.progress = xhr.loaded/xhr.total; //得到0-1的讀取值，用來更新讀取條
+                self.loadingBar.progress = (xhr.loaded / xhr.total); //得到0-1的讀取值，用來更新讀取條
 
             },
             function(err){
                 console.log('An error happened'); //當錯誤回傳 An error happened訊息
             }
         )
-    }*/
-
-    loadGLTF(){
-        const loader = new GLTFLoader( ).setPath('../../assets/');
-        const self = this;
-        
-        // Load a glTF resource
-        loader.load(
-            // resource URL
-            'office-chair.glb',
-            // called when the resource is loaded
-            function ( gltf ) {
-                const bbox = new THREE.Box3().setFromObject( gltf.scene );
-                console.log(`min:${bbox.min.x.toFixed(2)},${bbox.min.y.toFixed(2)},${bbox.min.z.toFixed(2)} -  max:${bbox.max.x.toFixed(2)},${bbox.max.y.toFixed(2)},${bbox.max.z.toFixed(2)}`);
-                
-                gltf.scene.traverse( ( child ) => {
-                    if (child.isMesh){
-                        child.material.metalness = 0.2;
-                    }
-                })
-                self.chair = gltf.scene;
-                
-                self.scene.add( gltf.scene );
-                
-                self.loadingBar.visible = false;
-                
-                self.renderer.setAnimationLoop( self.render.bind(self));
-            },
-            // called while loading is progressing
-            function ( xhr ) {
-
-                self.loadingBar.progress = (xhr.loaded / xhr.total);
-                
-            },
-            // called when loading has errors
-            function ( error ) {
-
-                console.log( 'An error happened' );
-
-            }  
-        );
     }
     
     loadFBX(){
