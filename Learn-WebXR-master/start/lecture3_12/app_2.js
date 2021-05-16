@@ -131,6 +131,7 @@ class App{
         this.geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );  //設定方塊的尺寸 寬1 高1 深度1
         this.meshes = [];
         
+        this.loadKnight();
     }
     
     setupXR(){
@@ -157,6 +158,17 @@ class App{
                     self.meshes.push(mesh);      
 
             }
+            /*if (self.knight===undefined) return;
+            
+            if (self.reticle.visible){
+                if (self.knight.object.visible){
+                    self.workingVec3.setFromMatrixPosition( self.reticle.matrix );
+                    //self.knight.newPath(self.workingVec3);
+                }else{
+                    self.knight.object.position.setFromMatrixPosition( self.reticle.matrix );
+                    self.knight.object.visible = true;
+                }
+            }*/
         }
 
         this.controller = this.renderer.xr.getController( 0 );
@@ -233,6 +245,9 @@ class App{
 
         this.renderer.render( this.scene, this.camera );
         
+        /*if (this.knight.calculatedPath && this.knight.calculatedPath.length>0){
+            console.log( `path:${this.knight.calculatedPath[0].x.toFixed(2)}, ${this.knight.calculatedPath[0].y.toFixed(2)}, ${this.knight.calculatedPath[0].z.toFixed(2)} position: ${this.knight.object.position.x.toFixed(2)}, ${this.knight.object.position.y.toFixed(2)}, ${this.knight.object.position.z.toFixed(2)}`);
+        }*/
     }
 }
 
