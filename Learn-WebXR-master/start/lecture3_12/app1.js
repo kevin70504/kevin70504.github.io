@@ -120,16 +120,16 @@ class App{
     
     initScene(){
         this.reticle = new THREE.Mesh(
-            new THREE.RingBufferGeometry( 0.15, 0.2, 32 ).rotateX( - Math.PI / 2 ),
-            new THREE.MeshBasicMaterial()
+            new THREE.RingBufferGeometry( 0.15, 0.2, 32 ).rotateX( - Math.PI / 2 ),  //設定目標圓環的尺寸
+            new THREE.MeshBasicMaterial() //給予圓環基本的材質
         );
 
-        this.geometry = new THREE.BoxBufferGeometry( 1, 1, 1 ); 
-        this.meshes = [];
+        this.reticle.matrixAutoUpdate = false;  //圓環的位置、旋轉、縮浪自動更新關閉
+        this.reticle.visible = false; // 讓圓環一開始看不見
+        this.scene.add( this.reticle ); //把圓環添加進場景內
 
-        this.reticle.matrixAutoUpdate = false;
-        this.reticle.visible = false;
-        this.scene.add( this.reticle );
+        this.geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );  //設定方塊的尺寸 寬1 高1 深度1
+        this.meshes = [];
         
         this.loadKnight();
     }
@@ -148,7 +148,8 @@ class App{
         function onSelect() {
 
             if (self.reticle.visible){
-                
+                    
+                    //在目標圓環中生成隨機顏色方塊
                     self.workingVec3.setFromMatrixPosition( self.reticle.matrix );
                     const material = new THREE.MeshPhongMaterial( {color: 0xffffff * Math.random()} );
                     const mesh = new THREE.Mesh( self.geometry,material);
@@ -177,13 +178,16 @@ class App{
     }
     
     requestHitTestSource(){
+
+        //測試命中來源
         const self = this;
         
-        const session = this.renderer.xr.getSession();
+        const session = this.renderer.xr.getSession(); //宣告變數session 獲取會話
 
-        session.requestReferenceSpace( 'viewer' ).then( function ( referenceSpace ) {
+        session.requestReferenceSpace( 'viewer' ).then( function ( referenceSpace ) {  //將畫面作為參考空間
             
-            session.requestHitTestSource( { space: referenceSpace } ).then( function ( source ) {
+            session.requestHitTestSource( { space: referenceSpace } ).then(  //調用命中測試來源
+                function ( source ) {
 
                 self.hitTestSource = source;
 
@@ -191,7 +195,7 @@ class App{
 
         } );
 
-        session.addEventListener( 'end', function () {
+        session.addEventListener( 'end', function () { //事件監聽器，當事件結束，將以下屬性返回原狀
 
             self.hitTestSourceRequested = false;
             self.hitTestSource = null;
@@ -204,13 +208,15 @@ class App{
     }
     
     getHitTestResults( frame ){
-        const hitTestResults = frame.getHitTestResults( this.hitTestSource );
 
-        if ( hitTestResults.length ) {
+        //獲取命中測試結果
+        const hitTestResults = frame.getHitTestResults( this.hitTestSource ); //宣告變數hitTestResults獲取命中測試結果
+
+        if ( hitTestResults.length ) {  //如果變數長度於0則觸發
             
             const referenceSpace = this.renderer.xr.getReferenceSpace();
-            const hit = hitTestResults[ 0 ];
-            const pose = hit.getPose( referenceSpace );
+            const hit = hitTestResults[ 0 ]; //宣告變數hit 獲取第一個命中結果
+            const pose = hit.getPose( referenceSpace ); //宣告變數pose獲取參考空間
 
             this.reticle.visible = true;
             this.reticle.matrix.fromArray( pose.transform.matrix );
@@ -231,9 +237,9 @@ class App{
         
         if ( frame ) {
 
-            if ( this.hitTestSourceRequested === false ) this.requestHitTestSource( )
+            if ( this.hitTestSourceRequested === false ) this.requestHitTestSource( ) //指定Frame 如果測試命中來源是false,分配測試來源
 
-            if ( this.hitTestSource ) this.getHitTestResults( frame );
+            if ( this.hitTestSource ) this.getHitTestResults( frame ); //我們將用於命中測試的物件
 
         }
 
