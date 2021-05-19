@@ -40,7 +40,7 @@ class App{
         
         
         this.controls = new OrbitControls( this.camera, this.renderer.domElement );
-        this.controls.target.set(0, 3.5, 0);
+        this.controls.target.set(0, 0, 0);
         this.controls.update();
         
         window.addEventListener('resize', this.resize.bind(this) );
@@ -69,15 +69,16 @@ class App{
         const self = this;
         
         loader.load(
-            'office-chair.glb',
+            //'office-chair.glb',
+            'nurse.glb',
             
             function(gltf){
 
-                gltf.scene.traverse( ( child ) => {
+                /*gltf.scene.traverse( ( child ) => {
                     if (child.isMesh){
                         child.material.metalness = 0.2;
                     }
-                })
+                })*/
 
                 self.chair = gltf.scene; //將場景設定為椅子，我們可以用Render的方式將椅子旋轉
                 self.scene.add(gltf.scene);  //將gtlf添加到場景內

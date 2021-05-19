@@ -52,10 +52,11 @@ class App{
         let controller;
 
         function onSelect(){
+                //隨機顏色與隨機方塊 生成於場景
                 const material = new THREE.MeshPhongMaterial( {color: 0xffffff * Math.random()} );
                 const mesh = new THREE.Mesh( self.geometry,material);
-                mesh.position.set(0,0,-0.3).applyMatrix4(controller.matrixWorld);
-                mesh.quaternion.setFromRotationMatrix( controller.matrixWorld);
+                mesh.position.set(0,0,-0.3).applyMatrix4(controller.matrixWorld); //四維陣列
+                mesh.quaternion.setFromRotationMatrix( controller.matrixWorld); //四元數，可以用來做連續旋轉的向量計算
                 self.scene.add(mesh);
                 self.meshes.push(mesh);
         }
@@ -70,14 +71,15 @@ class App{
     }
     
     resize(){
-        this.camera.aspect = window.innerWidth / window.innerHeight;
-        this.camera.updateProjectionMatrix();
+        //調整畫面大小
+        this.camera.aspect = window.innerWidth / window.innerHeight; //計算視窗百分比
+        this.camera.updateProjectionMatrix(); //更新攝影頭畫面
         this.renderer.setSize( window.innerWidth, window.innerHeight );  
     }
     
 	render( ) {   
         this.stats.update();
-        this.meshes.forEach( (mesh) => { mesh.rotateY( 0.01 ); });
+        this.meshes.forEach( (mesh) => { mesh.rotateY( 0.01 ); }); //變數mesh裡的物件個別render出來再加上旋轉速率
         this.renderer.render( this.scene, this.camera );
     }
 }
