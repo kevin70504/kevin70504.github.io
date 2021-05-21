@@ -41,7 +41,7 @@ class App{
 	}	
     
     initScene(){
-        this.geometry = new THREE.BoxBufferGeometry( 0.06, 0.06, 0.06 ); 
+        this.geometry = new THREE.CylinderBufferGeometry( 0.06, 0.06, 0.1 ); 
         this.meshes = [];
     }
     
