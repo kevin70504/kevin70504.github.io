@@ -25,24 +25,27 @@
        
         <!--a-box id="box" position="0 0.5 0" color="red" opacity="0.8" Xonmouseenter="changeColor(this, 'blue')" Xonmouseleave="changeColor(this, 'red')"></a-box-->
 
-          <a-entity id="dino1" scale="0.5 0.5 0.5">
-                  <a-entity 
-                  position="0 2.15 0" 
-                  rotation="0.5 0.5 0.5"
-                  event-set__1 = "_event: mouseenter ; visible : false"
-                  gltf-model="#spinosaurus"
-                  ></a-entity>
+          <!--a-entity>
+          <a-box id="box" 
+          position="0 0.5 0" 
+          color="red" 
+          opacity="0.8"
+          event-set__click="_target:#box2; visible: true"
+          >
+          </a-box>
+          </a-entity!-->
+
           <a-entity>
-                  <a-entity id="dino2">
-                  <a-entity 
-                  position="0 2.15 0" 
-                  rotation="0.5 0.5 0.5"
-                  visible = "false"
-                  event-set__2 = "_event: mouseenter ; visible : true"
-                  gltf-model="#spinosaurus"
-                  animation-mixer
-                  ></a-entity>
+            <a-box id="box2" 
+          position="0 0.5 0" 
+          color="blue"
+          visible="false"
+          opacity="0.8"
+          event-set__click="_target:#box; visible: true"
+          >
           </a-entity>
+
+
 
       </a-marker>
 
@@ -51,14 +54,24 @@
       </a-entity>
     </a-scene>
     <script>
-      /*function changeColor(el, color) {
-        el.setAttribute("color", color);
-      }*/
-      function changevis(e2, visible){
-          e2.setAttribute("visible",visible)
+      function changeColor(el, visible) {
+        el.setAttribute("visible", visible);
       }
-
-
+      
+      const boxEl = document.getElementById("box");
+      const boxE2 = document.getElementById("box2");
+      /*boxEl.addEventListener("mouseenter", function() {
+        changeColor(this, "true");
+      });
+      boxEl.addEventListener("mouseleave", function() {
+        changeColor(this, "false");
+      });*/
+      boxE2.addEventListener("mouseenter", function() {
+        changeColor(this, "false");
+      });
+      boxE2.addEventListener("mouseleave", function() {
+        changeColor(this, "true");
+      });
     </script>
   </body>
 </html>
