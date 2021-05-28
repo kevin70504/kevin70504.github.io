@@ -61,9 +61,9 @@ function initialize()
 	totalTime = 0;
 	
 	////////////////////////////////////////////////////////////
-	// setup arToolkitSource
+	// setup arToolkitSource(開啟攝像頭)
 	////////////////////////////////////////////////////////////
-
+	
 	arToolkitSource = new THREEx.ArToolkitSource({
 		sourceType : 'webcam',
 	});
@@ -89,6 +89,7 @@ function initialize()
 	
 	////////////////////////////////////////////////////////////
 	// setup arToolkitContext
+	//(這一步的作用是通過Canvas來聯絡攝像頭與three.js，即在攝像介面上新增畫板，以實現在攝像介面中作圖的目的。)
 	////////////////////////////////////////////////////////////	
 
 	// create atToolkitContext
@@ -103,7 +104,7 @@ function initialize()
 	});
 
 	////////////////////////////////////////////////////////////
-	// setup markerRoots
+	// setup markerRoots(建立識別Marker)
 	////////////////////////////////////////////////////////////
 
 	// build markerControls
@@ -133,7 +134,7 @@ function initialize()
 	
 	let loader = new THREE.TextureLoader();
 	
-	// material for portal (for debugging)
+	// material for portal 框架的材質 (for debugging)
 	
 	let defaultMaterial = new THREE.MeshBasicMaterial({
 		map: loader.load("images/sphere-colored.png"), 
@@ -143,6 +144,8 @@ function initialize()
 		opacity: 0.6
 	});
 	
+	//建立平面
+	
 	let portalWidth = 2;
 	let portalHeight = 4;
 	let portalBorder = 0.1;
@@ -151,6 +154,9 @@ function initialize()
 		new THREE.PlaneGeometry(portalWidth, portalHeight),
 		defaultMaterial
 	);
+	
+	//平面的位置
+	
 	portal.position.y = portalHeight/2 + portalBorder;
 	portal.layers.set(1);
 	smoothedRoot.add(portal);
@@ -169,7 +175,7 @@ function initialize()
 	smoothedRoot.add(portalBorderMesh);
 	
 	// the world beyond the portal
-	
+	//在鏡子裡的世界
 	// textures from http://www.humus.name/
 	let skyMaterialArray = [
 		new THREE.MeshBasicMaterial( { map: loader.load("images/mountain/posx.jpg"), side: THREE.BackSide } ),
@@ -179,9 +185,13 @@ function initialize()
 		new THREE.MeshBasicMaterial( { map: loader.load("images/mountain/posz.jpg"), side: THREE.BackSide } ),
 		new THREE.MeshBasicMaterial( { map: loader.load("images/mountain/negz.jpg"), side: THREE.BackSide } ),
 	];
+	
+	//宣告正方體
+	
 	let skyMesh = new THREE.Mesh(
 		new THREE.CubeGeometry(30,30,30),
 		skyMaterialArray );
+		
 	skyMesh.layers.set(2);
 	smoothedRoot.add(skyMesh);
 
@@ -190,7 +200,7 @@ function initialize()
 
 function update()
 {
-	// portal ring color cycle
+	// 框架變色
 	portalMaterial.color.setHSL( totalTime/10 % 1, 1, 0.75 );
 	
 	// update artoolkit on every frame

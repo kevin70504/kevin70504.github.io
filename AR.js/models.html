@@ -1,6 +1,8 @@
 <!doctype HTML>
 <html>
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<meta charset="utf-8" />
+<title>Models</title> 
 <script src="js/aframe.min.js"></script>
 <script src="js/aframe-ar.js"></script>
 <body style="margin: 0px; overflow: hidden;">
@@ -8,15 +10,16 @@
 <a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
 
     <a-assets>
-        <a-asset-item id="tree" src="models/tree.gltf"></a-asset-item>
+        <a-asset-item id="tree" src="../assets/models/tree.gltf"></a-asset-item>
 	</a-assets>
     
     <a-marker type="pattern" url="data/kanji.patt">
-        <a-entity   position="0 0 0" 
-                    rotation="0 0 0"
-                    scale="0.05 0.05 0.05"
-                    gltf-model="#tree" >
-        </a-entity>
+
+        <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E" shadow></a-sphere>
+        <a-box position="-1 0.5 -3" rotation="0 45 0" width="1" height="1" depth="1" color="#4CC3D9" shadow></a-box>
+        <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D" shadow></a-cylinder>
+        <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4" shadow></a-plane>
+
     </a-marker>
     
     <a-entity camera></a-entity>

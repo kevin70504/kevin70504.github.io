@@ -1,0 +1,67 @@
+<html>
+  <head>
+    <script src="/js/https.js"></script>
+    <title>A-Frame AR Module</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-extras@3.3.0/dist/aframe-extras.min.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-event-set-component/dist/aframe-event-set-component.min.js"></script>
+    <style> .a-enter-vr-button { display: none; } </style>
+  </head>
+  <body>
+    <a-scene background="color: white">
+
+        <a-assets>
+
+        <a-asset-item id="airplane" src="https://cdn.glitch.com/b261123e-fec0-4e1d-a62a-473ad165315e%2Fairplane.glb" ></a-asset-item>
+          
+        <img id="my-image" src="https://cdn.glitch.com/b261123e-fec0-4e1d-a62a-473ad165315e%2Fquestion.png">
+        <img id="earth" src="https://cdn.glitch.com/b261123e-fec0-4e1d-a62a-473ad165315e%2Fearth.jpg">
+        <img id="moon" src="https://cdn.glitch.com/b261123e-fec0-4e1d-a62a-473ad165315e%2Fmoon.jpg">
+        </a-assets>
+
+      <a-entity id="plane" position="0 -1 -3" rotation = "-90 0 0" scale="0.5 0.5 0.5">
+                <a-plane color="#CCC" height="20" width="20"></a-plane>
+      </a-entity>
+      
+      <a-entity position="0 -1 -5" 
+                animation="property: position; to: 0 1 -5; dur:1000; easing: linear; loop: false ;"
+                animation__2 ="property: position; from:0 1 -5 ;to: 0 3 -5; dur: 2000; easing: easeInExpo; loop: false; delay:3000"
+                animation__3 ="property: position; from:0 3 -5 ;to: 0 0 -1; dur: 5000; easing: easeInOutBack; loop: false; delay:5500">
+      <!---->
+      <a-box position="0 0 0" color = "black" ></a-box>
+      </a-entity>
+      
+      <a-entity id="dino2" position="0 -1 -3" scale="0.5 0.5 0.5">
+        <a-image src="#my-image"
+                 event-set__click="_target:#airplane_Ani; dur: 1000 ; " 
+                 ></a-image> 
+      </a-entity>
+      
+      <!--a-entity id ="airplane_Ani" position="0 -1 -3" rotation="0 -90 0" scale="0.01 0.01 0.01" gltf-model="#airplane">
+      </a-entity-->
+      <a-light type="directional" position="0 0 0" rotation="0 0 0" target="#directionaltarget" >
+      <a-entity id="directionaltarget" position="0 -2 -1" ></a-entity>
+      </a-light>
+      
+      <a-entity camera position="0 0 0" wasd-controls look-controls cursor="rayOrigin: mouse">
+      <a-cursor></a-cursor>
+      </a-entity>
+    
+    </a-scene>
+    
+    
+    <script>
+      
+    AFRAME.registerComponent('cursor-animator', {
+      init: function () {
+        this.el.addEventListener('click', function (evt) {
+          console.log('click')
+        });
+      }
+    });
+      
+    </script>
+  </body>
+</html>

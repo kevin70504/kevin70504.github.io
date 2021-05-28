@@ -1,0 +1,73 @@
+<html>
+  <head>
+    <title>A-Frame Marker-less Tracking</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="../js/hit-testing.js"></script>
+    <!--style> .a-enter-vr-button { display: none; } </style-->
+  </head>
+  <body>
+    <a-scene background="color: black" webxr="optionalFeatures: hit-test, local-floor, viewer; referenceSpaceType: local">
+
+        <a-assets>
+        <!--a-asset-item id="spinosaurus" src="https://cdn.glitch.com/324a5290-5aa7-4efc-92d6-ae0736433b12%2Fspinosaurus.glb" ></a-asset-item-->
+        <a-asset-item id="tree" src="https://cdn.glitch.com/b261123e-fec0-4e1d-a62a-473ad165315e%2FToilet.gltf?v=1621589463282" ></a-asset-item>
+        </a-assets>
+
+      <!--a-entity id="world1" position="0 0 -3" hide-in-ar-mode>
+
+        <a-box  position="0 0.1 0" scale="0.25 0.25 0.25" material="color: red; opacity: 0.9" shadow></a-box>
+
+        <a-plane hide-in-ar-mode position="0 0 0" rotation="-90 0 0" scale="6 3 0" color="gray"></a-plane>
+
+        <a-sky hide-in-ar-mode color="white" scale="1 1 1"></a-sky>
+        
+      </a-entity-->
+
+      <a-entity id="world" position="0 0 -3" hide-in-ar-mode >
+        <a-entity position="0 0.25 0" rotation="0 180 0" scale="1 1 1"
+                  gltf-model="#tree"
+                  animation-mixer
+                  ></a-entity>
+      </a-entity>  
+      
+      <!-- This is the pointer for working out where to place the object -->
+      <a-entity id="reticle" visible="false" ar-hit-test="offset: 0 0">
+        <!-- <a-plane position="0 0.25 0" rotation="-90 0 0" scale="0.5 0.5 0.5" material="color: red; opacity: 0.3">
+        </a-plane> -->
+        <!-- <a-box position="0 0.25 0" scale="0.5 0.5 0.5" material="color: red; opacity: 0.4; shader: flat" shadow>
+        </a-box> -->
+        <a-ring rotation="-90 0 0" scale="0.15 0.15 0.15" color="white" material="shader: flat" opacity="0.9"></a-ring>
+      </a-entity>
+    
+    </a-scene>
+    <script>
+      
+      //When the user does a select action, such as tapping on the screen in handheld AR it will update the position
+      const reticle = document.getElementById('reticle');
+      reticle.addEventListener('select', function (event) {
+        
+        if (
+          event.detail.inputSource.profiles[0] === "generic-touchscreen" &&
+          event.detail.inputSource.gamepad
+        ) {
+          // Handle input if you want via the axes -1, -1 is top left, 1, 1 is bottom right
+          const x = event.detail.inputSource.gamepad.axes[0];
+          const y = event.detail.inputSource.gamepad.axes[1];
+          console.log(x,y);
+        }
+        
+        // Get the next hit event to position the element
+        reticle.addEventListener('hit', function (event) {
+          if (document.querySelector('a-scene').is("ar-mode")) {
+            const position = this.getAttribute('position');
+            document.getElementById('world').setAttribute('position', position);
+            document.getElementById('world').setAttribute('visible', true);
+          }
+        }, {
+          once: true
+        });
+      });
+    </script>
+  </body>
+</html>

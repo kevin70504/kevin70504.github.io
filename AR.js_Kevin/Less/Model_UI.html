@@ -1,0 +1,45 @@
+<html>
+  <head>
+    <script src="../js/https.js"></script>
+    <title>A-Frame AR Module</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-extras@3.3.0/dist/aframe-extras.min.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-event-set-component/dist/aframe-event-set-component.min.js"></script>
+    <style> .a-enter-vr-button { display: none; } </style>
+  </head>
+  <body>
+    <a-scene background="color: black">
+
+        <a-assets>
+
+        <img id="my-image" src="https://cdn.glitch.com/b261123e-fec0-4e1d-a62a-473ad165315e%2Fquestion.png">
+        <img id="brick_wall" src="https://cdn.glitch.com/b261123e-fec0-4e1d-a62a-473ad165315e%2Fbrick_wall_003_diffuse_1k.jpg">
+        <img id="square_floor" src="https://cdn.glitch.com/b261123e-fec0-4e1d-a62a-473ad165315e%2Fsquare_floor_diff_1k.jpg">
+         <img id="arctic" src="https://cdn.glitch.com/b261123e-fec0-4e1d-a62a-473ad165315e%2Ftemplate.jpg"> 
+        </a-assets>
+
+
+      <a-box id="box" position="0 0.5 -3" rotation = "0 0 0" opacity="0.9" src="#brick_wall" ></a-box>
+      <a-image id="ui"
+               position="0 -1 -3" s
+               scale="0.5 0.5 0.5"
+               src="#my-image"
+               event-set__mouseenter="_target:#box; src:#square_floor"
+               event-set__mouseleave="_target:#box; src:#brick_wall"
+               event-set__click="_target:#box; src:#my-image"
+               
+                 ></a-image> 
+      <!--click mouseenter mouseleave -->
+      <a-entity camera position="0 1 -1" wasd-controls look-controls>
+      <a-cursor></a-cursor>
+      </a-entity>
+    
+    </a-scene>
+    
+    
+    <script>
+    </script>
+  </body>
+</html>
