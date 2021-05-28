@@ -34,6 +34,12 @@
                 ></a-sphere>
       </a-entity>
       
+      <a-entity id="earth_info" position="0 2.4 -3" scale="0.5 0.5 0.5" visible ="false">
+               <a-image src="#earth_info_img"
+               event-set__click="_target:#earth_info ; visible:false ; "
+               ></a-image> 
+      </a-entity>
+      
       <a-entity id="dino2" position="0 0.5 -3" scale="0.5 0.5 0.5">
         <a-image src="#my-image"
                  event-set__mouseenter="_target:#earth_info ; visible:true ; "
@@ -41,11 +47,7 @@
                  ></a-image> 
       </a-entity>
       
-      <a-entity id="earth_info" position="0 1.1 -1" scale="0.5 0.5 0.5" visible ="false">
-      <a-image src="#earth_info_img"
-               event-set__click="_target:#earth_info ; visible:false ; "
-               ></a-image> 
-      </a-entity>
+
 
       
       <a-light type="directional" position="0 0 0" rotation="0 0 0" target="#directionaltarget">
