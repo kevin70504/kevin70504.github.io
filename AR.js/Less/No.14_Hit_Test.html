@@ -1,18 +1,19 @@
 <html>
   <head>
-    <title>A-Frame Marker-less Tracking</title>
+    <title>MarkerLess_Tracking</title>
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="../js/aframe.min.js"></script>
     <script src="../js/hit-testing.js"></script>
-    <!--style> .a-enter-vr-button { display: none; } </style-->
+    <style> .a-enter-vr-button { display: none; } </style>
   </head>
   <body>
     <a-scene background="color: black" webxr="optionalFeatures: hit-test, local-floor, viewer; referenceSpaceType: local">
 
         <a-assets>
-        <!--a-asset-item id="spinosaurus" src="https://cdn.glitch.com/324a5290-5aa7-4efc-92d6-ae0736433b12%2Fspinosaurus.glb" ></a-asset-item-->
-        <a-asset-item id="tree" src="https://cdn.glitch.com/b261123e-fec0-4e1d-a62a-473ad165315e%2FToilet.gltf?v=1621589463282" ></a-asset-item>
-        </a-assets>
+        <a-asset-item id="spinosaurus" src="https://cdn.glitch.com/324a5290-5aa7-4efc-92d6-ae0736433b12%2Fspinosaurus.glb" >
+        </a-asset-item>
+ 
 
       <!--a-entity id="world1" position="0 0 -3" hide-in-ar-mode>
 
@@ -26,7 +27,7 @@
 
       <a-entity id="world" position="0 0 -3" hide-in-ar-mode >
         <a-entity position="0 0.25 0" rotation="0 180 0" scale="1 1 1"
-                  gltf-model="#tree"
+                  gltf-model="#spinosaurus"
                   animation-mixer
                   ></a-entity>
       </a-entity>  
