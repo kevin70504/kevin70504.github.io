@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="../js/aframe.min.js"></script>
     <script src="../js/hit-testing.js"></script>
+    <script src="https://unpkg.com/aframe-extras@3.3.0/dist/aframe-extras.min.js"></script>
     <style> .a-enter-vr-button { display: none; } </style>
   </head>
   <body>
@@ -27,7 +28,7 @@
       </a-entity-->
 
       <a-entity id="world" position="0 0 -3" hide-in-ar-mode >
-        <a-entity position="0 0.25 0" rotation="0 180 0" scale="1 1 1"
+        <a-entity position="0 0.25 0" rotation="0 0 0" scale="1 1 1"
                   gltf-model="#spinosaurus"
                   animation-mixer
                   ></a-entity>
