@@ -13,13 +13,14 @@
 <a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
   
     <a-assets>
-        <a-asset-item id="tree" src="../assets/models/tree.gltf"></a-asset-item>
+        <a-asset-item id="tree" src="../assets/models/airplane.glb"></a-asset-item>
+        <img id="airplane_t" src="../assets/models/Material_38_baseColor.png">
 	</a-assets>
     
     <a-marker type="pattern" url="data/kanji.patt">
         <a-entity   position="0 0 0" 
                     rotation="0 0 0"
-                    scale="0.05 0.05 0.05"
+                    scale="0.01 0.01 0.01"
                     gltf-model="#tree" >
         </a-entity>
     </a-marker>
