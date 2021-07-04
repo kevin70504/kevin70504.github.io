@@ -41,7 +41,7 @@ class App{
 	}	
     
     initScene(){
-        this.geometry = new THREE.CylinderBufferGeometry( 0.06, 0.06, 0.1 ); 
+        this.geometry = new THREE.CylinderBufferGeometry( 0.06, 0.06, 0.1 ); //創建新的圓柱體geometry
         this.meshes = [];
     }
     
@@ -53,7 +53,7 @@ class App{
 
         function onSelect(){
                 //隨機顏色與隨機方塊 生成於場景
-                const material = new THREE.MeshPhongMaterial( {color: 0xffffff * Math.random()} );
+                const material = new THREE.MeshPhongMaterial( {color: 0xffffff * Math.random()} ); //隨機顏色
                 const mesh = new THREE.Mesh( self.geometry,material);
                 mesh.position.set(0,0,-0.3).applyMatrix4(controller.matrixWorld); //四維陣列
                 mesh.quaternion.setFromRotationMatrix( controller.matrixWorld); //四元數，可以用來做連續旋轉的向量計算
