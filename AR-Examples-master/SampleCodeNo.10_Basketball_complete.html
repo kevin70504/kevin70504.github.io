@@ -21,7 +21,7 @@
   Example created by Lee Stemkoski: https://github.com/stemkoski
   Based on the AR.js library and examples created by Jerome Etienne: https://github.com/jeromeetienne/AR.js/
 -->
-<button onclick="clickme()">
+<button onclick="clickme()"> //按鈕
 	clickme1
 </button>
 
@@ -43,7 +43,7 @@ initialize();
 animate();
 
 
-function clickme()
+function clickme() 點及按鈕
 {
 	if( totalTime >= 4)
 	{
@@ -126,13 +126,13 @@ function initialize()
 	////////////////////////////////////////////////////////////
 
 	// build markerControls
-	markerRootA = new THREE.Group();
+	markerRootA = new THREE.Group(); //使用Marker letterA
 	scene.add(markerRootA);
 	let markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, markerRootA, {
 		type: 'pattern', patternUrl: "data/letterA.patt",
 	});
 	
-	markerRootB = new THREE.Group();
+	markerRootB = new THREE.Group(); //使用Marker letterB
 	scene.add(markerRootB);
 	let markerControls2 = new THREEx.ArMarkerControls(arToolkitContext, markerRootB, {
 		type: 'pattern', patternUrl: "data/letterB.patt",
@@ -158,18 +158,18 @@ function initialize()
 	floorMesh.receiveShadow = true;
 	sceneGroup.add( floorMesh );
 	
-	ballMesh = new THREE.Mesh(
-		new THREE.SphereGeometry(0.25, 32, 32),
+	ballMesh = new THREE.Mesh(  
+		new THREE.SphereGeometry(0.25, 32, 32),//生成預設球型
 		new THREE.MeshLambertMaterial({ 
-			map: loader.load("images/basketball-gray.png"), 
-			color: 0xff8800
+			map: loader.load("images/basketball-gray.png"), //給於預設球型籃球貼圖
+			color: 0xff8800 //顏色
 		})
 	);
 	ballMesh.castShadow = true;
 	scene.add( ballMesh );
 		
-	let light = new THREE.PointLight( 0xffffff, 1, 100 );
-	light.position.set( 0,4,0 ); // default; light shining from top
+	let light = new THREE.PointLight( 0xffffff, 1, 100 ); //點光顏色
+	light.position.set( 0,4,0 ); // default; light shining from top //點光的位置
 	light.castShadow = true;
 	sceneGroup.add( light );
 	
@@ -184,7 +184,7 @@ function initialize()
 	lightSphere.position.copy( light.position );
 	sceneGroup.add( lightSphere );
 	
-	let ambientLight = new THREE.AmbientLight( 0x666666 );
+	let ambientLight = new THREE.AmbientLight( 0x666666 ); //環境光顏色
 	sceneGroup.add( ambientLight );
 	// let helper = new THREE.CameraHelper( light.shadow.camera );
 	// sceneGroup.add( helper );
@@ -201,7 +201,7 @@ function update()
 	if ( arToolkitSource.ready !== false )
 		arToolkitContext.update( arToolkitSource.domElement );
 	
-	if ( markerRootA.visible && markerRootB.visible && ballButton)
+	if ( markerRootA.visible && markerRootB.visible && ballButton) //當Marker letterA、Marker letterB、ballButton成立
 	{
 		// align clipping plane to scene.
 		renderer.clippingPlanes[0].setFromNormalAndCoplanarPoint(
@@ -215,7 +215,7 @@ function update()
 		
 		if (timepass >= 4)
 		{
-			ballButton = false;
+			ballButton = false; //ballButton變數 = false
 		}
 	}
 	
@@ -228,12 +228,12 @@ function update()
 
 function parabolaEvaluate(p0, p1, p2, t)
 {
-	return ( 0.5*(p0 - 2*p1 + p2) )*t*t + ( -0.5*(3*p0 - 4*p1 + p2) )*t + ( p0 );
+	return ( 0.5*(p0 - 2*p1 + p2) )*t*t + ( -0.5*(3*p0 - 4*p1 + p2) )*t + ( p0 );  //計算拋物線速度
 }
 
 function parabolicPath( pointStart, pointEnd, time )
 {
-	let pointMiddle = new THREE.Vector3().addVectors( pointStart, pointEnd ).multiplyScalar(0.5).add( new THREE.Vector3(0,2,0) );
+	let pointMiddle = new THREE.Vector3().addVectors( pointStart, pointEnd ).multiplyScalar(0.5).add( new THREE.Vector3(0,2,0) ); //拋物線最高點位置
 	return new THREE.Vector3(
 		parabolaEvaluate( pointStart.x, pointMiddle.x, pointEnd.x, time ),
 		parabolaEvaluate( pointStart.y, pointMiddle.y, pointEnd.y, time ),
