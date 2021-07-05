@@ -43,7 +43,7 @@ initialize();
 animate();
 
 
-function clickme() 點及按鈕
+function clickme() 點擊按鈕
 {
 	if( totalTime >= 4)
 	{
@@ -126,16 +126,16 @@ function initialize()
 	////////////////////////////////////////////////////////////
 
 	// build markerControls
-	markerRootA = new THREE.Group(); //使用Marker letterA
+	markerRootA = new THREE.Group(); //使用Marker hiro
 	scene.add(markerRootA);
 	let markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, markerRootA, {
-		type: 'pattern', patternUrl: "data/letterA.patt",
+		type: 'pattern', patternUrl: "data/hiro.patt",
 	});
 	
-	markerRootB = new THREE.Group(); //使用Marker letterB
+	markerRootB = new THREE.Group(); //使用Marker kanji
 	scene.add(markerRootB);
 	let markerControls2 = new THREEx.ArMarkerControls(arToolkitContext, markerRootB, {
-		type: 'pattern', patternUrl: "data/letterB.patt",
+		type: 'pattern', patternUrl: "data/kanji.patt",
 	});
 
 	////////////////////////////////////////////////////////////
@@ -201,7 +201,7 @@ function update()
 	if ( arToolkitSource.ready !== false )
 		arToolkitContext.update( arToolkitSource.domElement );
 	
-	if ( markerRootA.visible && markerRootB.visible && ballButton) //當Marker letterA、Marker letterB、ballButton成立
+	if ( markerRootA.visible && markerRootB.visible && ballButton) //當Marker hiro、Marker kanji、ballButton成立
 	{
 		// align clipping plane to scene.
 		renderer.clippingPlanes[0].setFromNormalAndCoplanarPoint(

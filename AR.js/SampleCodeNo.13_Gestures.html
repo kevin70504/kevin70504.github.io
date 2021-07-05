@@ -5,11 +5,14 @@
     <meta charset="utf-8">
     <script src="js/aframe.min.js"></script>
     <script src="js/aframe-ar.js"></script>
+    <!--使用gesture-detector.js-->
     <script src="js/gesture-detector.js"></script>
+    <!--使用gesture-handler.js-->
     <script src="js/gesture-handler.js"></script>
   </head>
 
   <body>
+    <!--在場景執行gesture-detector-->
     <a-scene
       arjs
       embedded
@@ -26,6 +29,7 @@
         </a-asset-item>
       </a-assets>
 
+      <!--使用Marker hiro-->
       <a-marker
         preset="hiro"
         raycaster="objects: .clickable"
@@ -33,6 +37,7 @@
         cursor="fuse: false; rayOrigin: mouse;"
         id="markerA"
       >
+      <!--將gltf模型bowser設定縮放值為0.05 0.05 0.05並執行gesture-handler-->
         <a-entity
           id="bowser-model"
           gltf-model="#bowser"

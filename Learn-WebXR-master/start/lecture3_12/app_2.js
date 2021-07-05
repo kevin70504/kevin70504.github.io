@@ -124,7 +124,7 @@ class App{
             new THREE.MeshBasicMaterial() //給予圓環基本的材質
         );
 
-        this.reticle.matrixAutoUpdate = false;  //圓環的位置、旋轉、縮浪自動更新關閉
+        this.reticle.matrixAutoUpdate = false;  //圓環的位置、旋轉、縮放自動更新關閉
         this.reticle.visible = false; // 讓圓環一開始看不見
         this.scene.add( this.reticle ); //把圓環添加進場景內
 
