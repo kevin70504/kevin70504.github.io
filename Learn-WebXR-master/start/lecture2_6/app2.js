@@ -69,8 +69,7 @@ class App{
         const self = this;
         
         loader.load(
-            //'office-chair.glb',
-            'nurse.glb',
+            'office-chair.glb',
             
             function(gltf){
 
