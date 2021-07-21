@@ -10,32 +10,41 @@
   <body style="margin: 0px; overflow: hidden">
     <a-scene embedded arjs="sourceType: webcam" ar-mode-ui="enabled: false" vr-mode-ui="enabled:false">
 
+	  <!-->讀取位於src連結中副檔名為png的hiro圖片<-->
       <a-assets>
         <img id="hiro" src="../assets/image/hiro.png" crossorigin />
       </a-assets>
       
+	  <!-->Marker設置為hiro<-->
       <a-marker preset="hiro">
-
+	  
+		 <!-->使用預設方塊模型<-->
         <a-box id="box" position="0 0.5 0" color="red" opacity="0.8"></a-box>
    
-        <a-plane src="#hiro" rotation="-90 0 0"></a-plane>
+         <!-->使用預設平面模型<-->
+		<a-plane src="#hiro" rotation="-90 0 0"></a-plane>
 
       </a-marker>
 
       <a-entity camera>
+		<!-->使用預設光標<-->
         <a-cursor></a-cursor>
       </a-entity>
     </a-scene>
     <script>
+	
+	  //設定名為changeColor的funciton
       function changeColor(el, color) {
-        el.setAttribute("color", color);
+	  
+		//得到名為color的值
+        el.setAttribute("color", color); 
       }
 
-      const boxEl = document.getElementById("box");
-      boxEl.addEventListener("mouseenter", function() {
+      const boxEl = document.getElementById("box"); //宣告變數boxEl獲取box的值
+      boxEl.addEventListener("mouseenter", function() { //當光標偵測有物件進入，觸發函式changeColor，變更顏色。
         changeColor(this, "blue");
       });
-      boxEl.addEventListener("mouseleave", function() {
+      boxEl.addEventListener("mouseleave", function() {	//當光標偵測有物件離開，觸發函式changeColor，變更顏色。
         changeColor(this, "red");
       });
     </script>

@@ -12,21 +12,28 @@
 <body style="margin: 0px; overflow: hidden;">
 
 <a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
-  
-  <a-assets>
+	
+	
+	<a-assets>
+	<!-->讀取連結為副檔名jpg的earth圖片<-->
     <img id="earth" src="assets/image/earth.jpg">
+	<!-->讀取連結為副檔名jpg的moon圖片<-->
     <img id="moon" src="assets/image/moon.jpg">
 	</a-assets>
     
+	<!-->Marker設置為hiro<-->
     <a-marker type="pattern" url="data/hiro.patt">
       
       <a-entity id="earth_R" position="0 1 0" scale="0.5 0.5 0.5">
-      <a-sphere src="#earth" radius="1"
+      
+	  <!-->使用預設球型模型，材質使用id為earth的圖片，並給予預設動畫<-->
+	  <a-sphere src="#earth" radius="1"
                 rotation="0 0 0" animation="property: rotation; to: 0 360 0; loop: true; dur: 5000; easing:linear;"
                 ></a-sphere>
       </a-entity>
       
-      <a-entity id="moon_R" position="0 1 0" scale="0.1 0.1 0.1" 
+      <!-->使用預設球型模型，材質使用id為moon的圖片，並給予預設動畫<-->
+	  <a-entity id="moon_R" position="0 1 0" scale="0.1 0.1 0.1" 
                 rotation="0 0 0" animation="property: rotation; to: 0 -360 0; loop: true; dur: 10000; easing:linear;">
       <a-sphere src="#moon" radius="1"
                 position="10 0 0"
