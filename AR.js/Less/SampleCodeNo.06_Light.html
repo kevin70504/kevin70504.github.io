@@ -1,78 +1,79 @@
 <html>
-  <head>
-    <title>MarkerLess_Light</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="../js/https.js"></script>
-    <script src="../js/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-extras@3.3.0/dist/aframe-extras.min.js"></script>
-    <script src="https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.min.js"></script>
-    <style> .a-enter-vr-button { display: none; } </style>
-  </head>
+	  <head>
+			<title>MarkerLess_Light</title>
+			<meta charset="utf-8" />
+			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+			<script src="../js/https.js"></script>
+			<script src="../js/aframe.min.js"></script>
+			<script src="https://unpkg.com/aframe-extras@3.3.0/dist/aframe-extras.min.js"></script>
+			<script src="https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.min.js"></script>
+			<style> .a-enter-vr-button { display: none; } </style>
+	  </head>
   <body>
-    <a-scene background="color: black">
+		<a-scene background="color: black">
 
-        <a-assets>
-        <img id="my-image" src="../assets/image/question.png">
-        <img id="moon" src="../assets/image/moon.jpg">
-        </a-assets>
+			<a-assets>
+			<img id="my-image" src="../assets/image/question.png">
+			<img id="moon" src="../assets/image/moon.jpg">
+			</a-assets>
 
-      <a-entity id="moon_R" position="0 1.5 -3" scale="0.5 0.5 0.5" 
-          rotation="0 0 0" animation="property: rotation; to: 0 -360 0; loop: true; dur: 10000; easing:linear;">
-          <a-sphere src="#moon" radius="1"
-          position="0 0 0"
-          ></a-sphere>
-      </a-entity>
-      
-      <a-image id="ui"
-         position="0 0.5 -3" s
-         scale="0.5 0.5 0.5"
-         src="#my-image"           
-      ></a-image> 
-      
-      <!--環境光:影響所有物件-->
-      <a-light id = "light_amb" type="ambient" intensity="0.5" target="#dino" visible = "false"></a-light>
-      <!--定向光:影響特定角度下的物件-->
-      <a-light id = "light_dir" type="directional" position="0 0 0" rotation="0 0 0" target="#directionaltarget" visible = "true" >
-      <a-entity id="directionaltarget" position="0 -0.5 -0.5"></a-entity>
-      </a-light>
-      <!--半罩光:與環境光類似，但具有兩種不同顏色-->
-      <!--a-entity light="type: hemisphere; color: #33C; groundColor: #3C3; intensity: 2"></a-entity-->
+		  <a-entity id="moon_R" position="0 1.5 -3" scale="0.5 0.5 0.5" 
+			  rotation="0 0 0" animation="property: rotation; to: 0 -360 0; loop: true; dur: 10000; easing:linear;">
+			  <a-sphere src="#moon" radius="1"
+			  position="0 0 0"
+			  ></a-sphere>
+		  </a-entity>
+		  
+		  <a-image id="ui"
+			 position="0 0.5 -3" s
+			 scale="0.5 0.5 0.5"
+			 src="#my-image"           
+		  ></a-image> 
+		  
+		  <!--環境光:影響所有物件-->
+		  <a-light id = "light_amb" type="ambient" intensity="0.5" target="#dino" visible = "false"></a-light>
+		  <!--定向光:影響特定角度下的物件-->
+		  <a-light id = "light_dir" type="directional" position="0 0 0" rotation="0 0 0" target="#directionaltarget" visible = "true" >
+		  <a-entity id="directionaltarget" position="0 -0.5 -0.5"></a-entity>
+		  </a-light>
+		  <!--半罩光:與環境光類似，但具有兩種不同顏色-->
+		  <!--a-entity light="type: hemisphere; color: #33C; groundColor: #3C3; intensity: 2"></a-entity-->
 
 
-      
-      <a-entity camera position="0 1 0" wasd-controls look-controls>
-      <a-cursor></a-cursor>
-      </a-entity>
-    
-    </a-scene>
-    <script>
-          var toggle = [
-         "true",
-         "false"
-      ];
-      
-      var toggle2 = [
-         "false",
-         "true"
-      ];
-      function chageName(e1,boxEl)
-      {
-        e1.setAttribute("visible",boxEl);
-      }
-      
-      var modelIndex = 0;
-      
-      const UiEl = document.getElementById("ui");
-      const boxEl = document.getElementById("light_amb").getAttribute("visible");
-      UiEl.addEventListener('click', function ()
-        {
-            console.log("heelo");
-            modelIndex++;
-            var newIndex = modelIndex % toggle.length;
-            chageName(light_amb,toggle[newIndex]);
-            chageName(light_dir,toggle2[newIndex]);
-        });
-    </script>
+		  
+		  <a-entity camera position="0 1 0" wasd-controls look-controls>
+		  <a-cursor></a-cursor>
+		  </a-entity>
+		
+		</a-scene>
+		<script>
+				 var toggle = [
+				 "true",
+				 "false"
+				];
+			  
+				var toggle2 = [
+				 "false",
+				 "true"
+				];
+				
+			  function chageName(e1,boxEl)
+			  {
+				e1.setAttribute("visible",boxEl);
+			  }
+			  
+			  var modelIndex = 0;
+			  
+			  const UiEl = document.getElementById("ui");
+			  const boxEl = document.getElementById("light_amb").getAttribute("visible");
+			  UiEl.addEventListener('click', function ()
+				{
+					console.log("heelo");
+					modelIndex++;
+					var newIndex = modelIndex % toggle.length;
+					chageName(light_amb,toggle[newIndex]);
+					chageName(light_dir,toggle2[newIndex]);
+				});
+		</script>
   </body>
 </html>
