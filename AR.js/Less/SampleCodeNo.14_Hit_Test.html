@@ -1,76 +1,76 @@
 <html>
-  <head>
-    <title>MarkerLess_Tracking</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="../js/aframe.min.js"></script>
-    <script src="../js/hit-testing.js"></script>
-    <script src="https://unpkg.com/aframe-extras@3.3.0/dist/aframe-extras.min.js"></script>
-    <style> .a-enter-vr-button { display: none; } </style>
-  </head>
-  <body>
-    <a-scene background="color: black" webxr="optionalFeatures: hit-test, local-floor, viewer; referenceSpaceType: local">
+	  <head>
+			<title>MarkerLess_Tracking</title>
+			<meta charset="utf-8" />
+			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+			<script src="../js/aframe.min.js"></script>
+			<script src="../js/hit-testing.js"></script>
+			<script src="https://unpkg.com/aframe-extras@3.3.0/dist/aframe-extras.min.js"></script>
+			<style> .a-enter-vr-button { display: none; } </style>
+	  </head>
+	  <body>
+		<a-scene background="color: black" webxr="optionalFeatures: hit-test, local-floor, viewer; referenceSpaceType: local">
 
-        <a-assets>
-        <a-asset-item id="spinosaurus" src="https://cdn.glitch.com/324a5290-5aa7-4efc-92d6-ae0736433b12%2Fspinosaurus.glb" >
-        </a-asset-item>
-        </a-assets>
- 
+			<a-assets>
+			<a-asset-item id="spinosaurus" src="https://cdn.glitch.com/324a5290-5aa7-4efc-92d6-ae0736433b12%2Fspinosaurus.glb" >
+			</a-asset-item>
+			</a-assets>
+	 
 
-      <!--a-entity id="world1" position="0 0 -3" hide-in-ar-mode>
+		  <!--a-entity id="world1" position="0 0 -3" hide-in-ar-mode>
 
-        <a-box  position="0 0.1 0" scale="0.25 0.25 0.25" material="color: red; opacity: 0.9" shadow></a-box>
+			<a-box  position="0 0.1 0" scale="0.25 0.25 0.25" material="color: red; opacity: 0.9" shadow></a-box>
 
-        <a-plane hide-in-ar-mode position="0 0 0" rotation="-90 0 0" scale="6 3 0" color="gray"></a-plane>
+			<a-plane hide-in-ar-mode position="0 0 0" rotation="-90 0 0" scale="6 3 0" color="gray"></a-plane>
 
-        <a-sky hide-in-ar-mode color="white" scale="1 1 1"></a-sky>
-        
-      </a-entity-->
+			<a-sky hide-in-ar-mode color="white" scale="1 1 1"></a-sky>
+			
+		  </a-entity-->
 
-      <a-entity id="world" position="0 0 -3" hide-in-ar-mode >
-        <a-entity position="0 0.25 0" rotation="0 90 0" scale="0.5 0.5 0.5"
-                  gltf-model="#spinosaurus"
-                  animation-mixer
-                  ></a-entity>
-      </a-entity>  
-      
-      <!-- This is the pointer for working out where to place the object -->
-      <a-entity id="reticle" visible="false" ar-hit-test="offset: 0 0">
-        <!-- <a-plane position="0 0.25 0" rotation="-90 0 0" scale="0.5 0.5 0.5" material="color: red; opacity: 0.3">
-        </a-plane> -->
-        <!-- <a-box position="0 0.25 0" scale="0.5 0.5 0.5" material="color: red; opacity: 0.4; shader: flat" shadow>
-        </a-box> -->
-        <a-ring rotation="-90 0 0" scale="0.15 0.15 0.15" color="white" material="shader: flat" opacity="0.9"></a-ring>
-      </a-entity>
-    
-    </a-scene>
-    <script>
-      
-      //When the user does a select action, such as tapping on the screen in handheld AR it will update the position
-      const reticle = document.getElementById('reticle');
-      reticle.addEventListener('select', function (event) {
-        
-        if (
-          event.detail.inputSource.profiles[0] === "generic-touchscreen" &&
-          event.detail.inputSource.gamepad
-        ) {
-          // Handle input if you want via the axes -1, -1 is top left, 1, 1 is bottom right
-          const x = event.detail.inputSource.gamepad.axes[0];
-          const y = event.detail.inputSource.gamepad.axes[1];
-          console.log(x,y);
-        }
-        
-        // Get the next hit event to position the element
-        reticle.addEventListener('hit', function (event) {
-          if (document.querySelector('a-scene').is("ar-mode")) {
-            const position = this.getAttribute('position');
-            document.getElementById('world').setAttribute('position', position);
-            document.getElementById('world').setAttribute('visible', true);
-          }
-        }, {
-          once: true
-        });
-      });
-    </script>
-  </body>
+		  <a-entity id="world" position="0 0 -3" hide-in-ar-mode >
+			<a-entity position="0 0.25 0" rotation="0 90 0" scale="0.5 0.5 0.5"
+					  gltf-model="#spinosaurus"
+					  animation-mixer
+					  ></a-entity>
+		  </a-entity>  
+		  
+		  <!--這是用於確定放置對象位置的標記-->
+		  <a-entity id="reticle" visible="false" ar-hit-test="offset: 0 0">
+			<!-- <a-plane position="0 0.25 0" rotation="-90 0 0" scale="0.5 0.5 0.5" material="color: red; opacity: 0.3">
+			</a-plane> -->
+			<!-- <a-box position="0 0.25 0" scale="0.5 0.5 0.5" material="color: red; opacity: 0.4; shader: flat" shadow>
+			</a-box> -->
+			<a-ring rotation="-90 0 0" scale="0.15 0.15 0.15" color="white" material="shader: flat" opacity="0.9"></a-ring>
+		  </a-entity>
+		
+		</a-scene>
+		<script>
+		  
+		  //當使用者執行選擇操作時，例如在手持AR中輕擊螢幕，它將更新位置
+		  const reticle = document.getElementById('reticle');
+		  reticle.addEventListener('select', function (event) {
+			
+			if (
+			  event.detail.inputSource.profiles[0] === "generic-touchscreen" &&
+			  event.detail.inputSource.gamepad
+			) {
+			  // 如果想通過軸處理輸入-1，-1是左上角，1，1是右下角
+			  const x = event.detail.inputSource.gamepad.axes[0];
+			  const y = event.detail.inputSource.gamepad.axes[1];
+			  console.log(x,y);
+			}
+			
+			// 獲取下一個命中事件來定位元素
+			reticle.addEventListener('hit', function (event) {
+			  if (document.querySelector('a-scene').is("ar-mode")) {
+				const position = this.getAttribute('position');
+				document.getElementById('world').setAttribute('position', position);
+				document.getElementById('world').setAttribute('visible', true);
+			  }
+			}, {
+			  once: true
+			});
+		  });
+		</script>
+	  </body>
 </html>
