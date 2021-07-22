@@ -1,54 +1,61 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Gesture Interactions - A-Frame & AR.js</title>
-    <meta charset="utf-8">
-    <script src="js/aframe.min.js"></script>
-    <script src="js/aframe-ar.js"></script>
-    <!--使用gesture-detector.js-->
-    <script src="js/gesture-detector.js"></script>
-    <!--使用gesture-handler.js-->
-    <script src="js/gesture-handler.js"></script>
-  </head>
+	<head>
+		<title>Gesture Interactions - A-Frame & AR.js</title>
+		<meta charset="utf-8">
+		<script src="js/aframe.min.js"></script>
+		<script src="js/aframe-ar.js"></script>
+		<!--使用gesture-detector.js-->
+		<script src="js/gesture-detector.js"></script>
+		<!--使用gesture-handler.js-->
+		<script src="js/gesture-handler.js"></script>
+	</head>
 
-  <body>
-    <!--在場景執行gesture-detector-->
-    <a-scene
-      arjs
-      embedded
-      renderer="logarithmicDepthBuffer: true;"
-      vr-mode-ui="enabled: false"
-      gesture-detector
-      id="scene"
-    >
-      <a-assets>
-        <a-asset-item
-          id="bowser"
-          src="https://cdn.glitch.com/06bd98b4-97ee-4c07-a546-fe39ca205034%2Fbowser.glb"
-        >
-        </a-asset-item>
-      </a-assets>
+	<body>
+		<!--在場景執行gesture-detector-->
+		<a-scene
+		  arjs
+		  embedded
+		  renderer="logarithmicDepthBuffer: true;"
+		  vr-mode-ui="enabled: false"
+		  gesture-detector
+		  id="scene"
+		>
+			<a-assets>
+				<a-asset-item
+				  id="bowser"
+				  src="https://cdn.glitch.com/06bd98b4-97ee-4c07-a546-fe39ca205034%2Fbowser.glb">
+				  
+				</a-asset-item>
+			</a-assets>
 
-      <!--使用Marker hiro-->
-      <a-marker
-        preset="hiro"
-        raycaster="objects: .clickable"
-        emitevents="true"
-        cursor="fuse: false; rayOrigin: mouse;"
-        id="markerA"
-      >
-      <!--將gltf模型bowser設定縮放值為0.05 0.05 0.05並執行gesture-handler-->
-        <a-entity
-          id="bowser-model"
-          gltf-model="#bowser"
-          position="0 0 0"
-          scale="0.05 0.05 0.05"
-          class="clickable"
-          gesture-handler
-        >
-        </a-entity>
-      </a-marker>
-      <a-entity camera></a-entity>
-    </a-scene>
-  </body>
+			 <!--使用Marker hiro-->
+			 <a-marker
+				preset="hiro"
+				raycaster="objects: .clickable"
+				emitevents="true"
+				cursor="fuse: false; rayOrigin: mouse;"
+				id="markerA"
+			 >
+				 <!--將gltf模型bowser設定縮放值為0.05 0.05 0.05並執行gesture-handler-->
+				<a-entity
+					  id="bowser-model"
+					  gltf-model="#bowser"
+					  position="0 0 0"
+					  scale="0.05 0.05 0.05"
+					  class="clickable"
+					  gesture-handler
+				>
+				</a-entity>
+			</a-marker>
+			
+			<a-entity camera></a-entity>
+		  
+		</a-scene>
+	
+	</body>
+  
+  	<script>
+	</script> 
+	
 </html>
