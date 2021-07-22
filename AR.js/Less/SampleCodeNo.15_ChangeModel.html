@@ -1,3 +1,5 @@
+<!DOCTYPE html> 
+
 <html>
 	  <head>
 		<title>MarkerLessChangeModel</title>
@@ -16,8 +18,9 @@
 
 			<!--讀取模型與圖片連結位置-->
 			<a-assets >
+			<a-asset-item id="tree" src="../assets/models/spinosaurus.gltf"></a-asset-item>
 			<a-asset-item id="tree" src="../assets/models/tree.gltf"></a-asset-item>
-			<a-asset-item id="spinosaurus" src="https://cdn.glitch.com/b261123e-fec0-4e1d-a62a-473ad165315e%2FToilet.gltf?v=1621589463282"></a-asset-item>
+			<!--a-asset-item id="spinosaurus" src="https://cdn.glitch.com/b261123e-fec0-4e1d-a62a-473ad165315e%2FToilet.gltf?v=1621589463282"></a-asset-item-->
 			<img id="my-image" src="../assets/image/question.png">
 			</a-assets>
 
@@ -48,7 +51,7 @@
 		  //宣告變數models的值為陣列，裡面設定兩項gltf
 		  var models = [
 			 "../assets/models/tree.gltf",
-			 "https://cdn.glitch.com/b261123e-fec0-4e1d-a62a-473ad165315e%2Fspinosaurus.glb?v=1622218264473"
+			 "../assets/models/spinosaurus.gltf"
 		  ];
 		  
 		  //設定名稱為chageName的function，值為e1,boxEl
