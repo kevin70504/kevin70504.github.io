@@ -1,112 +1,111 @@
 <!doctype HTML>
 <html>
     <head>
-        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
         <meta charset="utf-8" />
         <title>Detection</title> 
         <script src="js/aframe.min.js"></script>
         <script src="js/aframe-ar.js"></script>
     </head>
 
-<body style="margin: 0px; overflow: hidden;">
+	<body style="margin: 0px; overflow: hidden;">
 
-<script>
+	<script>
 
-//設定redMarker、yellowMarker、blueMarker 一開始都不顯示
-let markerVisible = { "redMarker": false, "yellowMarker": false, "blueMarker": false };
+	//設定redMarker、yellowMarker、blueMarker 一開始都不顯示
+	let markerVisible = { "redMarker": false, "yellowMarker": false, "blueMarker": false };
 
-AFRAME.registerComponent('registerevents', {  //自定義組件，名稱為registerevents
-    init: function () 
-    {
-        let marker = this.el;
+	AFRAME.registerComponent('registerevents', {  //自定義組件，名稱為registerevents
+		init: function () 
+		{
+			let marker = this.el;
 
-        marker.addEventListener('markerFound', function() { //當marker被攝影機找到觸發markerVisible[ marker.id ] = true;
-            markerVisible[ marker.id ] = true;
-            // console.log( markerVisible );
-        });
+			marker.addEventListener('markerFound', function() { //當marker被攝影機找到觸發markerVisible[ marker.id ] = true;
+				markerVisible[ marker.id ] = true;
+				// console.log( markerVisible );
+			});
 
-        marker.addEventListener('markerLost', function() { //當marker沒有被攝影機找到觸發markerVisible[ marker.id ] = false;
-            markerVisible[ marker.id ] = false;
-            // console.log( markerVisible );
-        });
-    }
-});
+			marker.addEventListener('markerLost', function() { //當marker沒有被攝影機找到觸發markerVisible[ marker.id ] = false;
+				markerVisible[ marker.id ] = false;
+				// console.log( markerVisible );
+			});
+		}
+	});
 
-AFRAME.registerComponent('loop',  //自定義組件，名稱為loop
-{   
-    init: function()
-    {
-        this.box = document.querySelector("#theBox"); //找到ID為theBox的物件
-    },
-    
-    tick: function (time, deltaTime) 
-    {
-        // for convenience
-        let mv = markerVisible, r = "redMarker", y = "yellowMarker", b = "blueMarker";
-        
-        if ( mv[r] && mv[y] && mv[b] )                 //如果redMarker、yellowMarker、blueMarker都顯示出來
-            this.box.setAttribute("color", "#654321"); //設定BOX的顏色為#654321
-        else if ( mv[r] && mv[y] && !mv[b] )           //如果redMarker、yellowMarker都顯示出來，blueMarker不顯示
-            this.box.setAttribute("color", "#FF8800"); //設定BOX的顏色為#FF8800
-        else if ( mv[r] && !mv[y] && mv[b] )           //如果redMarker、blueMarker顯示出來，yellowMarker不顯示
-            this.box.setAttribute("color", "purple");  //設定BOX的顏色為紫色purple
-        else if ( mv[r] && !mv[y] && !mv[b] )          //如果redMarker顯示出來，yellowMarker、blueMarker不顯示
-            this.box.setAttribute("color", "red");     //設定BOX的顏色為紅色red
-        else if ( !mv[r] && mv[y] && mv[b] )           //如果redMarker不顯示，yellowMarker、blueMarker顯示出來
-            this.box.setAttribute("color", "green");   //設定BOX的顏色為綠色green
-        else if ( !mv[r] && mv[y] && !mv[b] )          //如果redMarker、blueMarker不顯示，yellowMarker顯示出來
-            this.box.setAttribute("color", "yellow");  //設定BOX的顏色為黃色yellow
-        else if ( !mv[r] && !mv[y] && mv[b] )          //如果redMarker、yellowMarker不顯示，blueMarker顯示出來
-            this.box.setAttribute("color", "blue");    //設定BOX的顏色為藍色blue
-        else // if ( !mv[r] && !mv[y] && !mv[b] )      //如果redMarker、yellowMarker、blueMarker不顯示
-            this.box.setAttribute("color", "gray");    //設定BOX的顏色為灰色gray
-    }
-});
+	AFRAME.registerComponent('loop',  //自定義組件，名稱為loop
+	{   
+		init: function()
+		{
+			this.box = document.querySelector("#theBox"); //找到ID為theBox的物件
+		},
+		
+		tick: function (time, deltaTime) 
+		{
+			// for convenience
+			let mv = markerVisible, r = "redMarker", y = "yellowMarker", b = "blueMarker";
+			
+			if ( mv[r] && mv[y] && mv[b] )                 //如果redMarker、yellowMarker、blueMarker都顯示出來
+				this.box.setAttribute("color", "#654321"); //設定BOX的顏色為#654321
+			else if ( mv[r] && mv[y] && !mv[b] )           //如果redMarker、yellowMarker都顯示出來，blueMarker不顯示
+				this.box.setAttribute("color", "#FF8800"); //設定BOX的顏色為#FF8800
+			else if ( mv[r] && !mv[y] && mv[b] )           //如果redMarker、blueMarker顯示出來，yellowMarker不顯示
+				this.box.setAttribute("color", "purple");  //設定BOX的顏色為紫色purple
+			else if ( mv[r] && !mv[y] && !mv[b] )          //如果redMarker顯示出來，yellowMarker、blueMarker不顯示
+				this.box.setAttribute("color", "red");     //設定BOX的顏色為紅色red
+			else if ( !mv[r] && mv[y] && mv[b] )           //如果redMarker不顯示，yellowMarker、blueMarker顯示出來
+				this.box.setAttribute("color", "green");   //設定BOX的顏色為綠色green
+			else if ( !mv[r] && mv[y] && !mv[b] )          //如果redMarker、blueMarker不顯示，yellowMarker顯示出來
+				this.box.setAttribute("color", "yellow");  //設定BOX的顏色為黃色yellow
+			else if ( !mv[r] && !mv[y] && mv[b] )          //如果redMarker、yellowMarker不顯示，blueMarker顯示出來
+				this.box.setAttribute("color", "blue");    //設定BOX的顏色為藍色blue
+			else // if ( !mv[r] && !mv[y] && !mv[b] )      //如果redMarker、yellowMarker、blueMarker不顯示
+				this.box.setAttribute("color", "gray");    //設定BOX的顏色為灰色gray
+		}
+	});
 
-</script>
+	</script>
 
-<a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
+			<a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
 
-    <a-assets>
-        <img id="grid" src="../assets/image/border.png" />
-    </a-assets>
-    
-    <a-marker type="pattern" url="data/kanji.patt" id="baseMarker">     <!--使用Marker kanji 作為基本Marker-->
-        <!--使用預設box 位移植0 0.5 0 顏色設置為白色white 材質使用grid 透明度設置為0.9-->
-        <a-box id="theBox"
-               position="0 0.5 0"   
-               color = "white"
-               material="src:#grid; transparent: true; opacity: 0.90;">
-        </a-box>                               
-    </a-marker>
-    
-    <a-marker type="barcode" value="0" id="redMarker" registerevents>   <!--使用Marker barcode 0作為基本Marker-->
-        <!--使用預設plane 旋轉值-90 0 0 材質顏色設置為紅色red -->
-        <a-plane position="0 0 0" 
-                 rotation="-90 0 0"
-               material="color: red">
-        </a-plane>
-    </a-marker>
+				<a-assets>
+					<img id="grid" src="assets/image/border.png" />
+				</a-assets>
+				
+				<a-marker type="pattern" url="data/kanji.patt" id="baseMarker">     <!--使用Marker kanji 作為基本Marker-->
+					<!--使用預設box 位移植0 0.5 0 顏色設置為白色white 材質使用grid 透明度設置為0.9-->
+					<a-box id="theBox"
+						   position="0 0.5 0"   
+						   color = "white"
+						   material="src:#grid; transparent: true; opacity: 0.90;">
+					</a-box>                               
+				</a-marker>
+				
+				<a-marker type="barcode" value="0" id="redMarker" registerevents>   <!--使用Marker barcode 0作為基本Marker-->
+					<!--使用預設plane 旋轉值-90 0 0 材質顏色設置為紅色red -->
+					<a-plane position="0 0 0" 
+							 rotation="-90 0 0"
+						   material="color: red">
+					</a-plane>
+				</a-marker>
 
-    <a-marker type="barcode" value="1" id="yellowMarker" registerevents> <!--使用Marker barcode 1作為基本Marker-->
-        <!--使用預設plane 旋轉值-90 0 0 材質顏色設置為黃色yellow -->
-        <a-plane position="0 0 0" 
-                 rotation="-90 0 0"
-               material="color: yellow">
-        </a-plane>
-    </a-marker>
+				<a-marker type="barcode" value="1" id="yellowMarker" registerevents> <!--使用Marker barcode 1作為基本Marker-->
+					<!--使用預設plane 旋轉值-90 0 0 材質顏色設置為黃色yellow -->
+					<a-plane position="0 0 0" 
+							 rotation="-90 0 0"
+						   material="color: yellow">
+					</a-plane>
+				</a-marker>
 
-    <a-marker type="barcode" value="2" id="blueMarker" registerevents> <!--使用Marker barcode 2作為基本Marker-->
-        <!--使用預設plane 旋轉值-90 0 0 材質顏色設置為藍色blue -->
-        <a-plane position="0 0 0" 
-                 rotation="-90 0 0"
-               material="color: blue">
-        </a-plane>
-    </a-marker>
-    
-    <a-entity camera></a-entity>
-    <a-entity loop></a-entity>
-    
-</a-scene>
-</body>
+				<a-marker type="barcode" value="2" id="blueMarker" registerevents> <!--使用Marker barcode 2作為基本Marker-->
+					<!--使用預設plane 旋轉值-90 0 0 材質顏色設置為藍色blue -->
+					<a-plane position="0 0 0" 
+							 rotation="-90 0 0"
+						   material="color: blue">
+					</a-plane>
+				</a-marker>
+				
+				<a-entity camera></a-entity>
+				<a-entity loop></a-entity>
+				
+			</a-scene>
+	</body>
 </html>
