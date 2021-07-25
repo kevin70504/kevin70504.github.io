@@ -21,7 +21,7 @@
   Example created by Lee Stemkoski: https://github.com/stemkoski
   Based on the AR.js library and examples created by Jerome Etienne: https://github.com/jeromeetienne/AR.js/
 -->
-<button onclick="clickme()"> //按鈕
+<button onclick="clickme()"> <!--按鈕-->
 	clickme1
 </button>
 
@@ -43,7 +43,7 @@ initialize();
 animate();
 
 
-function clickme() 點擊按鈕
+function clickme() //點擊按鈕的函式
 {
 	if( totalTime >= 4)
 	{
@@ -80,7 +80,7 @@ function initialize()
 
 	
 	////////////////////////////////////////////////////////////
-	// setup arToolkitSource
+	// 設置 arToolkitSource
 	////////////////////////////////////////////////////////////
 
 	arToolkitSource = new THREEx.ArToolkitSource({
@@ -101,41 +101,41 @@ function initialize()
 		onResize()
 	});
 	
-	// handle resize event
+	// 處理調整大小事件
 	window.addEventListener('resize', function(){
 		onResize()
 	});
 	
 	////////////////////////////////////////////////////////////
-	// setup arToolkitContext
+	// 設置 arToolkitContext
 	////////////////////////////////////////////////////////////	
 
-	// create atToolkitContext
+	// 創建ARToolkitContext
 	arToolkitContext = new THREEx.ArToolkitContext({
 		cameraParametersUrl: 'data/camera_para.dat',
 		detectionMode: 'mono'
 	});
 	
-	// copy projection matrix to camera when initialization complete
+	// 初始化完成後將投影矩陣複製到攝影機
 	arToolkitContext.init( function onCompleted(){
 		camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
 	});
 
 	////////////////////////////////////////////////////////////
-	// setup markerRoots
+	// 設置 標記Roots
 	////////////////////////////////////////////////////////////
 
-	// build markerControls
-	markerRootA = new THREE.Group(); //使用Marker hiro
+	// 創建標記控制器
+	markerRootA = new THREE.Group(); 
 	scene.add(markerRootA);
 	let markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, markerRootA, {
-		type: 'pattern', patternUrl: "data/hiro.patt",
-	});
+		type: 'pattern', patternUrl: "data/hiro.patt", //使用Marker hiro
+	}); 
 	
-	markerRootB = new THREE.Group(); //使用Marker kanji
+	markerRootB = new THREE.Group(); 
 	scene.add(markerRootB);
 	let markerControls2 = new THREEx.ArMarkerControls(arToolkitContext, markerRootB, {
-		type: 'pattern', patternUrl: "data/kanji.patt",
+		type: 'pattern', patternUrl: "data/kanji.patt", //使用Marker kanji
 	});
 
 	////////////////////////////////////////////////////////////
@@ -162,7 +162,7 @@ function initialize()
 		new THREE.SphereGeometry(0.25, 32, 32),//生成預設球型
 		new THREE.MeshLambertMaterial({ 
 			map: loader.load("images/basketball-gray.png"), //給予預設球型籃球貼圖
-			color: 0xff8800 //顏色
+			color: 0xff8800 //顏色設定為橘色
 		})
 	);
 	ballMesh.castShadow = true;
@@ -197,13 +197,13 @@ function initialize()
 
 function update()
 {
-	// update artoolkit on every frame
+	// 每一幀更新 arToolkit
 	if ( arToolkitSource.ready !== false )
 		arToolkitContext.update( arToolkitSource.domElement );
 	
 	if ( markerRootA.visible && markerRootB.visible && ballButton) //當Marker hiro、Marker kanji、ballButton成立
 	{
-		// align clipping plane to scene.
+		// 將裁剪平面與場景對齊
 		renderer.clippingPlanes[0].setFromNormalAndCoplanarPoint(
 			new THREE.Vector3(0,1,0).applyQuaternion(sceneGroup.getWorldQuaternion()),
 			sceneGroup.getWorldPosition()
@@ -223,8 +223,8 @@ function update()
 }
 	
 
-// create a function p() that passes through the points (0,p0), (1,p1), (2,p2) 
-//  and evaluate that function at time t.
+// 創建通過點（0，p0）、（1，p1）、（2，p2） 的函數 p（）
+// 並在時間 t 評估該函數。
 
 function parabolaEvaluate(p0, p1, p2, t)
 {
@@ -233,7 +233,7 @@ function parabolaEvaluate(p0, p1, p2, t)
 
 function parabolicPath( pointStart, pointEnd, time )
 {
-	let pointMiddle = new THREE.Vector3().addVectors( pointStart, pointEnd ).multiplyScalar(0.5).add( new THREE.Vector3(0,2,0) ); //拋物線最高點位置
+	let pointMiddle = new THREE.Vector3().addVectors( pointStart, pointEnd ).multiplyScalar(0.5).add( new THREE.Vector3(0,3,0) ); //拋物線最高點位置
 	return new THREE.Vector3(
 		parabolaEvaluate( pointStart.x, pointMiddle.x, pointEnd.x, time ),
 		parabolaEvaluate( pointStart.y, pointMiddle.y, pointEnd.y, time ),

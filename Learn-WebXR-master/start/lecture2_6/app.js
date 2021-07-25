@@ -34,7 +34,6 @@ class App{
 		
         //Add code here
         
-        
         this.controls = new OrbitControls( this.camera, this.renderer.domElement );
         this.controls.target.set(0, 3.5, 0);
         this.controls.update();
@@ -61,7 +60,8 @@ class App{
     }
     
     loadGLTF(){
-        const self = this;
+		const self = this;
+		
     }
     
     loadFBX(){
