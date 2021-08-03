@@ -66,20 +66,19 @@
 		
 		<script>
 		
-			var	a = document.getElementById("dino2");
-			var entity = document.getElementById("Sunspots");
+			var	audio_name = document.getElementById("dino2");
 			var index = 0;
 			
 
-			a.addEventListener("click",function(){
+			audio_name.addEventListener("click",function(){
 				console.log("單擊滑鼠");
 				if(index == 0){
-					a.components.sound.playSound();
+					audio_name.components.sound.playSound();
 					index++;
 					console.log(index);
 				}
 				else{
-					a.components.sound.pauseSound();
+					audio_name.components.sound.pauseSound();
 					index = 0;
 					console.log(index);
 				}
