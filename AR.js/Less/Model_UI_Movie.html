@@ -14,19 +14,9 @@
 		<a-scene background="color: white">
 
 			<a-assets>
-			 <!--讀取圖片-->
-			<img id="my-image" src="../assets/image/question.png">
 			<video id="NCS" autoplay loop = "true" src="../assets/Video/Zeus X Crona Shiah Maisel - Run Hide [NCS Release].mp4"></video>
 			</a-assets>
-
-		  
-		  <!--使用問號貼圖-->
-		  <a-entity id="dino2" position="0 0.5 -3" scale="0.5 0.5 0.5" visible = "false">
-
-			<a-image src="#my-image"></a-image> 
-		  
-		  </a-entity>
-		  
+	  
 		  <a-video src ="#NCS" width = "16" height = "9" position="0 0 -20"></a-video>
 		  
 		  
@@ -39,31 +29,7 @@
 		
 		<script>
 			
-			
-
-			var Marker_name =  document.getElementById("dino2");
-			var	video_name = document.getElementById("video_ID");
-			var index = 0;
-			
-			function chageName(e1,visible)
-			 {
-				e1.setAttribute("visible",visible);
-			 }
-			
-			//當第一次點擊完播放音樂，第二次點擊完暫停音樂
-			Marker_name.addEventListener("click",function(){
-				console.log("單擊滑鼠");
-				if(index == 0){
-					chageName(video_name,"true"); 
-					index++;
-					console.log(index);
-				}
-				else{
-					chageName(video_name,"false");
-					index = 0;
-					console.log(index);
-				}
-			});
+		
 			
 		</script>
 	  </body>
