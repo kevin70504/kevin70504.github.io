@@ -6,9 +6,7 @@
 		<meta charset="utf-8" />
 		<script src="../js/https.js"></script>
 		<script src="../js/aframe.min.js"></script>
-		<script src="https://unpkg.com/aframe-extras@3.3.0/dist/aframe-extras.min.js"></script>
-		<script src="https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.min.js"></script>
-		<script src="https://unpkg.com/aframe-event-set-component/dist/aframe-event-set-component.min.js"></script>
+		<script src="../js/aframe-extras.min.js"></script>
 		<style> .a-enter-vr-button { display: none; } </style>
 	  </head>
 	  <body>
@@ -42,7 +40,6 @@
 		  <!--當光標進入earth_info_img並點擊時，觸發事件將earth_info顯示設定為false-->
 		  <a-entity id="earth_info" position="0 2.4 -3" scale="0.5 0.5 0.5" visible ="false">
 				   <a-image src="#earth_info_img"
-				   event-set__click="_target:#earth_info ; visible:false ; "
 				   ></a-image> 
 		  </a-entity>
 		  
