@@ -21,20 +21,14 @@
 
 		  
 		  <!--使用問號貼圖-->
-		  <a-entity id="dino2" position="0 0.5 -3" scale="0.5 0.5 0.5">
+		  <a-entity id="dino2" position="0 0.5 -3" scale="0.5 0.5 0.5" visible = "false">
 
 			<a-image src="#my-image"></a-image> 
 		  
 		  </a-entity>
 		  
-		  <a-video src ="#NCS" width = "16" height = "9" position = "0,1,-1"></a-video>
+		  <a-video src ="#NCS" width = "16" height = "9" position = "0,1,-5"></a-video>
 		  
-
-
-		  <!--設定directional的光源-->
-		  <a-light type="directional" position="0 0 0" rotation="0 0 0" target="#directionaltarget">
-		  <a-entity id="directionaltarget" position="0 -0.5 -0.5"></a-entity>
-		  </a-light>
 		  
 		  <a-entity camera position="0 1 0" wasd-controls look-controls>
 		  <a-cursor></a-cursor>
