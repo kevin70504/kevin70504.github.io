@@ -49,7 +49,6 @@
 		  <!--當光標進入my-image時，觸發事件將earth_info顯示設定為true-->
 		  <a-entity id="dino2" position="0 0.5 -3" scale="0.5 0.5 0.5" sound="src:#Sunspots">
 			<a-image src="#my-image"
-					 event-set__mouseenter="_target:#earth_info ; visible:true ; "
 
 					 ></a-image> 
 		  </a-entity>
@@ -69,6 +68,15 @@
 		
 		
 		<script>
+		
+			var	a = document.getElementById("dino2");
+			var entity = document.querySelector('[sound]');
+
+			
+			a.addEventListener("click",function(){
+				
+				entity.components.sound.playSound();
+			});
 		  
 		</script>
 	  </body>
