@@ -48,22 +48,27 @@
 		
 		<script>
 			
-
+			
 
 			var Marker_name =  document.getElementById("dino2");
 			var	video_name = document.getElementById("video_ID");
 			var index = 0;
 			
+			function chageName(e1,visible)
+			 {
+				e1.setAttribute("visible",visible);
+			 }
+			
 			//當第一次點擊完播放音樂，第二次點擊完暫停音樂
 			Marker_name.addEventListener("click",function(){
 				console.log("單擊滑鼠");
 				if(index == 0){
-					video_name.visible = true;
+					chageName(this,"true"); 
 					index++;
 					console.log(index);
 				}
 				else{
-					video_name.visible = false;
+					chageName(this,"false");
 					index = 0;
 					console.log(index);
 				}
