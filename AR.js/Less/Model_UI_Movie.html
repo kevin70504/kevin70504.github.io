@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	  <head>
+		<title>MarkerLess_UIEvent</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta charset="utf-8" />
+		<script src="../js/https.js"></script>
+		<script src="../js/aframe.min.js"></script>
+		<script src="../js/aframe-extras.min.js"></script>
+		<style> .a-enter-vr-button { display: none; } </style>
+	  </head>
+	  <body>
+		<a-scene background="color: white">
+
+			<a-assets>
+			 <!--讀取圖片-->
+			<img id="my-image" src="../assets/image/question.png">
+			<video id="NCS" src="../assets/Video/Zeus X Crona Shiah Maisel - Run Hide [NCS Release].mp4"></video>
+			</a-assets>
+
+		  
+		  <!--使用問號貼圖-->
+		  <a-entity id="dino2" position="0 0.5 -3" scale="0.5 0.5 0.5">
+
+			<a-image src="#my-image"></a-image> 
+		  
+		  </a-entity>
+		  
+		  <a-entity id="video_ID" visible = "false">	
+
+			<a-video src = "#NCS" width = "16"	height = "9" position = "0,0,-20"></a-video>
+
+		  </a-entity>
+		  
+
+
+		  <!--設定directional的光源-->
+		  <a-light type="directional" position="0 0 0" rotation="0 0 0" target="#directionaltarget">
+		  <a-entity id="directionaltarget" position="0 -0.5 -0.5"></a-entity>
+		  </a-light>
+		  
+		  <a-entity camera position="0 1 0" wasd-controls look-controls>
+		  <a-cursor></a-cursor>
+		  </a-entity>
+		
+		</a-scene>
+		
+		
+		<script>
+			
+
+
+			var Marker_name =  document.getElementById("dino2");
+			var	video_name = document.getElementById("video_ID");
+			var index = 0;
+			
+			//當第一次點擊完播放音樂，第二次點擊完暫停音樂
+			Marker_name.addEventListener("click",function(){
+				console.log("單擊滑鼠");
+				if(index == 0){
+					video_name.visible = true;
+					index++;
+					console.log(index);
+				}
+				else{
+					video_name.visible = false;
+					index = 0;
+					console.log(index);
+				}
+			});
+			
+		</script>
+	  </body>
+</html>

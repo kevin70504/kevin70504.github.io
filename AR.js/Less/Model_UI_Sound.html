@@ -37,17 +37,18 @@
 					></a-sphere>
 		  </a-entity>
 		  
-		  <!--當光標進入earth_info_img並點擊時，觸發事件將earth_info顯示設定為false-->
-		  <a-entity id="earth_info" position="0 2.4 -3" scale="0.5 0.5 0.5" visible ="false">
-				   <a-image src="#earth_info_img"
-				   ></a-image> 
+
+		  <a-entity id="earth_info" position="0 2.4 -3" scale="0.5 0.5 0.5" visible ="true">
+				   <a-image src="#earth_info_img"></a-image> 
 		  </a-entity>
 		  
-		  <!--當光標進入my-image時，觸發事件將earth_info顯示設定為true-->
-		  <a-entity id="dino2" position="0 0.5 -3" scale="0.5 0.5 0.5" sound="src:#Sunspots">
-			<a-image src="#my-image"
+		  <!--使用問號貼圖，給予音效組件連結ID為Sunspots-->
+		  <a-entity id="dino2" position="0 0.5 -3" 
 
-					 ></a-image> 
+		  scale="0.5 0.5 0.5" sound="src:#Sunspots">
+
+			<a-image src="#my-image"></a-image> 
+		  
 		  </a-entity>
 		  
 
@@ -65,11 +66,13 @@
 		
 		
 		<script>
-		
-			var	audio_name = document.getElementById("dino2");
-			var index = 0;
 			
 
+
+			var	audio_name = document.getElementById("dino2"); //抓取名為dino2的ID
+			var index = 0;
+			
+			//當第一次點擊完播放音樂，第二次點擊完暫停音樂
 			audio_name.addEventListener("click",function(){
 				console.log("單擊滑鼠");
 				if(index == 0){
