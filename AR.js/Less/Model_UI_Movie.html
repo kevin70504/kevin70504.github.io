@@ -3,6 +3,7 @@
 	  <head>
 		<title>MarkerLess_UIEvent</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta charset="utf-8" />
 		<script src="../js/https.js"></script>
 		<script src="../js/aframe.min.js"></script>
@@ -15,7 +16,7 @@
 			<a-assets>
 			 <!--讀取圖片-->
 			<img id="my-image" src="../assets/image/question.png">
-			<video id="NCS" src="../assets/Video/Zeus X Crona Shiah Maisel - Run Hide [NCS Release].mp4"></video>
+			<video id="NCS" autoplay loop = "true" src="../assets/Video/Zeus X Crona Shiah Maisel - Run Hide [NCS Release].mp4"></video>
 			</a-assets>
 
 		  
@@ -26,7 +27,7 @@
 		  
 		  </a-entity>
 		  
-		  <a-entity id="video_ID" visible = "false">	
+		  <a-entity id="video_ID" visible = "true">	
 
 			<a-video src = "#NCS" width = "16"	height = "9" position = "0,0,-20"></a-video>
 
