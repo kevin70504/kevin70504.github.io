@@ -68,18 +68,23 @@
 		
 			var	a = document.getElementById("dino2");
 			var entity = document.getElementById("Sunspots");
-			//var entity = document.querySelector('[sound]');
+			var index = 0;
+			
 
 			a.addEventListener("click",function(){
 				console.log("單擊滑鼠");
-				a.components.sound.playSound();
+				if(index = 0){
+					a.components.sound.playSound();
+					index++;
+					console.log(index);
+				};
+				else{
+					a.components.sound.pauseSound();
+					index = 0;
+					console.log(index);
+				};
 			});
 			
-			a.addEventListener("dblclick",function(){
-				console.log("雙擊滑鼠");
-				a.components.sound.pauseSound();
-			});
-		  
 		</script>
 	  </body>
 </html>
