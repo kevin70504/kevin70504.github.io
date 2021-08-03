@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	  <head>
+		<title>MarkerLess_UIEvent</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta charset="utf-8" />
+		<script src="../js/https.js"></script>
+		<script src="../js/aframe.min.js"></script>
+		<script src="https://unpkg.com/aframe-extras@3.3.0/dist/aframe-extras.min.js"></script>
+		<script src="https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.min.js"></script>
+		<script src="https://unpkg.com/aframe-event-set-component/dist/aframe-event-set-component.min.js"></script>
+		<style> .a-enter-vr-button { display: none; } </style>
+	  </head>
+	  <body>
+		<a-scene background="color: white">
+
+			<a-assets>
+			 <!--讀取圖片-->
+			<img id="my-image" src="../assets/image/question.png">
+			<img id="earth_info_img" src="../assets/image/Earth_text.jpg">
+			<img id="earth" src="../assets/image/earth.jpg">
+			<img id="moon" src="../assets/image/moon.jpg">
+			<audio id="Sunspots" src="../assets/Audio/Sunspots.ogg"></audio>
+			</a-assets>
+
+		  <!--使用預設球型，球型貼圖為earth，給予預設旋轉動畫-->
+		  <a-entity id="earth_R" position="0 1.5 -3" scale="0.5 0.5 0.5">
+		  <a-sphere src="#earth" radius="1"
+					rotation="0 0 0" animation="property: rotation; to: 0 360 0; loop: true; dur: 5000; easing:linear;"
+					
+					></a-sphere>
+		  </a-entity>
+		  
+		  <!--使用預設球型，球型貼圖為moon，給予預設旋轉動畫-->
+		  <a-entity id="moon_R" position="0 1.5 -3" scale="0.1 0.1 0.1" 
+					rotation="0 0 0" animation="property: rotation; to: 0 -360 0; loop: true; dur: 10000; easing:linear;">
+		  <a-sphere src="#moon" radius="1"
+					position="10 0 0"
+					></a-sphere>
+		  </a-entity>
+		  
+		  <!--當光標進入earth_info_img並點擊時，觸發事件將earth_info顯示設定為false-->
+		  <a-entity id="earth_info" position="0 2.4 -3" scale="0.5 0.5 0.5" visible ="false">
+				   <a-image src="#earth_info_img"
+				   event-set__click="_target:#earth_info ; visible:false ; "
+				   ></a-image> 
+		  </a-entity>
+		  
+		  <!--當光標進入my-image時，觸發事件將earth_info顯示設定為true-->
+		  <a-entity id="dino2" position="0 0.5 -3" scale="0.5 0.5 0.5" sound="src:#Sunspots">
+			<a-image src="#my-image"
+					 event-set__mouseenter="_target:#earth_info ; visible:true ; "
+
+					 ></a-image> 
+		  </a-entity>
+		  
+
+
+		  <!--設定directional的光源-->
+		  <a-light type="directional" position="0 0 0" rotation="0 0 0" target="#directionaltarget">
+		  <a-entity id="directionaltarget" position="0 -0.5 -0.5"></a-entity>
+		  </a-light>
+		  
+		  <a-entity camera position="0 1 0" wasd-controls look-controls>
+		  <a-cursor></a-cursor>
+		  </a-entity>
+		
+		</a-scene>
+		
+		
+		<script>
+		  
+		</script>
+	  </body>
+</html>

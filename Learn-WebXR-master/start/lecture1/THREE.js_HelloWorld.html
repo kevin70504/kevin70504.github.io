@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>THREE.js HelloWorld</title>
+</head>
+<style>
+    body {
+        margin: 0;
+    }
+</style>
+<body>
+    <script src = "../../libs/three/three.js"></script>
+    <script>
+
+        //創建場景
+        const scene = new THREE.Scene();
+        // 創建攝影機，視野(FOV)、縱橫比
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        // 創建WebGL渲染器
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // 創建一個正方形Geometry
+
+        // 創建基礎材質球，顏色為綠色0x00ff00
+
+        //創建一個網格Mesh
+
+        //把正方形添加到場景座標(0,0,0)
+
+        //讓攝影機的位置移動z軸5點
+
+
+
+        //渲染場景
+        function animate() {
+            requestAnimationFrame(animate);
+
+            //讓cube向x、y軸的旋轉值每次運行都旋轉0.01
+
+            renderer.render(scene, camera);
+        };
+
+        animate();
+    </script>
+</body>
+
+</html>
