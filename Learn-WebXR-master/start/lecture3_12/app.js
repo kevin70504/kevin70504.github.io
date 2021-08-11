@@ -119,19 +119,19 @@ class App{
 	}		
     
     initScene(){
-        
+
 		this.reticle = new THREE.Mesh(
-			new	THREE.RingBufferGeometry(0.15 , 0.2, 32).rotateX(- Math.PI/2),
-			new THREE.MeshBasicMaterial()
+			new THREE.RingBufferGeometry(0.3, 0.4, 32).rotateX(- Math.PI / 2), //設定圓環的尺寸
+			new THREE.MeshBasicMaterial() //設定圓環的材質
 		);
 		
 		this.reticle.matrixAutoUpdate = false;
 		this.reticle.visible = false;
 		this.scene.add(this.reticle);
-		
-		this.geometry = new THREE.BoxBufferGeometry(0.8,1.2,0.8);
+
+		this.geometry = new THREE.BoxBufferGeometry(0.8, 0.8, 0.8); //設定方塊的尺寸
 		this.meshes = [];
-		
+
 		this.loadKnight();
     }
     
@@ -168,50 +168,52 @@ class App{
     }
     
     requestHitTestSource(){
-        
+
+		//測試命中來源
+
 		const self = this;
-		
+
 		const session = this.renderer.xr.getSession();
-		
-		session.requestReferenceSpace('viewer').then(function(referenceSpace){
-			
-			session.requestHitTestSource({space:referenceSpace}).then(
-			
-				function(source){
-					
+
+		session.requestReferenceSpace("viewer").then(function (referenceSpace) {
+
+			session.requestHitTestSource({ space: referenceSpace }).then(
+
+				function (source) {
+
 					self.hitTestSource = source;
-					
-				});
+				}
+			);
 		});
-    
-	
-		session.addEventListener('end',function(){
-			
+
+		session.addEventListener("end", function () {
+
 			self.hitTestSourceRequested = false;
 			self.hitTestSource = null;
 			self.referenceSpace = null;
 		});
-		
+
 		this.hitTestSourceRequested = true;
-		
 	}
     
     getHitTestResults( frame ){
         
+		//獲取命中測試結果
+
 		const hitTestResults = frame.getHitTestResults(this.hitTestSource);
-		
-		if(hitTestResults.length){
-			
+
+		if (hitTestResults.length) {
+
 			const referenceSpace = this.renderer.xr.getReferenceSpace();
 			const hit = hitTestResults[0];
 			const pose = hit.getPose(referenceSpace);
-			
+
 			this.reticle.visible = true;
 			this.reticle.matrix.fromArray(pose.transform.matrix);
 		}
-		else{
-			
-			this.reticle.visible = true;
+		else {
+
+			this.reticle.visible = false;
 		}
     }
 
