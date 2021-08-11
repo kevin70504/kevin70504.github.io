@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>THREE.js_Test</title>
+</head>
+<style>
+    body {
+        margin: 0;
+    }
+</style>
+<body>
+
+</body>
+    <script src="../../libs/three/three.js"></script>
+
+    <script>
+        //創建場景
+        const scene = new THREE.Scene();
+        //創建攝影機,視野(FOV),縱橫比
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        //創建WebGl渲染器
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        //初始化Texture讀取器
+        const texure = new THREE.TextureLoader().load(
+            "../../assets/texture/square_floor_diff_1k.jpg");
+
+        //創建基礎材質球
+        const material_wall = new THREE.MeshBasicMaterial({ color: 0x00ff00 , map: texure });
+
+        //創建一個正方形
+        const geometry = new THREE.BoxGeometry(3,3,3);     
+        //創建一個網格Mesh
+        const cube = new THREE.Mesh(geometry, material_wall);
+
+        //正方形Mesh添加到場景座標(0,0,0)
+        scene.add(cube);
+
+        //讓攝影機位置移到z軸5點
+        camera.position.z = 10;
+
+
+        //渲染場景
+        function animate() {
+            requestAnimationFrame(animate);
+
+            //讓cube朝x,y旋轉值每次運行都會旋轉0.01
+            cube.rotation.x += 0.01;
+            cube.rotation.y += 0.01;
+
+
+            renderer.render(scene, camera);
+
+        }
+        animate();
+    </script>
+</html>

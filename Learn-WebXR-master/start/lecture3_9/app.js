@@ -41,13 +41,32 @@ class App{
 	}	
     
     initScene(){
-        this.geometry = new THREE.BoxBufferGeometry( 0.06, 0.06, 0.06 ); 
+        this.geometry = new THREE.SphereBufferGeometry( 0.06, 0.06, 0.06 );
         this.meshes = [];
     }
     
-    setupXR(){
-        		
-		
+    setupXR() {
+        this.renderer.xr.enabled = true;
+
+        const self = this;
+        let controller;
+
+        function onSelect() {
+
+            const material = new THREE.MeshPhongMaterial({ color: 0xffffff * Math.random() }); //隨機變色
+            const mesh = new THREE.Mesh(self.geometry, material);
+            mesh.position.set(0, 0, -0.3).applyMatrix4(controller.matrixWorld); //位置的四維陣列
+            mesh.quaternion.setFromRotationMatrix(controller.matrixWorld);  //連續旋轉的四元數
+            self.scene.add(mesh);
+            self.meshes.push(mesh);
+        }
+
+        const btn = new ARButton(this.renderer);
+
+        controller = this.renderer.xr.getController(0);
+        controller.addEventListener("select", onSelect);
+        this.scene.add(controller);
+
         this.renderer.setAnimationLoop( this.render.bind(this) );
     }
     

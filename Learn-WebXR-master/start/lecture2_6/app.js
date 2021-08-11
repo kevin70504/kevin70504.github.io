@@ -60,8 +60,8 @@ class App{
     }
     
     loadGLTF(){
-		const self = this;
-		
+        const self = this;
+   
     }
     
     loadFBX(){
