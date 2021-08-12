@@ -192,7 +192,7 @@ function initialize()
 	
 	let markerControls1 = new THREEx.ArMarkerControls(arToolkitContext, kanjiMarker, {
 		type : 'pattern',
-		patternUrl : "data/kanji.patt",
+        patternUrl: "data/kanji.patt",
 	})
 
 	// interpolates from last position to create smoother transitions when moving.
@@ -225,8 +225,8 @@ function initialize()
 	
 	//建立平面
 	
-	let portalWidth = 2;
-	let portalHeight = 4;
+	let portalWidth = 4;
+	let portalHeight = 2;
 	let portalBorder = 0.1;
 	
 	portal = new THREE.Mesh(

@@ -120,17 +120,10 @@ class App{
     
     initScene(){
 
-		this.reticle = new THREE.Mesh(
-			new THREE.RingBufferGeometry(0.3, 0.4, 32).rotateX(- Math.PI / 2), //設定圓環的尺寸
-			new THREE.MeshBasicMaterial() //設定圓環的材質
-		);
-		
-		this.reticle.matrixAutoUpdate = false;
-		this.reticle.visible = false;
-		this.scene.add(this.reticle);
+		//添加圓環
 
-		this.geometry = new THREE.BoxBufferGeometry(0.8, 0.8, 0.8); //設定方塊的尺寸
-		this.meshes = [];
+		//添加方塊
+
 
 		this.loadKnight();
     }
@@ -146,7 +139,10 @@ class App{
         this.hitTestSourceRequested = false;
         this.hitTestSource = null;
         
-        function onSelect() {
+
+		//當點擊觸發隨機顏色方塊
+
+		function onSelect() {
 				
 				if(self.reticle.visible){
 					
@@ -167,54 +163,17 @@ class App{
         this.scene.add( this.controller );    
     }
     
-    requestHitTestSource(){
+    requestHitTestSource() {
 
-		//測試命中來源
+        //測試命中來源
 
-		const self = this;
-
-		const session = this.renderer.xr.getSession();
-
-		session.requestReferenceSpace("viewer").then(function (referenceSpace) {
-
-			session.requestHitTestSource({ space: referenceSpace }).then(
-
-				function (source) {
-
-					self.hitTestSource = source;
-				}
-			);
-		});
-
-		session.addEventListener("end", function () {
-
-			self.hitTestSourceRequested = false;
-			self.hitTestSource = null;
-			self.referenceSpace = null;
-		});
-
-		this.hitTestSourceRequested = true;
-	}
+    }
+	
     
     getHitTestResults( frame ){
         
 		//獲取命中測試結果
 
-		const hitTestResults = frame.getHitTestResults(this.hitTestSource);
-
-		if (hitTestResults.length) {
-
-			const referenceSpace = this.renderer.xr.getReferenceSpace();
-			const hit = hitTestResults[0];
-			const pose = hit.getPose(referenceSpace);
-
-			this.reticle.visible = true;
-			this.reticle.matrix.fromArray(pose.transform.matrix);
-		}
-		else {
-
-			this.reticle.visible = false;
-		}
     }
 
     render( timestamp, frame ) {
