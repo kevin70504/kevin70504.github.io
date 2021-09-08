@@ -3,27 +3,67 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!--meta name="apple-mobile-web-app-capable" content="yes"-->
     <title>AR.js_Test</title>
     <script src="/js/aframe.min.js"></script>
     <script src="/js/aframe-ar.js"></script>
 </head>
 
-<body style="margin:0px ; overflow:hidden; ">
+<body style = "margin:0px; overflow : hidden; ">
 
-    <a-scene embedded vr-mode-ui ="enabled:false;" arjs ="debugUIEnabled:false;">
+    <a-scene embedded vr-mode-ui="enabled : false;" arjs="debugUIEnabled : false;">
 
         <a-assets>
-            <img id="sun_T" src="assets/image/2k_sun.jpg">
-            <img id="Moon_T" src="assets/image/moon.jpg">
+
+            <img id="img_earth" src="assets/image/earth.jpg" />
+            <img id="img_moon" src="assets/image/moon.jpg" />
+            <img id="img_quest" src="assets/image/question.png" />
+            <img id="img_info_earth" src="assets/image/地球Earth.png" />
+            <audio id="Sunspots" src="assets/Audio/Sunspots.ogg"></audio>
 
         </a-assets>
-        
-        
-        <a-marker type="pattern" url="data/hiro.patt">
 
-            <a-sphere id="box" position="0 0.5 0" rotation="0 0 0" scale="0.8 0.8 0.8" src="#sun_T" opacity="1"></a-sphere>
+        <a-marker typeof="pattern" url="data/hiro.patt">
 
+            <a-entity animation="property:rotation ; to:0 360 0 ; loop:true ; dur:5000; easing:linear">
+
+                <a-sphere id="earth" position="0 2 0" rotation="0 0 0" scale="0.5 0.5 0.5" src="#img_earth"
+                          opacity="1" sound="src:#Sunspots;loop:true" visible="true"></a-sphere>
+
+            </a-entity>
+
+            <a-entity animation="property:rotation ; to:0 360 0 ; loop:true ; dur:5000; easing:linear ;">
+
+                <a-sphere id="moon" position="2 2 0" rotation="0 0 0" scale="0.3 0.3 0.3" src="#img_moon"
+                          opacity="1">
+                </a-sphere>
+
+            </a-entity>
+
+            <a-entity id="evn_quest" position="0 0.5 0" scale="0.5 0.5 0.5">
+                <a-image src="#img_quest"></a-image>
+            </a-entity>
+
+            <a-entity id="evn_info_earth" position="0 4 0" scale="1 1 1" visible ="false">
+                <a-image src="#img_info_earth"></a-image>
+            </a-entity>
+
+            <!--a-light id="light_dir" type="directional" position="0 0 0" rotation="0 0 0" target="#directionaltarget">
+    <a-entity id="directionaltarget" position="0 -0.5 -0.5"></a-entity>
+    </a-light-->
+            <!--<a-light id="light_amb" type="ambient" position="0 0 0" rotation="0 0 0" color="blue" intensity="0.5"></a-light-->
+            <!--a-light id="light_poit" type="point" position="0 2 0" rotation="0 0 0" intensity="0.5" distance: 100; decay: 4></a-light-->
+            <!--a-light id="light_spt" type="spot" position="0 3 4" rotation="0 0 0" intensity="0.5" angle="90" distance: 100; decay: 4></a-light-->
+
+        </a-marker>
+
+        <a-marker type="pattern" url="data/kanji.patt">
+            <a-entity>
+
+                <!--a-sphere id="sphere" position="0 0.5 0" rotation="0 0 0" scale="0.5 0.5 0.5" src="#brick_wall"
+                 opacity="0.9"></a-sphere-->
+
+            </a-entity>
         </a-marker>
 
         <a-entity camera>
@@ -35,6 +75,32 @@
 
 </body>
     <script>
+
+        var audio_name = document.getElementById("earth");
+
+        audio_name.addEventListener("mouseenter", function () {
+            console.log("滑鼠進入了");
+            audio_name.components.sound.playSound();
+        })
+        audio_name.addEventListener("mouseleave", function () {
+            console.log("滑鼠離開了");
+            audio_name.components.sound.pauseSound();
+        })
+
+        var event_earth_ui = document.getElementById("evn_info_earth");
+        var evnet_quest_ui = document.getElementById("evn_quest");
+
+        evnet_quest_ui.addEventListener("mouseenter", function () {
+            console.log("滑鼠進入了");
+            event_earth_ui.setAttribute("visible", true);
+        });
+
+        event_earth_ui.addEventListener("mouseenter", function () {
+            console.log("滑鼠進入了");
+            event_earth_ui.setAttribute("visible", false);
+        });
+
+
 
 
     </script>

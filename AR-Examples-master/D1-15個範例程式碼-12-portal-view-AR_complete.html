@@ -76,12 +76,12 @@ var skyMaterialArray1 = [
 	];
 	
 var skyMaterialArray2 = [
-		new THREE.MeshBasicMaterial( { map: loader.load("images/beach/posx.jpg"), side: THREE.BackSide } ),
-		new THREE.MeshBasicMaterial( { map: loader.load("images/beach/negx.jpg"), side: THREE.BackSide } ),
-		new THREE.MeshBasicMaterial( { map: loader.load("images/beach/posy.jpg"), side: THREE.BackSide } ),
-		new THREE.MeshBasicMaterial( { map: loader.load("images/beach/negy.jpg"), side: THREE.BackSide } ),
-		new THREE.MeshBasicMaterial( { map: loader.load("images/beach/posz.jpg"), side: THREE.BackSide } ),
-		new THREE.MeshBasicMaterial( { map: loader.load("images/beach/negz.jpg"), side: THREE.BackSide } ),
+    new THREE.MeshBasicMaterial({ map: loader.load("images/Yokohama3/posx.jpg"), side: THREE.BackSide } ),
+    new THREE.MeshBasicMaterial({ map: loader.load("images/Yokohama3/negx.jpg"), side: THREE.BackSide } ),
+    new THREE.MeshBasicMaterial({ map: loader.load("images/Yokohama3/posy.jpg"), side: THREE.BackSide } ),
+    new THREE.MeshBasicMaterial({ map: loader.load("images/Yokohama3/negy.jpg"), side: THREE.BackSide } ),
+    new THREE.MeshBasicMaterial({ map: loader.load("images/Yokohama3/posz.jpg"), side: THREE.BackSide } ),
+    new THREE.MeshBasicMaterial({ map: loader.load("images/Yokohama3/negz.jpg"), side: THREE.BackSide } ),
 	];
 	
 initialize();
@@ -225,8 +225,8 @@ function initialize()
 	
 	//建立平面
 	
-	let portalWidth = 4;
-	let portalHeight = 2;
+	let portalWidth = 2;
+	let portalHeight = 4;
 	let portalBorder = 0.1;
 	
 	portal = new THREE.Mesh(

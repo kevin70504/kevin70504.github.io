@@ -40,23 +40,23 @@ class App{
         window.addEventListener('resize', this.resize.bind(this) );
 	}	
     
-    initScene(){
-        this.geometry = new THREE.SphereBufferGeometry( 0.06, 0.06, 0.06 );
+    initScene() {
+        this.geometry = new THREE.SphereGeometry(0.03, 0.03, 0.1); //創建圓柱體Geometry
         this.meshes = [];
     }
     
     setupXR() {
         this.renderer.xr.enabled = true;
-
         const self = this;
         let controller;
 
         function onSelect() {
+            //隨機顏色的方塊
 
-            const material = new THREE.MeshPhongMaterial({ color: 0xffffff * Math.random() }); //隨機變色
+            const material = new THREE.MeshPhongMaterial({ color: 0xffffff * Math.random() }); //隨機生成顏色
             const mesh = new THREE.Mesh(self.geometry, material);
-            mesh.position.set(0, 0, -0.3).applyMatrix4(controller.matrixWorld); //位置的四維陣列
-            mesh.quaternion.setFromRotationMatrix(controller.matrixWorld);  //連續旋轉的四元數
+            mesh.position.set(0, 0, -0.3).applyMatrix4(controller.matrixWorld); //四維陣列
+            mesh.quaternion.setFromRotationMatrix(controller.matrixWorld); //四元數，連續旋轉向量計算
             self.scene.add(mesh);
             self.meshes.push(mesh);
         }
@@ -67,8 +67,10 @@ class App{
         controller.addEventListener("select", onSelect);
         this.scene.add(controller);
 
-        this.renderer.setAnimationLoop( this.render.bind(this) );
+        this.renderer.setAnimationLoop(this.render.bind(this));
+
     }
+
     
     resize(){
         this.camera.aspect = window.innerWidth / window.innerHeight;

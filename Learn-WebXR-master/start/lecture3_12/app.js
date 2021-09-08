@@ -120,9 +120,20 @@ class App{
     
     initScene(){
 
-		//添加圓環
+        //添加圓環
+        this.reticle = new THREE.Mesh(
+            new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
+            new THREE.MeshBasicMaterial()
+        );
 
-		//添加方塊
+        this.reticle.matrixAutoUpdate = false;
+        this.reticle.visible = false;
+        this.scene.add(this.reticle);
+
+        //添加方塊
+        this.geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+        this.meshes = [];
+
 
 
 		this.loadKnight();
@@ -166,14 +177,49 @@ class App{
     requestHitTestSource() {
 
         //測試命中來源
+        const self = this;
+        const session = this.renderer.xr.getSession();
 
+        session.requestReferenceSpace("viewer").then(function (referenceSpace) {
+
+            session.requestHitTestSource({ space: referenceSpace }).then(
+
+                function (source) {
+
+                    self.hitTestSource = source;
+
+                });
+
+        });
+
+        session.addEventListener("end", function () {
+
+            self.hitTestSourceRequested = false;
+            self.hitTestSource = null;
+            self.referenceSpace = null;
+        });
+
+        this.hitTestSourceRequested = true;
     }
 	
     
     getHitTestResults( frame ){
         
-		//獲取命中測試結果
+        //獲取命中測試結果
+        const hitTestResults = frame.getHitTestResults(this.hitTestSource);
 
+        if (hitTestResults.length) {
+
+            const referenceSpace = this.renderer.xr.getReferenceSpace();
+            const hit = hitTestResults[0];
+            const pose = hit.getPose(referenceSpace);
+
+            this.reticle.visible = true;
+            this.reticle.matrix.fromArray(pose.transform.matrix);
+        }
+        else {
+            this.reticle.visible = false;
+        }
     }
 
     render( timestamp, frame ) {
