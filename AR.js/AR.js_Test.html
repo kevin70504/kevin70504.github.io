@@ -5,8 +5,8 @@
     <meta charset="utf-8" />
     <!--meta name="apple-mobile-web-app-capable" content="yes"-->
     <title>AR.js_Test</title>
-    <script src="/js/aframe.min.js"></script>
-    <script src="/js/aframe-ar.js"></script>
+    <script src="js/aframe.min.js"></script>
+    <script src="js/aframe-ar.js"></script>
 </head>
 
 <body style = "margin:0px; overflow : hidden; ">
@@ -51,19 +51,8 @@
             <!--a-light id="light_dir" type="directional" position="0 0 0" rotation="0 0 0" target="#directionaltarget">
     <a-entity id="directionaltarget" position="0 -0.5 -0.5"></a-entity>
     </a-light-->
-            <!--<a-light id="light_amb" type="ambient" position="0 0 0" rotation="0 0 0" color="blue" intensity="0.5"></a-light-->
-            <!--a-light id="light_poit" type="point" position="0 2 0" rotation="0 0 0" intensity="0.5" distance: 100; decay: 4></a-light-->
-            <!--a-light id="light_spt" type="spot" position="0 3 4" rotation="0 0 0" intensity="0.5" angle="90" distance: 100; decay: 4></a-light-->
+            <a-light id="light_spt" type="spot" position="0 3 4" rotation="0 0 0" intensity="0.5" angle="90" distance: 100; decay: 4></a-light>
 
-        </a-marker>
-
-        <a-marker type="pattern" url="data/kanji.patt">
-            <a-entity>
-
-                <!--a-sphere id="sphere" position="0 0.5 0" rotation="0 0 0" scale="0.5 0.5 0.5" src="#brick_wall"
-                 opacity="0.9"></a-sphere-->
-
-            </a-entity>
         </a-marker>
 
         <a-entity camera>
