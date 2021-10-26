@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>陣列範例完成</title>
+</head>
+<body>
+
+</body>
+
+<script>
+
+    //嘗試製作成績單，有名字有成績
+    //製作最高分與最低分
+    //使用陣列Array與迴圈For製作
+
+
+    var Name = ["小A","小B","小C","小D"];
+    var Core = ["90", "80", "70", "60"];
+    var Max = Core[0];
+    var j = 0;
+    var Min = Core[0];
+    var m = 0;
+
+    for (var i = 1, length = Core.length; i < length; i++) {
+        if (Core[i] > Max) {
+            Max = Core[i];
+            j = i;
+        }
+        if (Core[i] < Min) {
+            Min = Core[i]
+            m = i;
+        }
+    }
+
+    console.log("名字是"+ Name[0] +" , 他的分數是"+ Core[0]);
+    console.log("名字是" + Name[1] + " , 他的分數是"+ Core[1]);
+    console.log("名字是" + Name[2] + " , 他的分數是" + Core[2]);
+    console.log("名字是" + Name[3] + " , 他的分數是" + Core[3]);
+
+    console.log("最高分是" + Max + " ,他的名字是" + Name[j]);
+    console.log("最低分是" + Min + " ,他的名字是" + Name[m]);
+
+
+
+
+</script>
+</html>

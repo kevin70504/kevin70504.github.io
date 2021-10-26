@@ -33,7 +33,7 @@
         const geometry = new THREE.SphereGeometry(2, 32, 16);
         // 創建基礎材質球，顏色為綠色0x00ff00
         //const material = new THREE.MeshBasicMaterial({ color: 0x0000FF });
-        const material = new THREE.MeshBasicMaterial({ color: 0x0000FF , map: texture });
+        const material = new THREE.MeshBasicMaterial({map: texture });
         //創建一個網格Mesh
         const cube = new THREE.Mesh(geometry, material);
 

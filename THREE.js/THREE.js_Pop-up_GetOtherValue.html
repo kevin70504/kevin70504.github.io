@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>THREE.js_GetOtherValue</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<style>
+    body {
+        margin: 0;
+    }
+</style>
+<body>
+</body>
+
+<script src = "../js/three.js"></script>
+<script src="Button.js"></script>
+<script type="module">
+
+    import { aFunction,planewidth,planelength } from './PlaneSize.js';
+
+    aFunction();
+    //const planewidth = prompt("請輸入寬度");
+    //const planelength = prompt("請輸入長度");
+    
+    const loader = new THREE.TextureLoader();
+    const texture = loader.load(
+    "marble_01_diff_1k.jpg",
+    function(texture){
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        texture.offset.set(0,0);
+        texture.repeat.set(planewidth,planelength);
+    },
+    function(err){
+        console.log("An error happened");
+    });
+ 
+    
+    //創建場景
+    const scene = new THREE.Scene();
+    // 創建攝影機，視野(FOV)、縱橫比
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    // 創建WebGL渲染器
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+    
+    // 創建一個正方形Geometry
+    const geometry = new THREE.PlaneGeometry(2,2);
+    // 創建基礎材質球
+    const material = new THREE.MeshBasicMaterial({map: texture });
+    //創建一個網格Mesh
+    const plane = new THREE.Mesh(geometry, material);
+
+    const group = new THREE.Group();
+    group.position.set(0,0,0);
+    //group.rotation.x = -90;
+    group.add(plane);
+    //把正方形添加到場景座標(0,0,0)
+    scene.add(group);
+
+    //讓攝影機的位置移動z軸5點
+    camera.position.z = 5;
+    
+    console.log("本地座標",plane.position);
+    console.log("本地旋轉",plane.rotation);
+    
+    
+    
+    scene.updateMatrixWorld(true);
+    
+    const worldposition = new THREE.Vector3();
+    const worldrotation = new THREE.Quaternion();
+    plane.getWorldPosition(worldposition);
+    plane.getWorldQuaternion(worldrotation);
+    console.log("世界座標",worldposition);
+    console.log("世界座標",worldrotation);
+
+
+    //渲染場景
+    function animate() {
+        requestAnimationFrame(animate);
+
+        //讓cube向x、y軸的旋轉值每次運行都旋轉0.01
+        /*plane.rotation.x += 0.01;
+        plane.rotation.y += 0.01;*/
+
+        renderer.render(scene, camera);
+    };
+    animate();
+</script>    
+</html>

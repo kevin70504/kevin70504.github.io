@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>隱式計算part2</title>
+</head>
+<body>
+
+</body>
+
+<script>
+
+    //-、*、/ 这幾個符號自動進行“隱式計算”
+
+    var a = 1;              //1
+    var b = 2;              //1     2
+    var c = 3;              //1     2       3
+    a = b + c;              //5     2       3
+    b = c - a;              //2     5      -2
+    c = a * b;              //5     -2      -10
+
+    console.log(a);
+    console.log(b);
+    console.log(c);
+
+</script>
+</html>

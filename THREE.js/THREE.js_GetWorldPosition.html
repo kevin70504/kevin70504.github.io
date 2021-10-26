@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>THREE.js GetWorldPostion</title>
+</head>
+<style>
+    body {
+        margin: 0;
+    }
+</style>
+<body>
+
+</body>
+
+<script src = "../js/three.js"></script>
+<script>
+
+    //創建場景
+    const scene = new THREE.Scene();
+    // 創建攝影機，視野(FOV)、縱橫比
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    // 創建WebGL渲染器
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // 創建一個正方形Geometry
+    const geometry = new THREE.BoxGeometry();
+    // 創建基礎材質球，顏色為綠色0x00ff00
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    //創建一個網格Mesh
+    const cube = new THREE.Mesh(geometry, material);
+
+    const group = new THREE.Group();
+    group.position.set(2,0,0);
+    group.add(cube);
+    //把正方形添加到場景座標(0,0,0)
+    scene.add(group);
+
+    //讓攝影機的位置移動z軸5點
+    camera.position.z = 5;
+    
+    console.log("本地座標",cube.position);
+    
+    
+    
+    scene.updateMatrixWorld(true);
+    
+    const worldposition = new THREE.Vector3();
+    cube.getWorldPosition(worldposition);
+    console.log("世界座標",worldposition);
+
+
+    //渲染場景
+    function animate() {
+        requestAnimationFrame(animate);
+
+        //讓cube向x、y軸的旋轉值每次運行都旋轉0.01
+        cube.rotation.x += 0.01;
+        cube.rotation.y += 0.01;
+
+        renderer.render(scene, camera);
+    };
+
+    animate();
+</script>    
+</html>

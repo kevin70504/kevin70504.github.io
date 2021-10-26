@@ -2,6 +2,8 @@ import * as THREE from '../../libs/three/three.module.js';
 import { GLTFLoader } from '../../libs/three/jsm/GLTFLoader.js';
 import { RGBELoader } from '../../libs/three/jsm/RGBELoader.js';
 import { ARButton } from '../../libs/ARButton.js';
+import { ARButton2 } from '../../libs/ARButton2.js';
+import { Button } from '../../libs/Button.js';
 import { LoadingBar } from '../../libs/LoadingBar.js';
 import { Player } from '../../libs/Player.js';
 
@@ -40,6 +42,7 @@ class App{
         
         this.initScene();
         this.setupXR();
+        this.planeSize();
 		
 		window.addEventListener('resize', this.resize.bind(this));
         
@@ -67,6 +70,19 @@ class App{
         this.camera.aspect = window.innerWidth / window.innerHeight;
     	this.camera.updateProjectionMatrix();
     	this.renderer.setSize( window.innerWidth, window.innerHeight );  
+    }
+
+    arPlane(){
+        const self = this;
+
+        if (self.reticle.visible){
+        
+            self.mesh.matrixAutoUpdate = true;
+            self.workingVec3.setFromMatrixPosition( self.reticle.matrix );
+            self.mesh.position.setFromMatrixPosition( self.reticle.matrix );
+            self.mesh.visible = true;
+
+        }       
     }
     
     loadKnight(){
@@ -118,7 +134,37 @@ class App{
 		);
 	}		
     
+    planeSize(){
+        this.planewidth = prompt("請輸入寬度");
+        this.planelength = prompt("請輸入長度");
+    }
+
+    takeScreenshot(){
+        this.renderer.render( this.scene, this.camera );
+        this.renderer.domElement.toBlob(function(blob){
+        var a = document.createElement('a');
+        var url = URL.createObjectURL(blob);
+        a.href = url;
+        a.download = 'canvas.png';
+        a.click();
+        }, 'image/png', 1.0);
+    }
+
     initScene(){
+
+        const self = this;
+        const loader = new THREE.TextureLoader();
+        const texture2 = loader.load(
+        "../../assets/texture/marble_01_diff_1k.jpg",
+        function(texture2){
+            texture2.wrapS = texture2.wrapT = THREE.RepeatWrapping;
+            texture2.offset.set(0,0);
+            texture2.repeat.set(self.planewidth,self.planelength);
+        },
+        function(err){
+            console.log("An error happened");
+        });
+    
         this.reticle = new THREE.Mesh(
             new THREE.RingBufferGeometry( 0.15, 0.2, 32 ).rotateX( - Math.PI / 2 ),  //設定目標圓環的尺寸
             new THREE.MeshBasicMaterial() //給予圓環基本的材質
@@ -127,18 +173,55 @@ class App{
         this.reticle.matrixAutoUpdate = false;  //圓環的位置、旋轉、縮放自動更新關閉
         this.reticle.visible = false; // 讓圓環一開始看不見
         this.scene.add( this.reticle ); //把圓環添加進場景內
-
-        this.geometry = new THREE.BoxBufferGeometry( 0.3, 0.3, 0.3 );  //設定方塊的尺寸 寬1 高1 深度1
-        this.meshes = [];
+        
+        this.geometry = new THREE.PlaneBufferGeometry( self.planewidth, self.planelength).rotateX( - Math.PI / 2 );  //設定方塊的尺寸 寬1 高1 深度1
+        this.material = new THREE.MeshBasicMaterial( {map: texture2} );
+        this.mesh = new THREE.Mesh( this.geometry,this.material);
+        this.mesh.matrixAutoUpdate = false;
+        this.mesh.position.set(0,0.1,0);
+        this.mesh.visible = true;
+        this.scene.add(this.mesh);
+        
+        //this.meshes = [];
         
         this.loadKnight();
+        
+        const btnshow = document.querySelector("#Show");
+        btnshow.addEventListener("click", function(){
+
+            alert("本次使用"+self.planewidth*12+"個磁磚");
+
+        });
+
+
+
+        /*const btn2 = document.createElement("button");
+        btn2.innerHTML = "Submit";
+        btn2.type = "submit";
+        btn2.name = "formBtn";
+        document.body.appendChild(btn2);       
+        btn2.addEventListener("click",function(){
+        alert("本次使用"+self.planewidth*12+"個磁磚");
+        });*/
+
+        
     }
     
     setupXR(){
         this.renderer.xr.enabled = true;
-        
-        const btn = new ARButton( this.renderer, { sessionInit: { requiredFeatures: [ 'hit-test' ], optionalFeatures: [ 'dom-overlay' ], domOverlay: { root: document.body } } } );
-        
+
+        let options = {
+            requiredFeatures: [ 'hit-test' ],
+            optionalFeatures: [ 'dom-overlay' ],
+        }
+
+        //options.domOverlay = {root: document.getElementById("content")};
+        document.body.appendChild(ARButton2.createButton(this.renderer,options));
+
+
+
+        //const btn = new ARButton( this.renderer, { sessionInit: { requiredFeatures: [ 'hit-test' ], optionalFeatures: [ 'dom-overlay' ], domOverlay: { root: document.body } } } );
+        //const btn2 = new Button( this.renderer, { sessionInit: {optionalFeatures: [ 'dom-overlay' ], domOverlay: { root: document.body } } } );       
         const self = this;
         let controller;
 
@@ -148,31 +231,17 @@ class App{
         function onSelect() {
 
             if (self.reticle.visible){
-                    
-                    //在目標圓環中生成隨機顏色方塊
-                    self.workingVec3.setFromMatrixPosition( self.reticle.matrix );
-                    const material = new THREE.MeshPhongMaterial( {color: 0xffffff * Math.random()} );
-                    const mesh = new THREE.Mesh( self.geometry,material);
-                    mesh.position.set(0,0,0).setFromMatrixPosition( self.reticle.matrix );
-                    self.scene.add(mesh);
-                    self.meshes.push(mesh);
                 
+                    self.mesh.matrixAutoUpdate = true;
+                    self.workingVec3.setFromMatrixPosition( self.reticle.matrix );
+                    self.mesh.position.setFromMatrixPosition( self.reticle.matrix );
+                    self.mesh.visible = true;
+
                     const worldposition = new THREE.Vector3();
-                    mesh.getWorldPosition(worldposition);
+                    self.mesh.getWorldPosition(worldposition);
                     console.log("世界座標",worldposition);
 
             }
-            /*if (self.knight===undefined) return;
-            
-            if (self.reticle.visible){
-                if (self.knight.object.visible){
-                    self.workingVec3.setFromMatrixPosition( self.reticle.matrix );
-                    //self.knight.newPath(self.workingVec3);
-                }else{
-                    self.knight.object.position.setFromMatrixPosition( self.reticle.matrix );
-                    self.knight.object.visible = true;
-                }
-            }*/
         }
 
         this.controller = this.renderer.xr.getController( 0 );
@@ -222,6 +291,8 @@ class App{
             const hit = hitTestResults[ 0 ]; //宣告變數hit 獲取第一個命中結果
             const pose = hit.getPose( referenceSpace ); //宣告變數pose獲取參考空間
 
+            document.getElementById("Show").style.display = "block";
+            
             this.reticle.visible = true;
             this.reticle.matrix.fromArray( pose.transform.matrix );
 
@@ -235,7 +306,7 @@ class App{
 
     render( timestamp, frame ) {
         const dt = this.clock.getDelta();
-        if (this.knight) this.knight.update(dt);
+        //if (this.knight) this.knight.update(dt);
 
         const self = this;
         
@@ -249,6 +320,20 @@ class App{
 
         this.renderer.render( this.scene, this.camera );
         
+        const btntake = document.querySelector("#take");
+        btntake.addEventListener("click",function(){
+
+            self.renderer.render( self.scene, self.camera );
+            self.renderer.domElement.toBlob(function(blob){
+            var a = document.createElement('a');
+            var url = URL.createObjectURL(blob);
+            a.href = url;
+            a.download = 'canvas.png';
+            a.click();
+            }, 'image/png', 1.0);
+    
+        });
+
         /*if (this.knight.calculatedPath && this.knight.calculatedPath.length>0){
             console.log( `path:${this.knight.calculatedPath[0].x.toFixed(2)}, ${this.knight.calculatedPath[0].y.toFixed(2)}, ${this.knight.calculatedPath[0].z.toFixed(2)} position: ${this.knight.object.position.x.toFixed(2)}, ${this.knight.object.position.y.toFixed(2)}, ${this.knight.object.position.z.toFixed(2)}`);
         }*/

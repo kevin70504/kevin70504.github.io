@@ -1,0 +1,11 @@
+body{
+    text-align: center ;
+
+}
+div{
+    display: inline-block;
+}
+
+button{
+    padding: 10px 20px;
+}
