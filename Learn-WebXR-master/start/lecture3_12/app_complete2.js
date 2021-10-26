@@ -210,7 +210,7 @@ class App{
             var img = new Image();
             // Without 'preserveDrawingBuffer' set to true, we must render now
             self.renderer.render(self.scene, self.camera);
-            img.src = renderer.domElement.toDataURL("image/jpeg",0.7);
+            img.src = self.renderer.domElement.toDataURL("image/jpeg",0.7);
             w.document.body.appendChild(img);  
     
         });
