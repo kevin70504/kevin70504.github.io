@@ -177,7 +177,7 @@ class App{
         this.mesh = new THREE.Mesh( this.geometry,this.material);
         this.mesh.matrixAutoUpdate = false;
         this.mesh.position.set(0,0,0);
-        this.mesh.visible = false;
+        this.mesh.visible = true;
         this.scene.add(this.mesh);
         
         //this.meshes = [];
@@ -191,29 +191,6 @@ class App{
 
         });
 
-        const btntake = document.querySelector("#take");
-        btntake.addEventListener("click",function(){
-
-            /*self.renderer.render( self.scene, self.camera );
-            self.renderer.domElement.toBlob(function(blob){
-            var a = document.createElement('a');
-            var url = URL.createObjectURL(blob);
-            a.href = url;
-            a.download = 'canvas.png';
-            a.click();
-            }, 'image/png', 1.0);*/
-
-            // open in new window like this
-            var w = window.open('', '');
-            w.document.title = "Screenshot";
-            //w.document.body.style.backgroundColor = "red";
-            var img = new Image();
-            // Without 'preserveDrawingBuffer' set to true, we must render now
-            self.renderer.render(self.scene, self.camera);
-            img.src = self.renderer.domElement.toDataURL("image/jpeg",0.7);
-            w.document.body.appendChild(img);  
-    
-        });
 
 
 
@@ -241,6 +218,29 @@ class App{
         options.domOverlay = {root: document.getElementById("content")};
         document.body.appendChild(ARButton2.createButton(this.renderer,options));
 
+        const btntake = document.querySelector("#take");
+        btntake.addEventListener("click",function(){
+
+            /*self.renderer.render( self.scene, self.camera );
+            self.renderer.domElement.toBlob(function(blob){
+            var a = document.createElement('a');
+            var url = URL.createObjectURL(blob);
+            a.href = url;
+            a.download = 'canvas.png';
+            a.click();
+            }, 'image/png', 1.0);*/
+
+            // open in new window like this
+            var w = window.open('', '');
+            w.document.title = "Screenshot";
+            //w.document.body.style.backgroundColor = "red";
+            var img = new Image();
+            // Without 'preserveDrawingBuffer' set to true, we must render now
+            self.renderer.render(self.scene, self.camera);
+            img.src = self.renderer.domElement.toDataURL("image/jpeg");
+            w.document.body.appendChild(img);  
+    
+        });
 
 
         //const btn = new ARButton( this.renderer, { sessionInit: { requiredFeatures: [ 'hit-test' ], optionalFeatures: [ 'dom-overlay' ], domOverlay: { root: document.body } } } );
