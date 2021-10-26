@@ -42,7 +42,6 @@ class App{
         
         this.initScene();
         this.setupXR();
-        this.planeSize();
 		
 		window.addEventListener('resize', this.resize.bind(this));
         
@@ -134,10 +133,6 @@ class App{
 		);
 	}		
     
-    planeSize(){
-        this.planewidth = prompt("請輸入寬度");
-        this.planelength = prompt("請輸入長度");
-    }
 
     takeScreenshot(){
         this.renderer.render( this.scene, this.camera );
@@ -152,6 +147,9 @@ class App{
 
     initScene(){
 
+        const planewidth = prompt("請輸入寬度");
+        const planelength = prompt("請輸入長度");
+
         const self = this;
         const loader = new THREE.TextureLoader();
         const texture2 = loader.load(
@@ -159,7 +157,7 @@ class App{
         function(texture2){
             texture2.wrapS = texture2.wrapT = THREE.RepeatWrapping;
             texture2.offset.set(0,0);
-            texture2.repeat.set(self.planewidth,self.planelength);
+            texture2.repeat.set(planewidth,planelength);
         },
         function(err){
             console.log("An error happened");
@@ -174,12 +172,12 @@ class App{
         this.reticle.visible = false; // 讓圓環一開始看不見
         this.scene.add( this.reticle ); //把圓環添加進場景內
         
-        this.geometry = new THREE.PlaneBufferGeometry( self.planewidth, self.planelength).rotateX( - Math.PI / 2 );  //設定方塊的尺寸 寬1 高1 深度1
+        this.geometry = new THREE.PlaneBufferGeometry( planewidth,planelength).rotateX( - Math.PI / 2 );  //設定方塊的尺寸 寬1 高1 深度1
         this.material = new THREE.MeshBasicMaterial( {map: texture2} );
         this.mesh = new THREE.Mesh( this.geometry,this.material);
         this.mesh.matrixAutoUpdate = false;
         this.mesh.position.set(0,0.1,0);
-        this.mesh.visible = true;
+        this.mesh.visible = false;
         this.scene.add(this.mesh);
         
         //this.meshes = [];
@@ -189,9 +187,24 @@ class App{
         const btnshow = document.querySelector("#Show");
         btnshow.addEventListener("click", function(){
 
-            alert("本次使用"+self.planewidth*12+"個磁磚");
+            alert("本次使用"+planewidth*12+"個磁磚");
 
         });
+
+        const btntake = document.querySelector("#take");
+        btntake.addEventListener("click",function(){
+
+            self.renderer.render( self.scene, self.camera );
+            self.renderer.domElement.toBlob(function(blob){
+            var a = document.createElement('a');
+            var url = URL.createObjectURL(blob);
+            a.href = url;
+            a.download = 'canvas.png';
+            a.click();
+            }, 'image/png', 1.0);
+    
+        });
+
 
 
 
@@ -321,20 +334,6 @@ class App{
 
         this.renderer.render( this.scene, this.camera );
         
-        const btntake = document.querySelector("#take");
-        btntake.addEventListener("click",function(){
-
-            self.renderer.render( self.scene, self.camera );
-            self.renderer.domElement.toBlob(function(blob){
-            var a = document.createElement('a');
-            var url = URL.createObjectURL(blob);
-            a.href = url;
-            a.download = 'canvas.png';
-            a.click();
-            }, 'image/png', 1.0);
-    
-        });
-
         /*if (this.knight.calculatedPath && this.knight.calculatedPath.length>0){
             console.log( `path:${this.knight.calculatedPath[0].x.toFixed(2)}, ${this.knight.calculatedPath[0].y.toFixed(2)}, ${this.knight.calculatedPath[0].z.toFixed(2)} position: ${this.knight.object.position.x.toFixed(2)}, ${this.knight.object.position.y.toFixed(2)}, ${this.knight.object.position.z.toFixed(2)}`);
         }*/
