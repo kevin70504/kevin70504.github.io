@@ -31,7 +31,7 @@ class App{
         light.position.set( 0.2, 1, 1);
         this.scene.add(light);
 			
-		this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true } );
+		this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserverDrawingBuffer: true } );
 		this.renderer.setPixelRatio( window.devicePixelRatio );
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
 		this.renderer.outputEncoding = THREE.sRGBEncoding;
@@ -210,7 +210,7 @@ class App{
             var img = new Image();
             // Without 'preserveDrawingBuffer' set to true, we must render now
             self.renderer.render(self.scene, self.camera);
-            img.src = renderer.domElement.toDataURL();
+            img.src = renderer.domElement.toDataURL("image/jpeg",0.7);
             w.document.body.appendChild(img);  
     
         });
@@ -314,7 +314,6 @@ class App{
             const hit = hitTestResults[ 0 ]; //宣告變數hit 獲取第一個命中結果
             const pose = hit.getPose( referenceSpace ); //宣告變數pose獲取參考空間
 
-            document.getElementById("Show").style.display = "block";
             
             this.reticle.visible = true;
             this.reticle.matrix.fromArray( pose.transform.matrix );
@@ -322,7 +321,6 @@ class App{
         } else {
 
             this.reticle.visible = false;
-            document.getElementById("Show").style.display = "none";
 
         }
 
