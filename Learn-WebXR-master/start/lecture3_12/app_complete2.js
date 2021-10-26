@@ -215,7 +215,7 @@ class App{
             optionalFeatures: [ 'dom-overlay' ],
         }
 
-        //options.domOverlay = {root: document.getElementById("content")};
+        options.domOverlay = {root: document.getElementById("content")};
         document.body.appendChild(ARButton2.createButton(this.renderer,options));
 
 
@@ -299,6 +299,7 @@ class App{
         } else {
 
             this.reticle.visible = false;
+            document.getElementById("Show").style.display = "none";
 
         }
 
