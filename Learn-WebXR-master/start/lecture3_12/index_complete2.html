@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Lecture 3.12</title>
+		<meta charset="utf-8">
+		<!--favicon -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+        <link rel="apple-touch-icon" sizes="180x180" href="../../css/favicon/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="../../css/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="../../css/favicon/favicon-16x16.png">
+        <link rel="manifest" href="../../css/favicon/site.webmanifest">
+        <link rel="mask-icon" href="../../css/favicon/safari-pinned-tab.svg" color="#5bbad5">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="theme-color" content="#ffffff">
+        <!-- end favicon -->
+		<link type="text/css" rel="stylesheet" href="../../css/common.css">
+        <style>
+            body{
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+	</head>
+	<body>
+
+        <div id ="content">
+
+            <div id="container" style="position: fixed;"></div>
+            <button type="button" id="Show">Show</button>
+            <button type="button" id="take">take</button>
+
+            <canvas width='1280' height='720' style='visibility:hidden;' id='doubleImage'></canvas>
+
+        </div>
+        <script src='../../libs/three/three.js'></script>
+        <script src="../../libs/fas.js"></script>
+        <script src="../../libs/threex/threex-artoolkitsource.js"></script>
+        <script src="../../libs/threex/threex-artoolkitcontext.js"></script>
+        <script src="../../libs/threex/threex-arbasecontrols.js"></script>
+        <script src="../../libs/threex/threex-armarkercontrols.js"></script>
+        <script src="../../libs/threex/threex-arsmoothedcontrols.js"></script>
+        <script type="module">
+            
+        import * as THREE from '../../libs/three/three.module.js';
+        import { GLTFLoader } from '../../libs/three/jsm/GLTFLoader.js';
+        import { RGBELoader } from '../../libs/three/jsm/RGBELoader.js';
+        import { ARButton } from '../../libs/ARButton.js';
+        import { ARButton2 } from '../../libs/ARButton2.js';
+        import { Button } from '../../libs/Button.js';
+        import { LoadingBar } from '../../libs/LoadingBar.js';
+        import { Player } from '../../libs/Player.js';
+
+        class App{
+            constructor(){
+                const container = document.createElement( 'div' );
+                document.body.appendChild( container );
+                
+                this.clock = new THREE.Clock();
+                
+                this.loadingBar = new LoadingBar();
+
+                this.assetsPath = '../../assets/';
+                
+                this.camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 20 );
+                this.camera.position.set( 0, 1.6, 3 );
+                
+                this.scene = new THREE.Scene();
+
+                const ambient = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 2);
+                ambient.position.set( 0.5, 1, 0.25 );
+                this.scene.add(ambient);
+                
+                const light = new THREE.DirectionalLight();
+                light.position.set( 0.2, 1, 1);
+                this.scene.add(light);
+                    
+                this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserverDrawingBuffer: true } );
+                this.renderer.setPixelRatio( window.devicePixelRatio );
+                this.renderer.setSize( window.innerWidth, window.innerHeight );
+                this.renderer.outputEncoding = THREE.sRGBEncoding;
+                container.appendChild( this.renderer.domElement );
+                this.setEnvironment();
+                
+                this.workingVec3 = new THREE.Vector3();
+                
+                this.initScene();
+                this.setupXR();
+                
+                window.addEventListener('resize', this.resize.bind(this));
+                
+            }
+            
+            setEnvironment(){
+                const loader = new RGBELoader().setDataType( THREE.UnsignedByteType );
+                const pmremGenerator = new THREE.PMREMGenerator( this.renderer );
+                pmremGenerator.compileEquirectangularShader();
+                
+                const self = this;
+                
+                loader.load( '../../assets/hdr/venice_sunset_1k.hdr', ( texture ) => {
+                const envMap = pmremGenerator.fromEquirectangular( texture ).texture;
+                pmremGenerator.dispose();
+
+                self.scene.environment = envMap;
+
+                }, undefined, (err)=>{
+                    console.error( 'An error occurred setting the environment');
+                } );
+            }
+            
+            resize(){ 
+                this.camera.aspect = window.innerWidth / window.innerHeight;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize( window.innerWidth, window.innerHeight );  
+            }
+
+            arPlane(){
+                const self = this;
+
+                if (self.reticle.visible){
+                
+                    self.mesh.matrixAutoUpdate = true;
+                    self.workingVec3.setFromMatrixPosition( self.reticle.matrix );
+                    self.mesh.position.setFromMatrixPosition( self.reticle.matrix );
+                    self.mesh.visible = true;
+
+                }       
+            }
+            
+            loadKnight(){
+                const loader = new GLTFLoader().setPath(this.assetsPath);
+                const self = this;
+                
+                // Load a GLTF resource
+                loader.load(
+                    // resource URL
+                    `knight2.glb`,
+                    // called when the resource is loaded
+                    function ( gltf ) {
+                        const object = gltf.scene.children[5];
+                        
+                        const options = {
+                            object: object,
+                            speed: 0.5,
+                            assetsPath: self.assetsPath,
+                            loader: loader,
+                            animations: gltf.animations,
+                            clip: gltf.animations[0],
+                            app: self,
+                            name: 'knight',
+                            npc: false
+                        };
+                        
+                        self.knight = new Player(options);
+                        self.knight.object.visible = false;
+                        
+                        self.knight.action = 'Dance';
+                        const scale = 0.005;
+                        self.knight.object.scale.set(scale, scale, scale); 
+                        
+                        self.loadingBar.visible = false;
+                        self.renderer.setAnimationLoop( self.render.bind(self) );//(timestamp, frame) => { self.render(timestamp, frame); } );
+                    },
+                    // called while loading is progressing
+                    function ( xhr ) {
+
+                        self.loadingBar.progress = (xhr.loaded / xhr.total);
+
+                    },
+                    // called when loading has errors
+                    function ( error ) {
+
+                        console.log( 'An error happened' );
+
+                    }
+                );
+            }		
+            
+
+            takeScreenshot(){
+                this.renderer.render( this.scene, this.camera );
+                this.renderer.domElement.toBlob(function(blob){
+                var a = document.createElement('a');
+                var url = URL.createObjectURL(blob);
+                a.href = url;
+                a.download = 'canvas.png';
+                a.click();
+                }, 'image/png', 1.0);
+            }
+
+            initScene(){
+
+                const planewidth = prompt("請輸入寬度");
+                const planelength = prompt("請輸入長度");
+
+                const self = this;
+                const loader = new THREE.TextureLoader();
+                const texture2 = loader.load(
+                "../../assets/texture/marble_01_diff_1k.jpg",
+                function(texture2){
+                    texture2.wrapS = texture2.wrapT = THREE.RepeatWrapping;
+                    texture2.offset.set(0,0);
+                    texture2.repeat.set(planewidth,planelength);
+                },
+                function(err){
+                    console.log("An error happened");
+                });
+            
+                this.reticle = new THREE.Mesh(
+                    new THREE.RingBufferGeometry( 0.15, 0.2, 32 ).rotateX( - Math.PI / 2 ),  //設定目標圓環的尺寸
+                    new THREE.MeshBasicMaterial() //給予圓環基本的材質
+                );
+                this.reticle.position.set(0,-1,0);
+                this.reticle.matrixAutoUpdate = false;  //圓環的位置、旋轉、縮放自動更新關閉
+                this.reticle.visible = false; // 讓圓環一開始看不見
+                this.scene.add( this.reticle ); //把圓環添加進場景內
+                
+                this.geometry = new THREE.PlaneBufferGeometry( planewidth,planelength).rotateX( - Math.PI / 2 );  //設定方塊的尺寸 寬1 高1 深度1
+                this.material = new THREE.MeshBasicMaterial( {map: texture2} );
+                this.mesh = new THREE.Mesh( this.geometry,this.material);
+                this.mesh.matrixAutoUpdate = false;
+                this.mesh.position.set(0,0,0);
+                this.mesh.visible = false;
+                this.scene.add(this.mesh);
+                
+                //this.meshes = [];
+                
+                this.loadKnight();
+                
+                const btnshow = document.querySelector("#Show");
+                btnshow.addEventListener("click", function(){
+
+                    alert("本次使用"+planewidth*12+"個磁磚");
+
+                });
+
+
+
+
+
+                /*const btn2 = document.createElement("button");
+                btn2.innerHTML = "Submit";
+                btn2.type = "submit";
+                btn2.name = "formBtn";
+                document.body.appendChild(btn2);       
+                btn2.addEventListener("click",function(){
+                alert("本次使用"+self.planewidth*12+"個磁磚");
+                });*/
+
+                
+            }
+            
+            setupXR(){
+                this.renderer.xr.enabled = true;
+
+                let options = {
+                    requiredFeatures: [ 'hit-test' ],
+                    optionalFeatures: [ 'dom-overlay' ],
+                }
+
+                options.domOverlay = {root: document.getElementById("content")};
+                document.body.appendChild(ARButton2.createButton(this.renderer,options));
+                
+
+                //const btn = new ARButton( this.renderer, { sessionInit: { requiredFeatures: [ 'hit-test' ], optionalFeatures: [ 'dom-overlay' ], domOverlay: { root: document.body } } } );
+                //const btn2 = new Button( this.renderer, { sessionInit: {optionalFeatures: [ 'dom-overlay' ], domOverlay: { root: document.body } } } );       
+                const self = this;
+                let controller;
+
+                this.hitTestSourceRequested = false;
+                this.hitTestSource = null;
+                
+                function onSelect() {
+
+                    if (self.reticle.visible){
+                        
+                            self.mesh.matrixAutoUpdate = true;
+                            //self.workingVec3.setFromMatrixPosition( self.reticle.matrix );
+                            self.mesh.position.setFromMatrixPosition( self.reticle.matrix );
+                            self.mesh.visible = true;
+
+                            const worldposition = new THREE.Vector3();
+                            self.reticle.getWorldPosition(worldposition);
+                            console.log("世界座標",worldposition);
+
+                    }
+                }
+
+                this.controller = this.renderer.xr.getController( 0 );
+                this.controller.addEventListener( 'select', onSelect );
+                
+                this.scene.add( this.controller );    
+            }
+            
+            requestHitTestSource(){
+
+                //測試命中來源
+                const self = this;
+                
+                const session = this.renderer.xr.getSession(); //宣告變數session 獲取會話
+
+                session.requestReferenceSpace( 'viewer' ).then( function ( referenceSpace ) {  //將畫面作為參考空間
+                    
+                    session.requestHitTestSource( { space: referenceSpace } ).then(  //調用命中測試來源
+                        function ( source ) {
+
+                        self.hitTestSource = source;
+
+                    } );
+
+                } );
+
+                session.addEventListener( 'end', function () { //事件監聽器，當事件結束，將以下屬性返回原狀
+
+                    self.hitTestSourceRequested = false;
+                    self.hitTestSource = null;
+                    self.referenceSpace = null;
+
+                } );
+
+                this.hitTestSourceRequested = true;
+
+            }
+            
+            getHitTestResults( frame ){
+
+                //獲取命中測試結果
+                const hitTestResults = frame.getHitTestResults( this.hitTestSource ); //宣告變數hitTestResults獲取命中測試結果
+
+                if ( hitTestResults.length ) {  //如果變數長度於0則觸發
+                    
+                    const referenceSpace = this.renderer.xr.getReferenceSpace();
+                    const hit = hitTestResults[ 0 ]; //宣告變數hit 獲取第一個命中結果
+                    const pose = hit.getPose( referenceSpace ); //宣告變數pose獲取參考空間
+
+                    
+                    this.reticle.visible = true;
+                    this.reticle.matrix.fromArray( pose.transform.matrix );
+
+                } else {
+
+                    this.reticle.visible = false;
+
+                }
+
+            }
+
+            render( timestamp, frame ) {
+                const dt = this.clock.getDelta();
+                //if (this.knight) this.knight.update(dt);
+
+                const self = this;
+                
+                if ( frame ) {
+
+                    if ( this.hitTestSourceRequested === false ) this.requestHitTestSource( ) //指定Frame 如果測試命中來源是false,分配測試來源
+
+                    if ( this.hitTestSource ) this.getHitTestResults( frame ); //我們將用於命中測試的物件
+
+                }
+
+                this.renderer.render( this.scene, this.camera );
+                
+                /*if (this.knight.calculatedPath && this.knight.calculatedPath.length>0){
+                    console.log( `path:${this.knight.calculatedPath[0].x.toFixed(2)}, ${this.knight.calculatedPath[0].y.toFixed(2)}, ${this.knight.calculatedPath[0].z.toFixed(2)} position: ${this.knight.object.position.x.toFixed(2)}, ${this.knight.object.position.y.toFixed(2)}, ${this.knight.object.position.z.toFixed(2)}`);
+                }*/
+            }
+        }
+
+        export { App };
+
+        document.addEventListener("DOMContentLoaded", function(){
+            const app = new App();
+            window.app = app;
+        });
+
+        </script>
+
+        <script>
+
+            const btntake = document.querySelector("#take");
+            btntake.addEventListener("click",function(){
+
+                /*self.renderer.render( self.scene, self.camera );
+                self.renderer.domElement.toBlob(function(blob){
+                var a = document.createElement('a');
+                var url = URL.createObjectURL(blob);
+                a.href = url;
+                a.download = 'canvas.png';
+                a.click();
+                }, 'image/png', 1.0);*/
+
+                // open in new window like this
+
+                var w = window.open('', '');
+                w.document.title = "Screenshot";
+                //w.document.body.style.backgroundColor = "red";
+                var img = new Image();
+                var secondImg = new Image();
+                renderer.render(self.scene,self.camera);
+                var doubleImageCanvas = document.getElementById('doubleImage');
+                var context = doubleImageCanvas.getContext('2d');
+                var sources = {
+                    firstImage: renderer.domElement.toDataURL("image/png"),
+                    secondImage: arToolkitContext.arController.canvas.toDataURL("image/png")
+                };
+
+                loadImages(sources, function(images){
+                    context.drawImage(images.secondImage, 0, 0);
+                    context.drawImage(images.firstImage, 0, 0);
+                    img.src = doubleImageCanvas.toDataURL("image/png");
+                    w.document.body.appendChild(img);
+                });
+
+                // // download file like this.
+                // var a = document.createElement('a');
+                // // Without 'preserveDrawingBuffer' set to true, we must render now
+                // renderer.render(scene, camera);
+                // a.href = renderer.domElement.toDataURL().replace("image/png", "image/octet-stream");
+                // a.download = 'img.png';
+                // a.click();
+                
+                // New version of file download using toBlob.
+                // toBlob should be faster than toDataUrl.
+                // But maybe not because also calling createOjectURL.
+                //
+                renderer.render(self.scene,self.camera);
+                renderer.domElement.toBlob(function(blob){
+                var a = document.createElement('a');
+                var url = img.src.replace(/^data:image\/[^;]+/, 'data:application/octet-stream');
+                a.href = url;
+                a.download = 'canvas.png';
+                a.click();
+                }, 'image/png', 1.0);
+
+                loadImages();
+
+                function loadImages(sources, callback) {
+                        var images = {};
+                        var loadedImages = 0;
+                        var numImages = 0;
+                        // get num of sources
+                        for (var src in sources) {
+                            numImages++;
+                        }
+                        for (var src in sources) {
+                            images[src] = new Image();
+                            images[src].onload = function () {
+                                if (++loadedImages >= numImages) {
+                                    callback(images);
+                                }
+                            };
+                            images[src].src = sources[src];
+                        }
+                    }
+            });         
+
+        </script>
+	</body>
+</html>

@@ -7,6 +7,7 @@ import { Button } from '../../libs/Button.js';
 import { LoadingBar } from '../../libs/LoadingBar.js';
 import { Player } from '../../libs/Player.js';
 
+
 class App{
 	constructor(){
 		const container = document.createElement( 'div' );
@@ -241,11 +242,11 @@ class App{
                 var context = doubleImageCanvas.getContext('2d');
                 var sources = {
                     firstImage: self.renderer.domElement.toDataURL("image/png"),
-                    //secondImage: arToolkitContext.arController.canvas.toDataURL("image/png")
+                    secondImage: arToolkitContext.arController.canvas.toDataURL("image/png")
                 };
         
                 loadImages(sources, function(images){
-                    //context.drawImage(images.secondImage, 0, 0);
+                    context.drawImage(images.secondImage, 0, 0);
                     context.drawImage(images.firstImage, 0, 0);
                     img.src = doubleImageCanvas.toDataURL("image/png");
                     w.document.body.appendChild(img);

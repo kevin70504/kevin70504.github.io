@@ -32,15 +32,18 @@
             <canvas width='640' height='480' style='visibility:hidden;' id='doubleImage'></canvas>
 
         </div>
-
+        <script src='../../libs/three/three.js'></script>
         <script src="../../libs/fas.js"></script>
-        
+        <script src="../../libs/threex/threex-artoolkitcontext.js"></script>
         <script type="module">
             import { App } from './app_complete2.js';
- 
-            document.addEventListener("DOMContentLoaded", function(){
-                const app = new App();
+            
+            const app = new App();
                 window.app = app;
+
+            document.addEventListener("DOMContentLoaded", function(){
+                /*const app = new App();
+                window.app = app;*/
             });
         </script>
 	</body>
