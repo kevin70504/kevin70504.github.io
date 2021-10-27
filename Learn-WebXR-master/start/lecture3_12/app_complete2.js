@@ -217,7 +217,7 @@ class App{
 
         options.domOverlay = {root: document.getElementById("content")};
         document.body.appendChild(ARButton2.createButton(this.renderer,options));
-
+        
         const btntake = document.querySelector("#take");
         btntake.addEventListener("click",function(){
 
@@ -235,12 +235,40 @@ class App{
             w.document.title = "Screenshot";
             //w.document.body.style.backgroundColor = "red";
             var img = new Image();
-            // Without 'preserveDrawingBuffer' set to true, we must render now
-            //self.renderer.render(self.scene, self.camera);
-            this.renderer.xr.render(self.scene, self.camera);
-            img.src =  this.renderer.xr.domElement.toDataURL("image/jpeg");
-            w.document.body.appendChild(img);  
-    
+            var secondImg = new Image();
+                self.renderer.render(self.scene, self.camera);
+                var doubleImageCanvas = document.getElementById('doubleImage');
+                var context = doubleImageCanvas.getContext('2d');
+                var sources = {
+                    firstImage: self.renderer.domElement.toDataURL("image/png"),
+                    //secondImage: arToolkitContext.arController.canvas.toDataURL("image/png")
+                };
+        
+                loadImages(sources, function(images){
+                    //context.drawImage(images.secondImage, 0, 0);
+                    context.drawImage(images.firstImage, 0, 0);
+                    img.src = doubleImageCanvas.toDataURL("image/png");
+                    w.document.body.appendChild(img);
+                });
+                
+                function loadImages(sources, callback) {
+                    var images = {};
+                    var loadedImages = 0;
+                    var numImages = 0;
+                    // get num of sources
+                    for (var src in sources) {
+                        numImages++;
+                    }
+                    for (var src in sources) {
+                        images[src] = new Image();
+                        images[src].onload = function () {
+                            if (++loadedImages >= numImages) {
+                                callback(images);
+                            }
+                        };
+                        images[src].src = sources[src];
+                    }
+                }
         });
 
 
