@@ -167,7 +167,7 @@ class App{
             new THREE.RingBufferGeometry( 0.15, 0.2, 32 ).rotateX( - Math.PI / 2 ),  //設定目標圓環的尺寸
             new THREE.MeshBasicMaterial() //給予圓環基本的材質
         );
-
+        this.reticle.position.set(0,-1,0);
         this.reticle.matrixAutoUpdate = false;  //圓環的位置、旋轉、縮放自動更新關閉
         this.reticle.visible = false; // 讓圓環一開始看不見
         this.scene.add( this.reticle ); //把圓環添加進場景內
@@ -177,7 +177,7 @@ class App{
         this.mesh = new THREE.Mesh( this.geometry,this.material);
         this.mesh.matrixAutoUpdate = false;
         this.mesh.position.set(0,0,0);
-        this.mesh.visible = true;
+        this.mesh.visible = false;
         this.scene.add(this.mesh);
         
         //this.meshes = [];
@@ -236,8 +236,9 @@ class App{
             //w.document.body.style.backgroundColor = "red";
             var img = new Image();
             // Without 'preserveDrawingBuffer' set to true, we must render now
-            self.renderer.render(self.scene, self.camera);
-            img.src = self.renderer.domElement.toDataURL("image/jpeg");
+            //self.renderer.render(self.scene, self.camera);
+            this.renderer.xr.render(self.scene, self.camera);
+            img.src =  this.renderer.xr.domElement.toDataURL("image/jpeg");
             w.document.body.appendChild(img);  
     
         });
@@ -256,12 +257,12 @@ class App{
             if (self.reticle.visible){
                 
                     self.mesh.matrixAutoUpdate = true;
-                    self.workingVec3.setFromMatrixPosition( self.reticle.matrix );
+                    //self.workingVec3.setFromMatrixPosition( self.reticle.matrix );
                     self.mesh.position.setFromMatrixPosition( self.reticle.matrix );
                     self.mesh.visible = true;
 
                     const worldposition = new THREE.Vector3();
-                    self.mesh.getWorldPosition(worldposition);
+                    self.reticle.getWorldPosition(worldposition);
                     console.log("世界座標",worldposition);
 
             }
