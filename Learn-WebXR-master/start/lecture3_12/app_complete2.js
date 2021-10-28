@@ -6,6 +6,7 @@ import { ARButton2 } from '../../libs/ARButton2.js';
 import { Button } from '../../libs/Button.js';
 import { LoadingBar } from '../../libs/LoadingBar.js';
 import { Player } from '../../libs/Player.js';
+import { CSS2DRenderer, CSS2DObject } from '../../libs/CSS2DRenderer.js';
 
 
 class App{
@@ -37,6 +38,12 @@ class App{
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
 		this.renderer.outputEncoding = THREE.sRGBEncoding;
 		container.appendChild( this.renderer.domElement );
+
+        this.labelRenderer = new CSS2DRenderer();
+        this.labelRenderer.setSize( window.innerWidth, window.innerHeight );
+        this.labelRenderer.domElement.style.position = 'absolute';
+        this.labelRenderer.domElement.style.top = '0px';
+        document.body.appendChild( this.labelRenderer.domElement );
         this.setEnvironment();
         
         this.workingVec3 = new THREE.Vector3();
@@ -69,7 +76,9 @@ class App{
     resize(){ 
         this.camera.aspect = window.innerWidth / window.innerHeight;
     	this.camera.updateProjectionMatrix();
-    	this.renderer.setSize( window.innerWidth, window.innerHeight );  
+    	this.renderer.setSize( window.innerWidth, window.innerHeight );
+        this.labelRenderer.setSize( window.innerWidth, window.innerHeight );
+
     }
 
     arPlane(){
@@ -178,7 +187,7 @@ class App{
         this.mesh = new THREE.Mesh( this.geometry,this.material);
         this.mesh.matrixAutoUpdate = false;
         this.mesh.position.set(0,0,0);
-        this.mesh.visible = false;
+        this.mesh.visible = true;
         this.scene.add(this.mesh);
         
         //this.meshes = [];
@@ -192,10 +201,6 @@ class App{
 
         });
 
-
-
-
-
         /*const btn2 = document.createElement("button");
         btn2.innerHTML = "Submit";
         btn2.type = "submit";
@@ -204,6 +209,26 @@ class App{
         btn2.addEventListener("click",function(){
         alert("本次使用"+self.planewidth*12+"個磁磚");
         });*/
+
+        //const PlaneDiv = document.getElementById("planeDiv");
+
+        /*this.PlaneLabel = new CSS2DObject(PlaneDiv);
+        this.PlaneLabel.position.set(0,-1.6,-1.8);
+        this.PlaneLabel.visible = true;
+        this.scene.add(this.PlaneLabel);*/
+
+        const earthDiv = document.createElement( 'div' );
+        earthDiv.className = 'label';
+        earthDiv.textContent = 'Earth';
+        earthDiv.style.marginTop = '-1em';
+        this.earthLabel = new CSS2DObject( earthDiv );
+        this.earthLabel.position.set( 0, 0, 0 );
+        this.mesh.add( this.earthLabel );
+
+        const divWorldposition = new THREE.Vector3();
+        this.earthLabel.getWorldPosition(divWorldposition);
+        console.log("標籤的local座標",divWorldposition);
+
 
         
     }
@@ -290,10 +315,20 @@ class App{
                     self.mesh.position.setFromMatrixPosition( self.reticle.matrix );
                     self.mesh.visible = true;
 
-                    const worldposition = new THREE.Vector3();
-                    self.reticle.getWorldPosition(worldposition);
-                    console.log("世界座標",worldposition);
+                    self.earthLabel.position.setFromMatrixPosition( self.reticle.matrix );
+                    //self.PlaneLabel.visible = true;
+            
 
+                    const worldposition = new THREE.Vector3();
+                    //self.reticle.getWorldPosition(worldposition);
+                    self.earthLabel.getWorldPosition(worldposition);                  
+                    console.log("世界座標",worldposition);
+            
+
+                    const worldposition2 = new THREE.Vector3();
+                    self.reticle.getWorldPosition(worldposition2);
+                    console.log("標籤世界座標",worldposition2);
+        
             }
         }
 
@@ -371,6 +406,7 @@ class App{
         }
 
         this.renderer.render( this.scene, this.camera );
+        this.labelRenderer.render(this.scene,this.camera );
         
         /*if (this.knight.calculatedPath && this.knight.calculatedPath.length>0){
             console.log( `path:${this.knight.calculatedPath[0].x.toFixed(2)}, ${this.knight.calculatedPath[0].y.toFixed(2)}, ${this.knight.calculatedPath[0].z.toFixed(2)} position: ${this.knight.object.position.x.toFixed(2)}, ${this.knight.object.position.y.toFixed(2)}, ${this.knight.object.position.z.toFixed(2)}`);
