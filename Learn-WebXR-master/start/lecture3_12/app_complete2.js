@@ -44,7 +44,7 @@ class App{
         this.labelRenderer.domElement.style.position = 'absolute';
         this.labelRenderer.domElement.style.top = '0px';
         document.body.appendChild( this.labelRenderer.domElement );
-        this.setEnvironment();
+        this.setEnvironment();               
         
         this.workingVec3 = new THREE.Vector3();
         
@@ -189,7 +189,7 @@ class App{
         this.mesh.position.set(0,0,0);
         this.mesh.visible = true;
         this.scene.add(this.mesh);
-        
+     
         //this.meshes = [];
         
         this.loadKnight();
@@ -211,7 +211,6 @@ class App{
         });*/
 
         //const PlaneDiv = document.getElementById("planeDiv");
-
         /*this.PlaneLabel = new CSS2DObject(PlaneDiv);
         this.PlaneLabel.position.set(0,-1.6,-1.8);
         this.PlaneLabel.visible = true;
@@ -221,13 +220,17 @@ class App{
         earthDiv.className = 'label';
         earthDiv.textContent = 'Earth';
         earthDiv.style.marginTop = '-1em';
-        this.earthLabel = new CSS2DObject( earthDiv );
-        this.earthLabel.position.set( 0, 0, 0 );
-        this.mesh.add( this.earthLabel );
+        earthDiv.setAttribute('id', 'container');
+        container.appendChild(earthDiv);
+        this.earthDiv = earthDiv;
 
-        const divWorldposition = new THREE.Vector3();
-        this.earthLabel.getWorldPosition(divWorldposition);
-        console.log("標籤的local座標",divWorldposition);
+        this.earthLabel = new CSS2DObject( earthDiv );
+        this.earthLabel.position.set( 0, 0.1, 0 );
+        self.mesh.add( this.earthLabel );
+        
+        const divposition = new THREE.Vector3();
+        self.earthLabel.getWorldPosition(divposition);                  
+        console.log("標籤的local座標",divposition);
 
 
         
@@ -242,6 +245,7 @@ class App{
         }
 
         options.domOverlay = {root: document.getElementById("content")};
+        //options.domOverlay = {root: document.getElementById("planeDiv")};
         document.body.appendChild(ARButton2.createButton(this.renderer,options));
         
         const btntake = document.querySelector("#take");
@@ -317,13 +321,12 @@ class App{
 
                     self.earthLabel.position.setFromMatrixPosition( self.reticle.matrix );
                     //self.PlaneLabel.visible = true;
-            
 
                     const worldposition = new THREE.Vector3();
                     //self.reticle.getWorldPosition(worldposition);
                     self.earthLabel.getWorldPosition(worldposition);                  
                     console.log("世界座標",worldposition);
-            
+    
 
                     const worldposition2 = new THREE.Vector3();
                     self.reticle.getWorldPosition(worldposition2);
