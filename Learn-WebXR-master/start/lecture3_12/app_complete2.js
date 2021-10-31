@@ -7,10 +7,13 @@ import { Button } from '../../libs/Button.js';
 import { LoadingBar } from '../../libs/LoadingBar.js';
 import { Player } from '../../libs/Player.js';
 import { CSS2DRenderer, CSS2DObject } from '../../libs/CSS2DRenderer.js';
+import { CSS3DObject, CSS3DSprite, CSS3DRenderer } from '../../libs/CSS3DRenderer.js';
+import { FontLoader} from '../../libs/FontLoader.js';
 
 
 class App{
 	constructor(){
+
 		const container = document.createElement( 'div' );
 		document.body.appendChild( container );
         
@@ -44,6 +47,12 @@ class App{
         this.labelRenderer.domElement.style.position = 'absolute';
         this.labelRenderer.domElement.style.top = '0px';
         document.body.appendChild( this.labelRenderer.domElement );
+
+        this.css3dRenderer = new CSS3DRenderer();
+        this.css3dRenderer.setSize( window.innerWidth, window.innerHeight );
+        document.body.appendChild( this.css3dRenderer.domElement );
+        //document.getElementById( 'container' ).appendChild( this.css3dRenderer.domElement );
+
         this.setEnvironment();               
         
         this.workingVec3 = new THREE.Vector3();
@@ -157,6 +166,8 @@ class App{
 
     initScene(){
 
+        let textmesh ;
+
         const planewidth = prompt("請輸入寬度");
         const planelength = prompt("請輸入長度");
 
@@ -189,6 +200,10 @@ class App{
         this.mesh.position.set(0,0,0);
         this.mesh.visible = true;
         this.scene.add(this.mesh);
+
+        this.group = new THREE.Group();
+        this.group.position.set(0,0,0);
+        this.scene.add(this.group);
      
         //this.meshes = [];
         
@@ -232,8 +247,63 @@ class App{
         self.earthLabel.getWorldPosition(divposition);                  
         console.log("標籤的local座標",divposition);
 
+        this.obj = new CSS3DObject(earthDiv);
+        this.obj.position.set(0,0.2,0);
+        self.scene.add(this.obj);
 
+
+        console.log(this.obj);
+        console.log(this.obj.position);
+
+        /*let fontloader = new THREE.FontLoader();
+        fontloader.load("../../assets/fonts/roboto/Roboto-msdf.json",function(font){
+
+            let xMid;
+            let shapes = font.generateShapes( "Sample Test", 100, 2 );
+            let textshape = new THREE.BufferGeometry();
+            let geomety = new THREE.ShapeGeometry(shapes);
+            geomety.computeBoundingBox();
+
+            let material = new THREE.MeshBasicMaterial({color:0x0000ff,side: THREE.DoubleSide});
+
+            xMid = -0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x );
+            geomety.translate(xMid,0,0);
+
+            textshape.formGeometry(geomety);
+            let textMesh = new THREE.Mesh(textshape,material);
+            textMesh.position.set(0,0,0);
+            self.scene.add(textMesh);
+        });*/
         
+        const fontloader = new FontLoader();
+        fontloader.load( '../../assets/fonts/helvetiker_regular.typeface.json', function ( font ) {
+        const color = 0x006699;
+        const matDark = new THREE.LineBasicMaterial( {
+            color: color,
+            side: THREE.DoubleSide
+        } );
+        const matLite = new THREE.MeshBasicMaterial( {
+            color: color,
+            transparent: true,
+            opacity: 0.4,
+            side: THREE.DoubleSide
+        } );
+        const message = "   Three.js\nSimple text.";
+        const shapes = font.generateShapes( message, 0.1 );
+
+        const geometry = new THREE.ShapeGeometry( shapes );
+        geometry.computeBoundingBox();
+        const xMid = - 0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x );
+        geometry.translate( xMid, 0, 0 );
+        // make shape ( N.B. edge view not visible )
+        textmesh = new THREE.Mesh( geometry, matLite );
+        textmesh.position.set(0,0,0);
+        self.group.add(textmesh);
+        } );
+        
+        console.log(this.group);
+
+
     }
     
     setupXR(){
@@ -319,7 +389,7 @@ class App{
                     self.mesh.position.setFromMatrixPosition( self.reticle.matrix );
                     self.mesh.visible = true;
 
-                    self.earthLabel.position.setFromMatrixPosition( self.reticle.matrix );
+                    self.group.position.setFromMatrixPosition( self.reticle.matrix );
                     //self.PlaneLabel.visible = true;
 
                     const worldposition = new THREE.Vector3();
@@ -410,6 +480,7 @@ class App{
 
         this.renderer.render( this.scene, this.camera );
         this.labelRenderer.render(this.scene,this.camera );
+        this.css3dRenderer.render(this.scene,this.camera );
         
         /*if (this.knight.calculatedPath && this.knight.calculatedPath.length>0){
             console.log( `path:${this.knight.calculatedPath[0].x.toFixed(2)}, ${this.knight.calculatedPath[0].y.toFixed(2)}, ${this.knight.calculatedPath[0].z.toFixed(2)} position: ${this.knight.object.position.x.toFixed(2)}, ${this.knight.object.position.y.toFixed(2)}, ${this.knight.object.position.z.toFixed(2)}`);
