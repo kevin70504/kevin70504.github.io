@@ -198,11 +198,12 @@ class App{
         this.mesh = new THREE.Mesh( this.geometry,this.material);
         this.mesh.matrixAutoUpdate = false;
         this.mesh.position.set(0,0,0);
-        this.mesh.visible = true;
+        this.mesh.visible = false;
         this.scene.add(this.mesh);
 
         this.group = new THREE.Group();
         this.group.position.set(0,0,0);
+        this.group.visible = false;
         this.scene.add(this.group);
      
         //this.meshes = [];
@@ -390,6 +391,7 @@ class App{
                     self.mesh.visible = true;
 
                     self.group.position.setFromMatrixPosition( self.reticle.matrix );
+                    this.group.visible = true;
                     //self.PlaneLabel.visible = true;
 
                     const worldposition = new THREE.Vector3();
