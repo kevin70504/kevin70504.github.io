@@ -167,9 +167,21 @@ class App{
     initScene(){
 
         let textmesh ;
+        let message;
 
         const planewidth = prompt("請輸入寬度");
         const planelength = prompt("請輸入長度");
+
+        if(planelength >= planewidth){
+            message = "本次使用"+planelength*6+"個磁磚";          
+        }
+        else if(planewidth == planelength){
+            message = "本次使用"+planewidth*12+"個磁磚";
+        }
+        else if(planewidth < planelength){
+            message = "本次使用"+planewidth*6+"個磁磚";
+        }
+
 
         const self = this;
         const loader = new THREE.TextureLoader();
@@ -213,7 +225,7 @@ class App{
         const btnshow = document.querySelector("#Show");
         btnshow.addEventListener("click", function(){
 
-            alert("本次使用"+planewidth*12+"個磁磚");
+            alert(message);
 
         });
 
@@ -289,8 +301,9 @@ class App{
             opacity: 0.4,
             side: THREE.DoubleSide
         } );
-        const message = "This use "+planewidth*12+" tiles";
-        const shapes = font.generateShapes( message, 0.1 );
+        //const message = "This use "+planewidth*12+" tiles";
+        const message2 = "This use "+message+" tiles";
+        const shapes = font.generateShapes( message2, 0.1 );
 
         const geometry = new THREE.ShapeGeometry( shapes );
         geometry.computeBoundingBox();

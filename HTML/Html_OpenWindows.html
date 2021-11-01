@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8"></meta> 
+    <title>HTML_OpenWindow</title>
+</head>
+<body>
+
+    <div>
+        <button id="Open">Open</button>
+        <button id="Close">Close</button>
+    </div>
+
+    <h1>步驟1</h1>
+    <h2>使用測量算出所需尺寸</h2>
+    <h1>步驟2</h1>
+    <h2>使用放置瓷磚</h2>
+
+    <div>
+        <button id="Open2">Open</button>
+        <button id="Close2">Close</button>
+    </div>
+
+</body>
+<script>
+
+const openbtn = document.querySelector("#Open");
+const closebtn = document.querySelector("#Close");
+
+const openbtn2 = document.querySelector("#Open2");
+const closebtn2 = document.querySelector("#Close2");
+
+let mytab;
+
+let mytab2;
+
+openbtn.addEventListener("click",() => {
+    mytab = window.open("https://www.google.com.tw/?hl=zh_TW","_blank");
+});
+
+closebtn.addEventListener("click",() => {
+    if (mytab) mytab.close();
+});
+
+openbtn2.addEventListener("click",()=>{
+    mytab2 = window.open("https://kevin70504.github.io/Learn-WebXR-master/start/lecture3_12/index_complete.html","_blank");
+});
+
+closebtn2.addEventListener("click",()=>{
+    if(mytab2) mytab2.close();
+});
+
+
+
+
+</script>
+</html>
