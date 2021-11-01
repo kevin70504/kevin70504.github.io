@@ -173,13 +173,13 @@ class App{
         const planelength = prompt("請輸入長度");
 
         if(planelength >= planewidth){
-            message = "本次使用"+planelength*6+"個磁磚";          
+            message = "This use "+planelength*6+"tiles";          
         }
         else if(planewidth == planelength){
-            message = "本次使用"+planewidth*12+"個磁磚";
+            message = "This use "+planewidth*12+"tiles";
         }
         else if(planewidth < planelength){
-            message = "本次使用"+planewidth*6+"個磁磚";
+            message = "This use"+planewidth*6+"tiles";
         }
 
 
@@ -301,9 +301,9 @@ class App{
             opacity: 0.4,
             side: THREE.DoubleSide
         } );
-        //const message = "This use "+planewidth*12+" tiles";
-        const message2 = "This use "+message+" tiles";
-        const shapes = font.generateShapes( message2, 0.1 );
+        const message3 = "This use tiles";
+        //const message2 = "This use "+ message +" tiles";
+        const shapes = font.generateShapes( message3, 0.1 );
 
         const geometry = new THREE.ShapeGeometry( shapes );
         geometry.computeBoundingBox();
