@@ -289,7 +289,7 @@ class App{
             opacity: 0.4,
             side: THREE.DoubleSide
         } );
-        const message = "   Three.js\nSimple text.";
+        const message = "This use "+planewidth*12+" tiles";
         const shapes = font.generateShapes( message, 0.1 );
 
         const geometry = new THREE.ShapeGeometry( shapes );
@@ -391,7 +391,7 @@ class App{
                     self.mesh.visible = true;
 
                     self.group.position.setFromMatrixPosition( self.reticle.matrix );
-                    this.group.visible = true;
+                    self.group.visible = true;
                     //self.PlaneLabel.visible = true;
 
                     const worldposition = new THREE.Vector3();
