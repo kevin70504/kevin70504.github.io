@@ -6,8 +6,6 @@ import { ARButton2 } from '../../libs/ARButton2.js';
 import { Button } from '../../libs/Button.js';
 import { LoadingBar } from '../../libs/LoadingBar.js';
 import { Player } from '../../libs/Player.js';
-import { CSS2DRenderer, CSS2DObject } from '../../libs/CSS2DRenderer.js';
-import { CSS3DObject, CSS3DSprite, CSS3DRenderer } from '../../libs/CSS3DRenderer.js';
 import { FontLoader} from '../../libs/FontLoader.js';
 
 
@@ -42,17 +40,6 @@ class App{
 		this.renderer.outputEncoding = THREE.sRGBEncoding;
 		container.appendChild( this.renderer.domElement );
 
-        this.labelRenderer = new CSS2DRenderer();
-        this.labelRenderer.setSize( window.innerWidth, window.innerHeight );
-        this.labelRenderer.domElement.style.position = 'absolute';
-        this.labelRenderer.domElement.style.top = '0px';
-        document.body.appendChild( this.labelRenderer.domElement );
-
-        this.css3dRenderer = new CSS3DRenderer();
-        this.css3dRenderer.setSize( window.innerWidth, window.innerHeight );
-        document.body.appendChild( this.css3dRenderer.domElement );
-        //document.getElementById( 'container' ).appendChild( this.css3dRenderer.domElement );
-
         this.setEnvironment();               
         
         this.workingVec3 = new THREE.Vector3();
@@ -86,8 +73,6 @@ class App{
         this.camera.aspect = window.innerWidth / window.innerHeight;
     	this.camera.updateProjectionMatrix();
     	this.renderer.setSize( window.innerWidth, window.innerHeight );
-        this.labelRenderer.setSize( window.innerWidth, window.innerHeight );
-
     }
 
     arPlane(){
@@ -173,13 +158,13 @@ class App{
         const planelength = prompt("請輸入長度");
 
         if(planelength >= planewidth){
-            message = "This use "+planelength*6+"tiles";          
+            message = "This use "+planelength*6+" tiles";          
         }
         else if(planewidth == planelength){
-            message = "This use "+planewidth*12+"tiles";
+            message = "This use "+planewidth*12+" tiles";
         }
         else if(planewidth < planelength){
-            message = "This use"+planewidth*6+"tiles";
+            message = "This use "+planewidth*6+"t iles";
         }
 
 
@@ -205,18 +190,19 @@ class App{
         this.reticle.visible = false; // 讓圓環一開始看不見
         this.scene.add( this.reticle ); //把圓環添加進場景內
         
-        this.geometry = new THREE.PlaneBufferGeometry( planewidth,planelength).rotateX( - Math.PI / 2 );  //設定方塊的尺寸 寬1 高1 深度1
-        this.material = new THREE.MeshBasicMaterial( {map: texture2} );
-        this.mesh = new THREE.Mesh( this.geometry,this.material);
-        this.mesh.matrixAutoUpdate = false;
-        this.mesh.position.set(0,0,0);
-        this.mesh.visible = false;
-        this.scene.add(this.mesh);
-
         this.group = new THREE.Group();
         this.group.position.set(0,0,0);
         this.group.visible = false;
         this.scene.add(this.group);
+
+        this.geometry = new THREE.PlaneBufferGeometry( planewidth,planelength).rotateX( - Math.PI / 2 );  //設定方塊的尺寸 寬1 高1 深度1
+        this.material = new THREE.MeshBasicMaterial( {map: texture2} );
+        this.mesh = new THREE.Mesh( this.geometry,this.material);
+        this.mesh.matrixAutoUpdate = false;
+        this.mesh.position.set(-0.95,0,0.9);
+        this.mesh.visible = false;
+        this.group.add(this.mesh);
+
      
         //this.meshes = [];
         
@@ -225,7 +211,7 @@ class App{
         const btnshow = document.querySelector("#Show");
         btnshow.addEventListener("click", function(){
 
-            alert(message);
+            alert("按鈕");
 
         });
 
@@ -238,35 +224,6 @@ class App{
         alert("本次使用"+self.planewidth*12+"個磁磚");
         });*/
 
-        //const PlaneDiv = document.getElementById("planeDiv");
-        /*this.PlaneLabel = new CSS2DObject(PlaneDiv);
-        this.PlaneLabel.position.set(0,-1.6,-1.8);
-        this.PlaneLabel.visible = true;
-        this.scene.add(this.PlaneLabel);*/
-
-        const earthDiv = document.createElement( 'div' );
-        earthDiv.className = 'label';
-        earthDiv.textContent = 'Earth';
-        earthDiv.style.marginTop = '-1em';
-        earthDiv.setAttribute('id', 'container');
-        container.appendChild(earthDiv);
-        this.earthDiv = earthDiv;
-
-        this.earthLabel = new CSS2DObject( earthDiv );
-        this.earthLabel.position.set( 0, 0.1, 0 );
-        self.mesh.add( this.earthLabel );
-        
-        const divposition = new THREE.Vector3();
-        self.earthLabel.getWorldPosition(divposition);                  
-        console.log("標籤的local座標",divposition);
-
-        this.obj = new CSS3DObject(earthDiv);
-        this.obj.position.set(0,0.2,0);
-        self.scene.add(this.obj);
-
-
-        console.log(this.obj);
-        console.log(this.obj.position);
 
         /*let fontloader = new THREE.FontLoader();
         fontloader.load("../../assets/fonts/roboto/Roboto-msdf.json",function(font){
@@ -303,7 +260,7 @@ class App{
         } );
         const message3 = "This use tiles";
         //const message2 = "This use "+ message +" tiles";
-        const shapes = font.generateShapes( message3, 0.1 );
+        const shapes = font.generateShapes( message, 0.1 );
 
         const geometry = new THREE.ShapeGeometry( shapes );
         geometry.computeBoundingBox();
@@ -400,18 +357,11 @@ class App{
                 
                     self.mesh.matrixAutoUpdate = true;
                     //self.workingVec3.setFromMatrixPosition( self.reticle.matrix );
-                    self.mesh.position.setFromMatrixPosition( self.reticle.matrix );
+                    //self.mesh.position.setFromMatrixPosition( self.reticle.matrix );
                     self.mesh.visible = true;
 
                     self.group.position.setFromMatrixPosition( self.reticle.matrix );
                     self.group.visible = true;
-                    //self.PlaneLabel.visible = true;
-
-                    const worldposition = new THREE.Vector3();
-                    //self.reticle.getWorldPosition(worldposition);
-                    self.earthLabel.getWorldPosition(worldposition);                  
-                    console.log("世界座標",worldposition);
-    
 
                     const worldposition2 = new THREE.Vector3();
                     self.reticle.getWorldPosition(worldposition2);
@@ -493,10 +443,7 @@ class App{
 
         }
 
-        this.renderer.render( this.scene, this.camera );
-        this.labelRenderer.render(this.scene,this.camera );
-        this.css3dRenderer.render(this.scene,this.camera );
-        
+        this.renderer.render( this.scene, this.camera );        
         /*if (this.knight.calculatedPath && this.knight.calculatedPath.length>0){
             console.log( `path:${this.knight.calculatedPath[0].x.toFixed(2)}, ${this.knight.calculatedPath[0].y.toFixed(2)}, ${this.knight.calculatedPath[0].z.toFixed(2)} position: ${this.knight.object.position.x.toFixed(2)}, ${this.knight.object.position.y.toFixed(2)}, ${this.knight.object.position.z.toFixed(2)}`);
         }*/
