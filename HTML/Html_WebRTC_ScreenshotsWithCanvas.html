@@ -14,6 +14,8 @@
         <!--也能將Cavnas轉成image data-->
         <img src="">    
     </div>
+
+    <button id="flip-button">flip button</button>
     
 </body>
 <!--解決相容性-->
@@ -25,6 +27,8 @@ const img = document.querySelector("#screenshot img");
 const video = document.querySelector("#screenshot video");
 //const video = document.querySelector("video");
 const canvas = document.querySelector("canvas");
+const flipButton = document.querySelector("#flip-button");
+const front = false;
 
 screenshotButton.onclick = video.onclick = function () {
   canvas.width = video.videoWidth;
@@ -35,9 +39,17 @@ screenshotButton.onclick = video.onclick = function () {
   
 };
 
+flipButton.onclick = function(){
+    front = !front;
+};
+
 const constrainrs = {
     audio:false,
-    video:true
+    video:{
+        width:{ideal: 1280},
+        height:{ideal: 720},
+        facingMode: (front? "user" : "environment")
+    }
 };
 
 function handleSuccess(stream){
