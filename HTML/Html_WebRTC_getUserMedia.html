@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8"></meta> 
+    <title>Html_WebRTC_getUserMedia</title>
+</head>
+<body>
+
+    <video autoplay></video>
+    <div>
+        <!--取得media stream-->
+        <button onclick="onCapture()">Capture</button>
+        <!--停止media stream-->
+        <button onclick="stopMedia()">Stop</button>
+    </div>
+
+</body>
+<!--解決相容性-->
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<script>
+
+const video = document.querySelector("video");
+const constrainrs = {
+    audio:false,
+    video:true
+};
+
+function handleSuccess(stream){
+    window.stream = stream;
+    video.srcObject = stream;
+}
+
+function handleError(error){
+    console.log('navigator.MediaDevices.getUserMedia error: ', error.message, error.name);
+}
+
+function onCapture(){
+navigator.mediaDevices.getUserMedia(constrainrs).then(handleSuccess).catch(handleError);
+}
+
+function stopMedia(){
+    if(window.stream){
+        const videoStreams = window.stream.getVideoTracks()
+
+        videoStreams.forEach(stream => {
+            //stream.stop();
+            stream.enabled = false;
+        });
+        //video.src = video.srcObject = null;
+    }
+}
+
+onCapture();
+
+</script>
+</html>

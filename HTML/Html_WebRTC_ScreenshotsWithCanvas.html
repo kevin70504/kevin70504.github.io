@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8"></meta> 
+    <title>Html_WebRTC_ScreenshotsWithCanvas</title>
+</head>
+<body>
+
+    <div id="screenshot">
+        <video autoplay></video>
+        <button id="screenshot-button">Screenshot Button</button>
+        <canvas></canvas>
+        <!--也能將Cavnas轉成image data-->
+        <img src="">    
+    </div>
+    
+</body>
+<!--解決相容性-->
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<script>
+
+const screenshotButton = document.querySelector("#screenshot-button");
+const img = document.querySelector("#screenshot img");
+const video = document.querySelector("#screenshot video");
+//const video = document.querySelector("video");
+const canvas = document.querySelector("canvas");
+
+screenshotButton.onclick = video.onclick = function () {
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  // 渲染
+  canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+  img.src = canvas.toDataURL("image/png");
+  
+};
+
+const constrainrs = {
+    audio:false,
+    video:true
+};
+
+function handleSuccess(stream){
+    window.stream = stream;
+    video.srcObject = stream;
+}
+
+function handleError(error){
+    console.log('navigator.MediaDevices.getUserMedia error: ', error.message, error.name);
+}
+
+function onCapture(){
+navigator.mediaDevices.getUserMedia(constrainrs).then(handleSuccess).catch(handleError);
+}
+
+function stopMedia(){
+    if(window.stream){
+        const videoStreams = window.stream.getVideoTracks()
+
+        videoStreams.forEach(stream => {
+            //stream.stop();
+            stream.enabled = false;
+        });
+        //video.src = video.srcObject = null;
+    }
+}
+
+onCapture();
+
+</script>
+</html>
