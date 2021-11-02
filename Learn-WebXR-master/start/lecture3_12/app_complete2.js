@@ -268,7 +268,7 @@ class App{
         geometry.translate( xMid, 0, 0 );
         // make shape ( N.B. edge view not visible )
         textmesh = new THREE.Mesh( geometry, matLite );
-        textmesh.position.set(0,0,0);
+        textmesh.position.set(-9.5,0,0.9);
         self.group.add(textmesh);
         } );
         
