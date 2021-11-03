@@ -182,10 +182,11 @@ class App{
         });
     
         this.reticle = new THREE.Mesh(
-            new THREE.RingBufferGeometry( 0.15, 0.2, 32 ).rotateX( - Math.PI / 2 ),  //設定目標圓環的尺寸
+            //new THREE.RingBufferGeometry( 0.15, 0.2, 32 ).rotateX( - Math.PI / 2 ),  //設定目標圓環的尺寸
+            new THREE.RingBufferGeometry( 0.045, 0.05, 32 ).rotateX( - Math.PI / 2 ),
             new THREE.MeshBasicMaterial() //給予圓環基本的材質
         );
-        this.reticle.position.set(0,-1,0);
+        //this.reticle.position.set(0,-1,0);
         this.reticle.matrixAutoUpdate = false;  //圓環的位置、旋轉、縮放自動更新關閉
         this.reticle.visible = false; // 讓圓環一開始看不見
         this.scene.add( this.reticle ); //把圓環添加進場景內
