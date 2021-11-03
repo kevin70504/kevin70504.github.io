@@ -157,14 +157,19 @@ class App{
         const planewidth = prompt("請輸入寬度");
         const planelength = prompt("請輸入長度");
 
-        if(planelength >= planewidth){
-            message = "This use "+planelength*6+" tiles";          
+        const planepivxa_w = -(planewidth*0.5);
+        const planepivxa_l = planelength*0.5;
+
+
+
+        if(planewidth > planelength){
+            message = "This use "+planewidth*6+" tiles";          
         }
         else if(planewidth == planelength){
             message = "This use "+planewidth*12+" tiles";
         }
         else if(planewidth < planelength){
-            message = "This use "+planewidth*6+"t iles";
+            message = "This use "+planelength*6+" tiles";
         }
 
 
@@ -200,7 +205,8 @@ class App{
         this.material = new THREE.MeshBasicMaterial( {map: texture2} );
         this.mesh = new THREE.Mesh( this.geometry,this.material);
         this.mesh.matrixAutoUpdate = false;
-        this.mesh.position.set(-0.95,0,0.9);
+        //this.mesh.position.set(-1,0,1); //尺寸2
+        this.mesh.position.set(planepivxa_w,0,planepivxa_l)
         this.mesh.visible = false;
         this.group.add(this.mesh);
 
@@ -212,7 +218,7 @@ class App{
         const btnshow = document.querySelector("#Show");
         btnshow.addEventListener("click", function(){
 
-            alert("按鈕");
+            alert(message);
 
         });
 
@@ -261,7 +267,7 @@ class App{
         } );
         const message3 = "This use tiles";
         //const message2 = "This use "+ message +" tiles";
-        const shapes = font.generateShapes( message, 0.1 );
+        const shapes = font.generateShapes( message, 0.5 );
 
         const geometry = new THREE.ShapeGeometry( shapes );
         geometry.computeBoundingBox();
@@ -269,7 +275,7 @@ class App{
         geometry.translate( xMid, 0, 0 );
         // make shape ( N.B. edge view not visible )
         textmesh = new THREE.Mesh( geometry, matLite );
-        textmesh.position.set(-9.5,0,0.9);
+        textmesh.position.set(0,0,0);
         self.group.add(textmesh);
         } );
         

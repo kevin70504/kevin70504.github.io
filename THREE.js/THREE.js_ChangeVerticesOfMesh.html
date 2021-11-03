@@ -29,6 +29,9 @@
     function(err){
         console.log("An error happened");
     });
+
+    const texture2 = loader.load("marble_01_diff_1k.jpg");
+    const basicmaterial2 = new THREE.MeshBasicMaterial({map:texture2});
     
     //創建場景
     const scene = new THREE.Scene();
@@ -44,13 +47,53 @@
     // 創建基礎材質球
     const material = new THREE.MeshBasicMaterial({map: texture });
     //創建一個網格Mesh
-    const plane = new THREE.Mesh(geometry, material);
+    const plane = new THREE.Mesh(geometry, basicmaterial2);
 
     const planegeometry = new THREE.PlaneBufferGeometry(0.5,0.5);
-    const basicmaterial = new THREE.MeshBasicMaterial({color:0xffff00});
+    const basicmaterial = new THREE.MeshBasicMaterial({color:0xffff00,wireframe:true,});
     const plane_s = new THREE.Mesh(planegeometry,basicmaterial);
     plane_s.position.set(0,0,0);
     scene.add(plane_s);
+
+    const geome = new THREE.BufferGeometry();
+
+    const b = 1.0;
+    const vertices = new Float32Array( [
+	-0.0, -0.0,  0.0,
+	 0.0, -0.0,  0.0,
+	 0.0,  0.0,  0.0,
+
+     2.0,  2.0,  0.0,
+    -2.0,  2.0,  0.0,
+    -2.0, -2.0,  0.0
+    ] );
+
+    const uvs = new Float32Array( [
+		0,   0,
+		1,   0, 
+		1,   1, 
+	
+		1,   1, 
+		0,   1, 
+		0,   0
+	] );
+
+    /*const vertices = new Float32Array( [
+	-0.5, -0.5,  0.5,
+	 0.5, -0.5,  0.5,
+	 0.5,  0.5,  0.5,
+
+	 0.5,  0.5,  0.5,
+    -0.5,  0.5,  0.5,
+    -0.5, -0.5,  0.5
+    ] );*/
+
+
+    geome.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+    geome.setAttribute( 'uv', new THREE.BufferAttribute( uvs, 2 ) );
+    const object = new THREE.Mesh(geome,basicmaterial2);
+    object.position.set(0,0,0);
+    scene.add(object);
 
     const group = new THREE.Group();
     group.position.set(0,0,0);
@@ -70,14 +113,21 @@
     //獲取x y z 座標extract the x,y,z coordinates
     tempVertex.fromBufferAttribute( attribute, index ); 
     //應用於plane的矩陣變換apply the mesh's matrix transform
-    //tempVertex.applyMatrix4( plane.matrix );
-    console.log(tempVertex);
+    tempVertex.applyMatrix4( plane.matrix );
 
+    const GetX = plane.geometry.attributes.position.getX(3);
+
+    plane_s.applyMatrix4( new THREE.Matrix4().makeTranslation(GetX,0,0));
+    console.log(GetX);
+
+    console.log(plane_s.position);
+
+    console.log(object);
 
     const btnclick = document.querySelector("#click");
 
     btnclick.addEventListener("click",function(){
-        plane_s.position.set(1,-1,0);
+        plane_s.position.set(-1,-1,0);
     });
 
 
