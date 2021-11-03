@@ -54,26 +54,22 @@ class App{
     }	
     
     getCenterPoint(points) {
-        //獲取兩個不同的點
         let line = new THREE.Line3(...points)
-        //利用getCenter的方式將中點的值回傳給line
         return line.getCenter( new THREE.Vector3() );
     }
 
     initLine(point) {
-        //定義基本的線，顏色，寬度
         const lineMaterial = new THREE.LineBasicMaterial({
             color: 0xffffff,
             linewidth: 5,
-            linecap: 'round' //線段末端增加圓角
+            linecap: 'round' 
         });
 
-        const lineGeometry = new THREE.BufferGeometry().setFromPoints([point, point]); //宣告lineGeometry，位置來自於point
-        return new THREE.Line(lineGeometry, lineMaterial); //使用lineGeometry和lineMaterial創建線並回傳
+        const lineGeometry = new THREE.BufferGeometry().setFromPoints([point, point]);
+        return new THREE.Line(lineGeometry, lineMaterial); 
     }
 
     updateLine(matrix, line) {
-        //由於使用buffergeometry,其的位置儲存在Float32Array
         // Index[0] = start.x
         // Index[1] = start.y
         // Index[2] = start.z
@@ -84,8 +80,8 @@ class App{
         positions[3] = matrix.elements[12] //x
         positions[4] = matrix.elements[13] //y
         positions[5] = matrix.elements[14] //z
-        line.geometry.attributes.position.needsUpdate = true; //位置需要更新
-        line.geometry.computeBoundingSphere(); //快速測試這條線是否在相機的視野中
+        line.geometry.attributes.position.needsUpdate = true;
+        line.geometry.computeBoundingSphere();
     }
 
     initReticle() {
@@ -94,14 +90,13 @@ class App{
         const reticle = new THREE.Mesh(
             BufferGeometryUtils.mergeBufferGeometries([ring, dot]),
             new THREE.MeshBasicMaterial()
-        ); //使用BufferGeometryUtils.mergeBufferGeometries合併ring和dot
+        );
         reticle.matrixAutoUpdate = false;
         reticle.visible = false;
         return reticle;
     }
 
     getDistance(points) {
-        //當points 等於2時，回傳從第一個陣列數值到第二個陣列數值
         if (points.length == 2) return points[0].distanceTo(points[1]);
     }
     
@@ -140,33 +135,30 @@ class App{
         function onSelect() {
             if (self.reticle.visible){
                 //Step 1 - add the reticle position to the measurments array
-                //步驟1 - 將標線位置加到測量陣列中
 
-                const pt = new THREE.Vector3(); // 宣告pt為三維向量
-                pt.setFromMatrixPosition(self.reticle.matrix); //從變換矩陣(標線)獲取實際位置
-                self.measurements.push(pt); //將實際位置加進measurements陣列中
+                const pt = new THREE.Vector3(); 
+                pt.setFromMatrixPosition(self.reticle.matrix); 
+                self.measurements.push(pt);
 
                 if (self.measurements.length == 2) {
                     //Step 2 - we have a completed line so get its length, create a label and reset the measurements array and currentLine
-                    // 如果我們有一條完整的線，我們獲取它的長度創建標籤，並重置measurements陣列和當前線段
 
-                    const distance = Math.round(self.getDistance(self.measurements) * 100); //使用測量距離，來獲取線的長度
+                    const distance = Math.round(self.getDistance(self.measurements) * 100);
 
-                    const text = document.createElement("div"); //宣告text變數並在其中放入div元素
-                    text.className = "label"; //text名字
-                    text.style.color = "rgb(255,255,255)"; //text顏色
-                    text.textContent = distance + "cm"; //text內容
+                    const text = document.createElement("div");
+                    text.className = "label";
+                    text.style.color = "rgb(255,255,255)"; 
+                    text.textContent = distance + "cm"; 
                     document.querySelector("#container").appendChild(text);
 
-                    self.labels.push({ div: text, point: self.getCenterPoint(self.measurements) }); //將點作為標籤的一部分儲存在標籤陣列裡
+                    self.labels.push({div: text, point: self.getCenterPoint(self.measurements)}); 
                     self.measurements = [];
                     self.currentLine = null;
-
+                    
                 } else {
                     //Step 3 - create a new line
-                    //步驟三 - 創建線
-                    self.currentLine = self.initLine(self.measurements[0]); //使用measurements陣列的第一個值
-                    self.scene.add(self.currentLine); //創建新的線
+                    self.currentLine = self.initLine(self.measurements[0]);
+                    self.scene.add(self.currentLine);
                 
                 }
             }
@@ -218,7 +210,6 @@ class App{
             this.reticle.matrix.fromArray( pose.transform.matrix );
             
             //Step 4 - if we have an active line then position the end point of the line at the reticle
-            //步驟4 - 如果我們有一條可以活動的線，則將線的終點定位在標線處
             if (this.currentLine) this.updateLine(this.reticle.matrix, this.currentLine);
 
         } else {
@@ -245,7 +236,6 @@ class App{
         this.labels.forEach(label => {
             const pos = self.toScreenPosition(label.point, self.renderer.xr.getCamera(self.camera));
             label.div.style.transform = `translate(-50%, -50%) translate(${pos.x}px,${pos.y}px)`;
-
         })
 
         this.renderer.render( this.scene, this.camera );
