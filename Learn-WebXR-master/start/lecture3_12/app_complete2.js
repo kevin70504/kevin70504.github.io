@@ -163,14 +163,19 @@ class App{
 
 
         if(planewidth > planelength){
-            message = "This use "+planewidth*6+" tiles";          
+            message = "This use "+planewidth*7+" tiles";          
         }
         else if(planewidth == planelength){
-            message = "This use "+planewidth*12+" tiles";
+            message = "This use "+planewidth*14+" tiles";
         }
         else if(planewidth < planelength){
-            message = "This use "+planelength*6+" tiles";
+            message = "This use "+planelength*7+" tiles";
         }
+
+        // 0.5 5
+
+        //*2.9 */
+        // 1 14.5
 
 
         const self = this;
@@ -267,7 +272,7 @@ class App{
         } );
         const message3 = "This use tiles";
         //const message2 = "This use "+ message +" tiles";
-        const shapes = font.generateShapes( message, 0.5 );
+        const shapes = font.generateShapes( message, 0.1 );
 
         const geometry = new THREE.ShapeGeometry( shapes );
         geometry.computeBoundingBox();
