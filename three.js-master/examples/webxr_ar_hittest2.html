@@ -15,6 +15,7 @@
 		<script type="module">
 
 			import * as THREE from '../build/three.module.js';
+			import { BufferGeometryUtils } from './jsm/utils/BufferGeometryUtils.js';
 			import { ARButton } from './jsm/webxr/ARButton.js';
 
 			let container;
@@ -57,7 +58,7 @@
 
 				//
 
-				const geometry = new THREE.SphereBufferGeometry( 0.1, 16, 16);
+				const geometry = new THREE.SphereBufferGeometry( 0.03, 16, 16);
 				function onSelect() {
 
 					if ( reticle.visible ) {
@@ -103,9 +104,15 @@
 				controller.addEventListener( 'select', onSelect );
 				scene.add( controller );
 
-				reticle = new THREE.Mesh(
+				/*reticle = new THREE.Mesh(
 					new THREE.RingGeometry( 0.045, 0.05, 32 ).rotateX( - Math.PI / 2 ),
 					new THREE.MeshBasicMaterial()
+				);*/
+				let ring = new THREE.RingBufferGeometry(0.045, 0.05, 32).rotateX(- Math.PI / 2);
+				let dot = new THREE.CircleBufferGeometry(0.005, 32).rotateX(- Math.PI / 2);
+				reticle = new THREE.Mesh(
+				BufferGeometryUtils.mergeBufferGeometries([ring, dot]),
+				new THREE.MeshBasicMaterial()
 				);
 				reticle.matrixAutoUpdate = false;
 				reticle.visible = false;
