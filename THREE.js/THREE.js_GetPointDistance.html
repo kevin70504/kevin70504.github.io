@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html> <!--告訴網站這個是網頁-->
+
+<html>
+
+<head>
+
+    <meta charset="utf-8"></meta>
+    <title>THREE.js_GetPointDistance</title>
+
+</head>
+
+<style>
+    body {
+        margin: 0;
+    }
+</style>
+
+<body>
+    <script src="../js/three.js"></script> <!--獲取three.js API-->
+
+
+</body>
+
+<script>
+
+    //創建場景
+    const scene = new THREE.Scene();
+    //創建攝影機、視野(FOV)、綜橫比
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    //創建WebGL渲染器
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement)
+
+    // 創建一個正方形Geometry
+    const geometry = new THREE.PlaneBufferGeometry(2,2);
+    //創建基礎材質球，顏色為綠色0x00ff00
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    //創建網格Mesh
+    const cube = new THREE.Mesh(geometry, material);
+    cube.position.set(0,0,0);
+    
+
+    //攝影機的位置往z軸移動5單位
+    camera.position.z = 5;
+
+    const A = new THREE.Vector3(0,0,0);
+    const B = new THREE.Vector3(5,5,5);
+
+    const line = new THREE.Line3(A,B);
+    const lineCenter = new THREE.Vector3(0,0,0);
+    line.getCenter(lineCenter); //得到lineCenter的兩點中間點
+    console.log(lineCenter);
+
+    const lineDistance = line.distance();
+    //console.log(lineDistance);  //線段的距離
+    console.log(Math.round((lineDistance*10))/10);
+
+    const lineLength = A.distanceTo(B);
+    console.log(lineLength); //兩點之間距離
+
+    const circleGeo = new THREE.CircleBufferGeometry(1,16);
+    const cirMat = new THREE.MeshBasicMaterial({color:0xff0000,wireframe:true});
+    const circleMesh = new THREE.Mesh(circleGeo,cirMat);
+    circleMesh.position.set(1,1,0);
+    scene.add(circleMesh);
+
+    const circleCenter = new THREE.Vector3();
+    circleMesh.getWorldPosition(circleCenter);
+    console.log(circleCenter);
+
+    const array =[circleCenter,0];
+
+    console.log(array[1]);
+
+    const C = new THREE.Vector3(-1,1,0);
+    const D = new THREE.Vector3(1,1,0);
+    const cToDline = new THREE.Line3(C,D);
+    const cTolineDis = cToDline.distance();
+    const geometry2 = new THREE.PlaneBufferGeometry(cTolineDis,cTolineDis);
+    const Mesh2 = new THREE.Mesh(geometry2,material);
+
+
+    
+    //添加到場景座標
+    //scene.add(cube);
+    scene.add(Mesh2);
+
+
+    //場景渲染出來
+    function animate() {
+        requestAnimationFrame(animate);
+
+        renderer.render(scene, camera);
+    };
+
+    animate();
+
+
+</script>
+
+</html>
