@@ -71,29 +71,34 @@
 						//mesh.getWorldPosition(Vector3);
 						Vector3.setFromMatrixPosition(reticle.matrixWorld);
 						array.push(Vector3);
-						console.log(array);
-						console.log(array.length);
 
 					}
 					if(array.length == 4){
-						const line = new THREE.Line3(array[0],array[2]); //第1點到第3點
+						const line = new THREE.Line3(array[0],array[3]); //第1點到第4點
 						const line_H = new THREE.Line3(array[0],array[1]); //第1點到第2點
-						const line_W = new THREE.Line3(array[1],array[2]); //第1點到第2點
-						const Center = new THREE.Vector3(); //中點
+						const line_W = new THREE.Line3(array[1],array[2]); //第2點到第3點
+						const Center_2To3 = new THREE.Vector3(); //中點
+						const Center_1To4 = new THREE.Vector3(); //中點
 						const Distance_H = line_H.distance(); //高度距離
 						const Distance_W = line_W.distance(); //寬度距離
 						const planeheight = Math.round((Distance_H*100))/100;
 						const planewidth = Math.round((Distance_W*100))/100;
-						line.getCenter(Center);
+						line.getCenter(Center_2To3); //中點
+						line_W.getCenter(Center_1To4);
+
+						const line_M = new THREE.Line3(Center_2To3,Center_1To4);
+						const Center_M = new THREE.Vector3();
+						line_M.getCenter(Center_M);
 						//console.log(Center);
-						console.log(planeheight);
-						console.log(planewidth);
+						console.log(Center_2To3);
+						console.log(Center_1To4);
+						console.log(Center_M);
 
 						
 						const planegeo = new THREE.PlaneBufferGeometry(planewidth,planeheight);
 						const material = new THREE.MeshPhongMaterial( { color: 0xffffff * Math.random() } );
 						const mesh = new THREE.Mesh( planegeo, material );
-						mesh.position.set(Center.getComponent(0),Center.getComponent(1),Center.getComponent(2));
+						mesh.position.set(Center_M.getComponent(0),Center_M.getComponent(1),Center_M.getComponent(2));
 						mesh.rotation.x = -(Math.PI / 2);
 						scene.add( mesh );
 					}
