@@ -75,18 +75,6 @@
 				renderer.xr.enabled = true;
 				container.appendChild( renderer.domElement );
 
-				//
-
-				let options ={
-					requiredFeatures:['hit-test'],
-					optionalFeatures:['dom-overlay'],
-				}
-
-				options.domOverlay = {root:document.getElementById('content')};				
-				//document.body.appendChild( ARButton.createButton( renderer, { requiredFeatures: [ 'hit-test' ] } ) );
-				document.body.appendChild(ARButton.createButton(renderer,options));
-				//
-
 				const textures = [
 				"./textures/brick_diffuse.jpg",
 				"./textures/floors/FloorsCheckerboard_S_Diffuse.jpg"	
@@ -152,8 +140,16 @@
 					//material.needsUpdate = true;
 				});
 
+				//
 
+				let options ={
+					requiredFeatures:['hit-test'],
+					optionalFeatures:['dom-overlay'],
+				}
 
+				options.domOverlay = {root: document.getElementById('content')};				
+				//document.body.appendChild( ARButton.createButton( renderer, { requiredFeatures: [ 'hit-test' ] } ) );
+				document.body.appendChild(ARButton.createButton(renderer,options));
 
 				//
 
