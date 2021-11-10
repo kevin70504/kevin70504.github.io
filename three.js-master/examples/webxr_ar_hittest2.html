@@ -77,18 +77,18 @@
 						const line = new THREE.Line3(array[0],array[3]); //第1點到第4點
 						const line_H = new THREE.Line3(array[0],array[1]); //第1點到第2點
 						const line_W = new THREE.Line3(array[1],array[2]); //第2點到第3點
-						const Center_2To3 = new THREE.Vector3(); //中點
-						const Center_1To4 = new THREE.Vector3(); //中點
+						const Center_2To3 = new THREE.Vector3(); 
+						const Center_1To4 = new THREE.Vector3();
 						const Distance_H = line_H.distance(); //高度距離
 						const Distance_W = line_W.distance(); //寬度距離
 						const planeheight = Math.round((Distance_H*100))/100;
 						const planewidth = Math.round((Distance_W*100))/100;
-						line.getCenter(Center_2To3); //中點
-						line_W.getCenter(Center_1To4);
+						line.getCenter(Center_2To3); //第2點到第3點的中點
+						line_W.getCenter(Center_1To4);//第1點到第4點的中點
 
 						const line_M = new THREE.Line3(Center_2To3,Center_1To4);
 						const Center_M = new THREE.Vector3();
-						line_M.getCenter(Center_M);
+						line_M.getCenter(Center_M); //中央點
 						//console.log(Center);
 						console.log(Center_2To3);
 						console.log(Center_1To4);
