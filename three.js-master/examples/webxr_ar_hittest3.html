@@ -51,7 +51,7 @@
 			let hitTestSource = null;
 			let hitTestSourceRequested = false;
 
-			let texture;
+			let texture,mesh;
 
 			init();
 			animate();
@@ -119,7 +119,7 @@
 				function onSelect() {
 
 					if ( reticle.visible ) {
-						const mesh = new THREE.Mesh( planegeo, material );
+						mesh = new THREE.Mesh( planegeo, material );
 						mesh.position.setFromMatrixPosition( reticle.matrix );
 						mesh.rotation.x = -(Math.PI / 2);
 						scene.add( mesh );
@@ -159,7 +159,8 @@
 				//
 
 				controller = renderer.xr.getController( 0 );
-				controller.addEventListener( 'select', onSelect );
+				//controller.addEventListener( 'select', onSelect );
+				controller.addEventListener( 'click', onSelect );
 				scene.add( controller );
 
 				reticle = new THREE.Mesh(
@@ -172,8 +173,45 @@
 
 				//
 
-				window.addEventListener( 'resize', onWindowResize );
+				//window.addEventListener( 'resize', onWindowResize );
+				window.addEventListener( 'resize', onWindowResize, false );
 
+				renderer.domElement.addEventListener('touchstart', function(e){
+					e.preventDefault();
+					touchDown=true;
+					touchX = e.touches[0].pageX;
+					touchY = e.touches[0].pageY;
+				}, false);
+
+				renderer.domElement.addEventListener('touchend', function(e){
+					e.preventDefault();
+					touchDown = false;
+				}, false);
+
+				renderer.domElement.addEventListener('touchmove', function(e){
+					e.preventDefault();
+					
+					if(!touchDown){
+						return;
+					}
+
+					deltaX = e.touches[0].pageX - touchX;
+					deltaY = e.touches[0].pageY - touchY;
+					touchX = e.touches[0].pageX;
+					touchY = e.touches[0].pageY;
+
+					rotateObject();
+
+				}, false);
+
+			}
+
+			var touchDown, touchX, touchY, deltaX, deltaY;
+
+			function rotateObject(){
+				if(mesh && reticle.visible){
+					mesh.rotation.y += deltaX / 100;
+				}
 			}
 
 
