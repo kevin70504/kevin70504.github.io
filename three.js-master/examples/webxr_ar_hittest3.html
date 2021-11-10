@@ -58,8 +58,8 @@
 			function init() {
 
 				container = document.createElement( 'div' );
-				document.body.appendChild( container );
-				//document.getElementById("container").appendChild( container );
+				//document.body.appendChild( container );
+				document.getElementById("container").appendChild( container );
 
 				scene = new THREE.Scene();
 
@@ -84,7 +84,7 @@
 					optionalFeatures:['dom-overlay'],
 				}
 
-				options.domOverlay = {root: document.getElementById('content')};				
+				options.domOverlay = { root: document.getElementById('content')};				
 				//document.body.appendChild( ARButton.createButton( renderer, { requiredFeatures: [ 'hit-test' ] } ) );
 				document.body.appendChild(ARButton.createButton(renderer,options));
 
