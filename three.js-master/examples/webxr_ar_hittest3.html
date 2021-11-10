@@ -9,6 +9,8 @@
 	<body>
 
 		<div id="content">
+
+			<div id="container" style="position: fixed;"></div>
 			<div id="mySidenav" class="sidenav">
 				<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 				<a class="ar-texture" id="1" href="#">item01</a>
@@ -19,7 +21,6 @@
 		  
 		  <span style="font-size:30px;cursor:pointer;" onclick="openNav()">&#9776; open</span>
 		
-		  <div id="container" style="position: fixed;"></div>
 		</div>
 
 		<script>
@@ -81,10 +82,9 @@
 					optionalFeatures:['dom-overlay'],
 				}
 
-				options.domOverlay = {root:document.getElementById('content')};
-				
-				document.body.appendChild( ARButton.createButton( renderer, { requiredFeatures: [ 'hit-test' ] } ) );
-
+				options.domOverlay = {root:document.getElementById('content')};				
+				//document.body.appendChild( ARButton.createButton( renderer, { requiredFeatures: [ 'hit-test' ] } ) );
+				document.body.appendChild(ARButton.createButton(renderer,options));
 				//
 
 				const textures = [
