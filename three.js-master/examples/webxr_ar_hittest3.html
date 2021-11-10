@@ -19,7 +19,7 @@
 			</div>
 			<div id="container" style="position: fixed;"></div>
 	
-		<span style="font-size:30px;cursor:pointer;" onclick="openNav()">&#9776; open</span>
+		<span style="font-size:30px;cursor:pointer;position: absolute;" onclick="openNav()">&#9776; open</span>
 		
 		<button type="button" id="place-button">PLACE</button>
 		</div>
@@ -238,6 +238,7 @@
 			function animate() {
 
 				renderer.setAnimationLoop( render );
+				requestAnimationFrame(animate);
 
 			}
 
@@ -266,6 +267,8 @@
 							hitTestSource = null;
 
 							document.getElementById("place-button").style.display = "none";
+
+							reticle.visible = false;
 
 						} );
 

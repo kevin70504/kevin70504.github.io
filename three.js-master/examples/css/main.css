@@ -46,7 +46,7 @@ body {
   #place-button{
     position: absolute;
     bottom: 20px;
-    left: calc(50%-20px);
+    left: calc(50%);
     width: 100px;
     height: 35px;
     display: none;
