@@ -9,8 +9,7 @@
 	<body>
 
 		<div id="content">
-
-			<div id="container" style="position: fixed;"></div>
+		
 			<div id="mySidenav" class="sidenav">
 				<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 				<a class="ar-texture" id="1" href="#">item01</a>
@@ -18,10 +17,15 @@
 				<a class="ar-texture" id="3" href="#">item03</a>
 				<a class="ar-texture" id="4" href="#">item04</a>
 			</div>
-		  
+			<div id="container" style="position: fixed;"></div>
+	
 		  <span style="font-size:30px;cursor:pointer;" onclick="openNav()">&#9776; open</span>
 		
 		</div>
+
+
+
+
 
 		<script>
 		  function openNav() {
@@ -56,8 +60,8 @@
 			function init() {
 
 				container = document.createElement( 'div' );
-				//document.body.appendChild( container );
-				document.getElementById("container").appendChild( container );
+				document.body.appendChild( container );
+				//document.getElementById("container").appendChild( container );
 
 				scene = new THREE.Scene();
 
@@ -74,6 +78,18 @@
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				renderer.xr.enabled = true;
 				container.appendChild( renderer.domElement );
+
+				//
+
+				let options ={
+					requiredFeatures:['hit-test'],
+					optionalFeatures:['dom-overlay'],
+				}
+
+				options.domOverlay = {root: document.getElementById('content')};				
+				//document.body.appendChild( ARButton.createButton( renderer, { requiredFeatures: [ 'hit-test' ] } ) );
+				document.body.appendChild(ARButton.createButton(renderer,options));
+
 
 				const textures = [
 				"./textures/brick_diffuse.jpg",
@@ -139,17 +155,6 @@
 					texture.needsUpdate = true;
 					//material.needsUpdate = true;
 				});
-
-				//
-
-				let options ={
-					requiredFeatures:['hit-test'],
-					optionalFeatures:['dom-overlay'],
-				}
-
-				options.domOverlay = {root: document.getElementById('content')};				
-				//document.body.appendChild( ARButton.createButton( renderer, { requiredFeatures: [ 'hit-test' ] } ) );
-				document.body.appendChild(ARButton.createButton(renderer,options));
 
 				//
 
