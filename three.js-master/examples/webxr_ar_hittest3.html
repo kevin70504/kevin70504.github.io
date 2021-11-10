@@ -19,12 +19,10 @@
 			</div>
 			<div id="container" style="position: fixed;"></div>
 	
-		  <span style="font-size:30px;cursor:pointer;" onclick="openNav()">&#9776; open</span>
+		<span style="font-size:30px;cursor:pointer;" onclick="openNav()">&#9776; open</span>
 		
+		<button type="button" id="place-button">PLACE</button>
 		</div>
-
-
-
 
 
 		<script>
@@ -116,7 +114,7 @@
 				const planegeo = new THREE.PlaneBufferGeometry(0.5,0.5);
 				const material = new THREE.MeshBasicMaterial( { map:texture } );
 
-				function onSelect() {
+				/*function onSelect() {
 
 					if ( reticle.visible ) {
 						mesh = new THREE.Mesh( planegeo, material );
@@ -124,7 +122,7 @@
 						mesh.rotation.x = -(Math.PI / 2);
 						scene.add( mesh );
 					}
-				}
+				}*/
 
 				//
 
@@ -157,11 +155,22 @@
 				});
 
 				//
+				const setbtn = document.getElementById("place-button");
+				setbtn.addEventListener("click",function(){
+					if ( reticle.visible ) {
+						mesh = new THREE.Mesh( planegeo, material );
+						mesh.position.setFromMatrixPosition( reticle.matrix );
+						mesh.rotation.x = -(Math.PI / 2);
+						scene.add( mesh );
+					}
+				})
 
-				controller = renderer.xr.getController( 0 );
+				//
+
+				//controller = renderer.xr.getController( 0 );
 				//controller.addEventListener( 'select', onSelect );
-				controller.addEventListener( 'click', onSelect );
-				scene.add( controller );
+				//controller.addEventListener( 'click', onSelect );
+				//scene.add( controller );
 
 				reticle = new THREE.Mesh(
 					new THREE.RingGeometry( 0.15, 0.2, 32 ).rotateX( - Math.PI / 2 ),
@@ -256,6 +265,8 @@
 							hitTestSourceRequested = false;
 							hitTestSource = null;
 
+							document.getElementById("place-button").style.display = "none";
+
 						} );
 
 						hitTestSourceRequested = true;
@@ -270,12 +281,14 @@
 
 							const hit = hitTestResults[ 0 ];
 
+							document.getElementById("place-button").style.display = "block";
 							reticle.visible = true;
 							reticle.matrix.fromArray( hit.getPose( referenceSpace ).transform.matrix );
 
 						} else {
 
 							reticle.visible = false;
+							document.getElementById("place-button").style.display = "none";
 
 						}
 
