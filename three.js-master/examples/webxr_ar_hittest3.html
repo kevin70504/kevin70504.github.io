@@ -109,7 +109,7 @@
 				}
 
 				const geometry = new THREE.CylinderGeometry( 0.1, 0.1, 0.2, 32 ).translate( 0, 0.1, 0 );
-				const planegeo = new THREE.PlaneBufferGeometry(1,1);
+				const planegeo = new THREE.PlaneBufferGeometry(0.5,0.5);
 				const material = new THREE.MeshBasicMaterial( { map:texture } );
 
 				function onSelect() {
@@ -128,28 +128,28 @@
 				matbtn01.addEventListener("click",function(){
 					material.map = textureloader.load("./textures/floors/FloorsCheckerboard_S_Diffuse.jpg");
 					texture.needsUpdate = true;
-					material.needsUpdate = true;
+					//material.needsUpdate = true;
 				});
 
 				const matbtn02 = document.getElementById("2");
 				matbtn02.addEventListener("click",function(){
 					material.map = textureloader.load("./textures/tiles/Tiles_bathroom.jpg");
 					texture.needsUpdate = true;
-					material.needsUpdate = true;
+					//material.needsUpdate = true;
 				});
 
 				const matbtn03 = document.getElementById("3");
-				matbtn02.addEventListener("click",function(){
+				matbtn03.addEventListener("click",function(){
 					material.map = textureloader.load("./textures/tiles/Tiles_Porcelain.jpg");
 					texture.needsUpdate = true;
-					material.needsUpdate = true;
+					//material.needsUpdate = true;
 				});
 
 				const matbtn04 = document.getElementById("4");
-				matbtn02.addEventListener("click",function(){
+				matbtn04.addEventListener("click",function(){
 					material.map = textureloader.load("./textures/tiles/Tiles_bathroom2.jpg");
 					texture.needsUpdate = true;
-					material.needsUpdate = true;
+					//material.needsUpdate = true;
 				});
 
 
