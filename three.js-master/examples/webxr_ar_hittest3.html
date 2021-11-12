@@ -273,7 +273,7 @@
 				}*/
 
 				//用單指觸碰
-				/*renderer.domElement.addEventListener('touchstart', function(e){
+				renderer.domElement.addEventListener('touchstart', function(e){
 					e.preventDefault();
 					touchDown=true;
 					touchX = e.touches[0].pageX;
@@ -301,19 +301,18 @@
 
 				}, false);
 
-
-				//
-
-			var touchDown, touchX, touchY, deltaX, deltaY;
-
-			function rotateObject(){
-				if(mesh && reticle.visible){
-					mesh.rotation.x += deltaX / 100;
-				}
-			
-			}*/
 		}
-			
+
+		//
+
+		var touchDown, touchX, touchY, deltaX, deltaY;
+
+		function rotateObject(){
+			if(mesh && reticle.visible){
+				mesh.rotation.x += deltaX / 100;
+			}
+
+		}
 
 			//
 
