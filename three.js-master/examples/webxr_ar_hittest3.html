@@ -190,7 +190,7 @@
 
 				//
 
-				function onDocumentTouchStart(event) {
+				/*function onDocumentTouchStart(event) {
 
 				if (event.touches.length == 1) {
 
@@ -271,10 +271,10 @@
 						texture.repeat.x = scale;
 						texture.repeat.y = scale;
 					}
-				}
+				}*/
 
 				//用單指觸碰
-				/*renderer.domElement.addEventListener('touchstart', function(e){
+				renderer.domElement.addEventListener('touchstart', function(e){
 					e.preventDefault();
 					touchDown=true;
 					touchX = e.touches[0].pageX;
@@ -300,19 +300,19 @@
 
 					rotateObject();
 
-				}, false);*/
+				}, false);
 
 
 				//
 
-			/*var touchDown, touchX, touchY, deltaX, deltaY;
+			var touchDown, touchX, touchY, deltaX, deltaY;
 
 			function rotateObject(){
 				if(mesh && reticle.visible){
 					mesh.rotation.x += deltaX / 100;
 				}
-			}*/
-
+			
+			}
 		}
 			
 
