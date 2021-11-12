@@ -164,14 +164,15 @@
 						mesh.rotation.x = -(Math.PI / 2);
 						scene.add( mesh );
 					}
+					console.log("按鈕運作");
 				})
 
 				//
 
-				//controller = renderer.xr.getController( 0 );
-				//controller.addEventListener( 'select', onSelect );
-				//controller.addEventListener( 'click', onSelect );
-				//scene.add( controller );
+				/*controller = renderer.xr.getController( 0 );
+				controller.addEventListener( 'select', onSelect );
+				controller.addEventListener( 'click', onSelect );
+				scene.add( controller );*/
 
 				reticle = new THREE.Mesh(
 					new THREE.RingGeometry( 0.15, 0.2, 32 ).rotateX( - Math.PI / 2 ),
@@ -272,7 +273,7 @@
 				}*/
 
 				//用單指觸碰
-				renderer.domElement.addEventListener('touchstart', function(e){
+				/*renderer.domElement.addEventListener('touchstart', function(e){
 					e.preventDefault();
 					touchDown=true;
 					touchX = e.touches[0].pageX;
@@ -310,7 +311,7 @@
 					mesh.rotation.x += deltaX / 100;
 				}
 			
-			}
+			}*/
 		}
 			
 
