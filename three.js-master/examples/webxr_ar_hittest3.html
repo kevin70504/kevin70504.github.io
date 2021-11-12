@@ -160,8 +160,6 @@
 				setbtn.addEventListener("click",function(){
 					if ( reticle.visible ) {
 						mesh = new THREE.Mesh( planegeo, material );
-						mesh.userData.id="mesh1"
-						objects[ mesh.userData.id ] = mesh1;
 						mesh.position.setFromMatrixPosition( reticle.matrix );
 						mesh.rotation.x = -(Math.PI / 2);
 						scene.add( mesh );
