@@ -39,6 +39,7 @@
 
 			import * as THREE from '../build/three.module.js';
 			import { ARButton } from './jsm/webxr/ARButton.js';
+			import { TrackballControls } from './jsm/controls/TrackballControls.js';
 
 			let container;
 			let camera, scene, renderer;
@@ -159,6 +160,8 @@
 				setbtn.addEventListener("click",function(){
 					if ( reticle.visible ) {
 						mesh = new THREE.Mesh( planegeo, material );
+						mesh.userData.id="mesh1"
+						objects[ mesh.userData.id ] = mesh1;
 						mesh.position.setFromMatrixPosition( reticle.matrix );
 						mesh.rotation.x = -(Math.PI / 2);
 						scene.add( mesh );
@@ -185,7 +188,93 @@
 				//window.addEventListener( 'resize', onWindowResize );
 				window.addEventListener( 'resize', onWindowResize, false );
 
-				renderer.domElement.addEventListener('touchstart', function(e){
+				//
+
+				function onDocumentTouchStart(event) {
+
+				if (event.touches.length == 1) {
+
+					console.log('1');
+					event.preventDefault();
+
+
+					onPointerDownPointerX = event.touches[0].pageX;
+					onPointerDownPointerY = event.touches[0].pageY;
+
+					onPointerDownLon = lon;
+					onPointerDownLat = lat;
+
+					detectHotspotClick();
+
+				}
+
+				if (event.touches.length == 2) {
+
+					console.log('2');
+					_state = STATE.TOUCH_ZOOM_PAN;
+					var dx = event.touches[ 0 ].pageX - event.touches[ 1 ].pageX;
+					var dy = event.touches[ 0 ].pageY - event.touches[ 1 ].pageY;
+					_touchZoomDistanceEnd = _touchZoomDistanceStart = Math.sqrt( dx * dx + dy * dy );
+
+				}
+
+				}
+
+				function onDocumentTouchMove(event) {
+
+				if (event.touches.length == 1) {
+
+					event.preventDefault();
+
+					lon = (onPointerDownPointerX - event.touches[0].pageX) * 0.1 + onPointerDownLon;
+					lat = (event.touches[0].pageY - onPointerDownPointerY) * 0.1 + onPointerDownLat;
+
+				}
+
+				if (event.touches.length == 2) {
+
+					var dx = event.touches[ 0 ].pageX - event.touches[ 1 ].pageX;
+					var dy = event.touches[ 0 ].pageY - event.touches[ 1 ].pageY;
+					_touchZoomDistanceEnd = Math.sqrt( dx * dx + dy * dy );
+
+					var factor = _touchZoomDistanceStart / _touchZoomDistanceEnd;
+					_touchZoomDistanceStart = _touchZoomDistanceEnd;
+					//setZoom(camera.fov * factor);
+					scaleObject(scale*factor);
+
+				}
+
+				}
+
+				function onDocumentTouchEnd( event ) {
+
+						_touchZoomDistanceStart = _touchZoomDistanceEnd = 0;
+
+				}
+
+				function setZoom(fov){
+
+				camera.fov = fov;
+
+				if(camera.fov < 30) camera.fov = 30;
+				if(camera.fov > 100) camera.fov = 100;
+
+				camera.updateProjectionMatrix();
+
+				}
+				function scaleObject(scale){
+					if(mesh && reticle.visible){
+						scale = 1;
+						mesh.scale.x = scale;
+						mesh.scale.y = scale;
+						mesh.scale.z = scale;
+						texture.repeat.x = scale;
+						texture.repeat.y = scale;
+					}
+				}
+
+				//用單指觸碰
+				/*renderer.domElement.addEventListener('touchstart', function(e){
 					e.preventDefault();
 					touchDown=true;
 					touchX = e.touches[0].pageX;
@@ -211,18 +300,23 @@
 
 					rotateObject();
 
-				}, false);
+				}, false);*/
 
-			}
 
-			var touchDown, touchX, touchY, deltaX, deltaY;
+				//
+
+			/*var touchDown, touchX, touchY, deltaX, deltaY;
 
 			function rotateObject(){
 				if(mesh && reticle.visible){
-					mesh.rotation.y += deltaX / 100;
+					mesh.rotation.x += deltaX / 100;
 				}
-			}
+			}*/
 
+		}
+			
+
+			//
 
 			function onWindowResize() {
 
