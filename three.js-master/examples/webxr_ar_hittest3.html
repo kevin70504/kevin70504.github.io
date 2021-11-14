@@ -136,7 +136,16 @@
 
 				const matbtn02 = document.getElementById("2");
 				matbtn02.addEventListener("click",function(){
-					material.map = textureloader.load("./textures/tiles/Tiles_bathroom.jpg");
+					material.map = textureloader.load(
+					"./textures/tiles/Tiles_bathroom.jpg",
+					function(texture){
+						texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+						texture.offset.set(0,0);
+						texture.repeat.set(2,2);
+					},
+					function(err){
+						console.log("An error happened");
+					});
 					texture.needsUpdate = true;
 					//material.needsUpdate = true;
 				});
@@ -318,8 +327,8 @@
 				mesh.scale.x += deltaX / 100;
 				mesh.scale.y += deltaX / 100;
 				mesh.scale.z += deltaX / 100;
-				texture.repeat.x += 0.1;
-        		texture.repeat.y += 0.1;
+				texture.repeat.x += deltaX / 100;
+        		texture.repeat.y += deltaX / 100;
 			}
 		}
 
