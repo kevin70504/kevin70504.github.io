@@ -103,7 +103,7 @@
 					console.log("An error happened");
 				});
 
-				texture2 = textureloader.load(
+				/*texture2 = textureloader.load(
 				"./textures/tiles/Tiles_bathroom.jpg",
 				function(texture){
 					texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
@@ -112,7 +112,7 @@
 				},
 				function(err){
 					console.log("An error happened");
-				});
+				});*/
 
 
 				//
@@ -333,6 +333,11 @@
 
 				texture.repeat.x += deltaX / 100;
         		texture.repeat.y += deltaX / 100;
+				material.map.repeat.x += deltaX / 100;
+				material.map.repeat.y += deltaX / 100;
+				texture.needsUpdate = true;
+				material.needsUpdate = true;
+
 
 				/*if(material.map == texture1){
 					texture1.repeat.x += deltaX / 100;
