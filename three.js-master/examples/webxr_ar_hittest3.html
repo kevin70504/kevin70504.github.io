@@ -138,17 +138,12 @@
 				matbtn02.addEventListener("click",function(){
 					material.map = textureloader.load(
 					"./textures/tiles/Tiles_bathroom.jpg",
-					function(texture){
-						texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-						texture.offset.set(0,0);
-						texture.repeat.set(2,2);
-					},
-					function(err){
-						console.log("An error happened");
-					});
-					texture.needsUpdate = true;
+					texture.wrapS = texture.wrapT = THREE.RepeatWrapping,
+					texture.offset.set(0,0),
+					texture.repeat.set(2,2),
+					texture.needsUpdate = true,
 					//material.needsUpdate = true;
-				});
+				)});
 
 				const matbtn03 = document.getElementById("3");
 				matbtn03.addEventListener("click",function(){
