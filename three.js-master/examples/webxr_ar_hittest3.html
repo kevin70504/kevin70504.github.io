@@ -103,16 +103,16 @@
 					console.log("An error happened");
 				});
 
-				/*texture2 = textureloader.load(
+				texture2 = textureloader.load(
 				"./textures/tiles/Tiles_bathroom.jpg",
-				function(texture){
-					texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-					texture.offset.set(0,0);
-					texture.repeat.set(2,2);
+				function(texture2){
+					texture2.wrapS = texture2.wrapT = THREE.RepeatWrapping;
+					texture2.offset.set(0,0);
+					texture2.repeat.set(2,2);
 				},
 				function(err){
 					console.log("An error happened");
-				});*/
+				});
 
 
 				//
@@ -325,7 +325,7 @@
 			}
 		}
 
-		function scaleObject(){
+		/*function scaleObject(){
 			if(mesh && reticle.visible){
 				mesh.scale.x += deltaX / 100;
 				mesh.scale.y += deltaX / 100;
@@ -338,17 +338,17 @@
 				texture.needsUpdate = true;
 				material.needsUpdate = true;
 			}
-		}
+		}*/
 
-		/*function scaleObject(){
+		function scaleObject(){
 			if(mesh && reticle.visible){
 				mesh.scale.x += deltaX / 100;
 				mesh.scale.y += deltaX / 100;
 				mesh.scale.z += deltaX / 100;
 
 				if(material.map == texture1){
-					texture1.repeat.x += deltaX / 100;
-        			texture1.repeat.y += deltaX / 100;
+					texture.repeat.x += deltaX / 100;
+        			texture.repeat.y += deltaX / 100;
 					material.map.repeat.x += deltaX / 100;
 					material.map.repeat.y += deltaX / 100;
 					texture.needsUpdate = true;
@@ -357,9 +357,13 @@
 				else{
 					texture2.repeat.x += deltaX / 100;
         			texture2.repeat.y += deltaX / 100;
+					material.map.repeat.x += deltaX / 100;
+					material.map.repeat.y += deltaX / 100;
+					texture2.needsUpdate = true;
+					material.needsUpdate = true;
 				}
 			}
-		}*/
+		}
 
 
 
