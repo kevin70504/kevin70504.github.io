@@ -14,6 +14,8 @@
 <body>
     <button type="button" id="1">+1</button>
     <button type="button" id="2">-1</button>
+    <button type="button" id="3">texture1</button>
+    <button type="button" id="4">texture2</button>
 </body>
 
 <script src = "../js/three.js"></script>
@@ -21,10 +23,21 @@
 <script type="module">
     
     let meshscale;
-    let texture;
+    let texture1,texture2;
     const loader = new THREE.TextureLoader();
-    texture = loader.load(
+    texture1 = loader.load(
     "marble_01_diff_1k.jpg",
+    function(texture){
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        texture.offset.set(0,0);
+        texture.repeat.set(2,2);
+    },
+    function(err){
+        console.log("An error happened");
+    });
+
+    texture2 = loader.load(
+    "brick_wall_003_diffuse_1k.jpg",
     function(texture){
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
         texture.offset.set(0,0);
@@ -46,7 +59,7 @@
     // 創建一個正方形Geometry
     const geometry = new THREE.PlaneBufferGeometry(2,2);
     // 創建基礎材質球
-    const material = new THREE.MeshBasicMaterial({map: texture });
+    const material = new THREE.MeshBasicMaterial({map: texture1 });
     //創建一個網格Mesh
     const plane = new THREE.Mesh(geometry, material);
 
@@ -71,8 +84,15 @@
         plane.scale.x += 0.1;
         plane.scale.y += 0.1;
         plane.scale.z += 0.1;
-        texture.repeat.x += 0.1;
-        texture.repeat.y += 0.1;
+        if(material.map == texture1){
+            texture1.repeat.x += 0.1;
+            texture1.repeat.y += 0.1;
+        }
+        else {
+            texture2.repeat.x += 0.1;
+            texture2.repeat.y += 0.1;
+        }
+
     });
 
     const matbtn02 = document.getElementById("2");
@@ -80,9 +100,30 @@
         plane.scale.x -= 0.1;
         plane.scale.y -= 0.1;
         plane.scale.z -= 0.1;
-        texture.repeat.x -= 0.1;
-        texture.repeat.y -= 0.1;
+        if(material.map == texture1){
+            texture1.repeat.x -= 0.1;
+            texture1.repeat.y -= 0.1;
+        }
+        else {
+            texture2.repeat.x -= 0.1;
+            texture2.repeat.y -= 0.1;
+        }
+
     });
+
+    const matbtn03 = document.getElementById("3");
+    matbtn03.addEventListener("click",function(){
+        material.map = texture1;
+        texture2.dispose();
+    });
+
+    const matbtn04 = document.getElementById("4");
+    matbtn04.addEventListener("click",function(){
+        material.map = texture2;
+        texture1.dispose();
+    });
+
+
 
 
 

@@ -89,6 +89,8 @@
 				//document.body.appendChild( ARButton.createButton( renderer, { requiredFeatures: [ 'hit-test' ] } ) );
 				document.body.appendChild(ARButton.createButton(renderer,options));
 
+				//
+
 				const textureloader = new THREE.TextureLoader();
 				texture1 = textureloader.load(
 				"./textures/floors/FloorsCheckerboard_S_Diffuse.jpg",
@@ -100,6 +102,19 @@
 				function(err){
 					console.log("An error happened");
 				});
+
+				texture2 = textureloader.load(
+				"./textures/tiles/Tiles_bathroom.jpg",
+				function(texture){
+					texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+					texture.offset.set(0,0);
+					texture.repeat.set(2,2);
+				},
+				function(err){
+					console.log("An error happened");
+				});
+
+
 				//
 
 				function changeMaterial(e1,boxE1){
@@ -124,19 +139,17 @@
 
 				const matbtn01 = document.getElementById("1");
 				matbtn01.addEventListener("click",function(){
-					material.map = textureloader.load("./textures/floors/FloorsCheckerboard_S_Diffuse.jpg");
-					texture.needsUpdate = true;
-					//material.needsUpdate = true;
+					material.map = texture1;
+					texture2.dispose();
+					texture1.needsUpdate = true;
+					material.needsUpdate = true;
 				});
 
 				const matbtn02 = document.getElementById("2");
 				matbtn02.addEventListener("click",function(){
-					material.map = textureloader.load(
-					"./textures/tiles/Tiles_bathroom.jpg");
-					material.map.wrapS = material.map.wrapT = THREE.RepeatWrapping;
-					material.map.offset.set(0,0);
-					material.map.repeat.set(2,2);
-					material.map.needsUpdate = true;
+					material.map = texture2;
+					texture1.dispose();
+					texture2.needsUpdate = true;
 					material.needsUpdate = true;
 				});
 
@@ -317,10 +330,15 @@
 				mesh.scale.x += deltaX / 100;
 				mesh.scale.y += deltaX / 100;
 				mesh.scale.z += deltaX / 100;
-				texture1.repeat.x += deltaX / 100;
-        		texture1.repeat.y += deltaX / 100;
-				//material.map.repeat.x += deltaX / 100;
-				//material.map.repeat.y += deltaX / 100;
+
+				if(material.map == texture1){
+					texture1.repeat.x += deltaX / 100;
+        			texture1.repeat.y += deltaX / 100;
+				}
+				else{
+					texture2.repeat.x += deltaX / 100;
+        			texture2.repeat.y += deltaX / 100;
+				}
 			}
 		}
 
