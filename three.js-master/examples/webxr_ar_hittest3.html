@@ -149,6 +149,8 @@
 				const geometry = new THREE.CylinderGeometry( 0.1, 0.1, 0.2, 32 ).translate( 0, 0.1, 0 );
 				const planegeo = new THREE.PlaneBufferGeometry(0.5,0.5);
 				material = new THREE.MeshBasicMaterial( { map:texture } );
+				mesh = new THREE.Mesh( planegeo, material );
+				scene.add( mesh );
 
 				/*function onSelect() {
 
@@ -206,10 +208,8 @@
 				const setbtn = document.getElementById("place-button");
 				setbtn.addEventListener("click",function(){
 					if ( reticle.visible ) {
-						mesh = new THREE.Mesh( planegeo, material );
 						mesh.position.setFromMatrixPosition( reticle.matrix );
 						mesh.rotation.x = -(Math.PI / 2);
-						scene.add( mesh );
 					}
 					console.log("按鈕運作");
 				})
