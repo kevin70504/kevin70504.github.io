@@ -51,6 +51,7 @@
 			let hitTestSourceRequested = false;
 
 			let texture,texture2,texture3,texture4,mesh;
+			let material;
 
 			init();
 			animate();
@@ -123,7 +124,7 @@
 
 				const geometry = new THREE.CylinderGeometry( 0.1, 0.1, 0.2, 32 ).translate( 0, 0.1, 0 );
 				const planegeo = new THREE.PlaneBufferGeometry(0.5,0.5);
-				const material = new THREE.MeshBasicMaterial( { map:texture } );
+				material = new THREE.MeshBasicMaterial( { map:texture } );
 
 				/*function onSelect() {
 
