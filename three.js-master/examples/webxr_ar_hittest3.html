@@ -325,7 +325,7 @@
 			}
 		}
 
-		function scaleObject(){
+		/*function scaleObject(){
 			if(mesh && reticle.visible){
 				mesh.scale.x += deltaX / 100;
 				mesh.scale.y += deltaX / 100;
@@ -338,22 +338,21 @@
 				texture.needsUpdate = true;
 				material.needsUpdate = true;
 			}
-		}
+		}*/
 
-		/*function scaleObject(){
-			if(mesh && reticle.visible){
+		function scaleObject(){
+			if(mesh && reticle.visible && material.map == texture){
 				mesh.scale.x += deltaX / 100;
 				mesh.scale.y += deltaX / 100;
 				mesh.scale.z += deltaX / 100;
 
-				if(material.map == texture){
-					texture.repeat.x += deltaX / 100;
-        			texture.repeat.y += deltaX / 100;
-					material.map.repeat.x += deltaX / 100;
-					material.map.repeat.y += deltaX / 100;
-					texture.needsUpdate = true;
-					material.needsUpdate = true;
-				}
+				texture.repeat.x += deltaX / 100;
+				texture.repeat.y += deltaX / 100;
+				material.map.repeat.x += deltaX / 100;
+				material.map.repeat.y += deltaX / 100;
+				texture.needsUpdate = true;
+				material.needsUpdate = true;
+
 				/*else if((material.map == texture2)){
 					texture2.repeat.x += deltaX / 100;
         			texture2.repeat.y += deltaX / 100;
@@ -361,9 +360,9 @@
 					material.map.repeat.y += deltaX / 100;
 					texture2.needsUpdate = true;
 					material.needsUpdate = true;
-				}
+				}*/
 			}
-		}*/
+		}
 
 
 
