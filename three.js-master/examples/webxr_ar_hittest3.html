@@ -93,11 +93,11 @@
 
 				const textureloader = new THREE.TextureLoader();
 				texture1 = textureloader.load(
-				"./textures/floors/FloorsCheckerboard_S_Diffuse.jpg",
-				function(texture1){
-					texture1.wrapS = texture1.wrapT = THREE.RepeatWrapping;
-					texture1.offset.set(0,0);
-					texture1.repeat.set(2,2);
+				"./textures/brick_diffuse.jpg",
+				function(texture){
+					texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+					texture.offset.set(0,0);
+					texture.repeat.set(2,2);
 				},
 				function(err){
 					console.log("An error happened");
