@@ -135,7 +135,7 @@
 				});
 
 				const matbtn02 = document.getElementById("2");
-				matbtn02.addEventListener("click",function(){
+				matbtn02.addEventListener("click",function(texture){
 					material.map = textureloader.load(
 					"./textures/tiles/Tiles_bathroom.jpg",
 					texture.wrapS = texture.wrapT = THREE.RepeatWrapping,
@@ -143,7 +143,8 @@
 					texture.repeat.set(2,2),
 					texture.needsUpdate = true,
 					//material.needsUpdate = true;
-				)});
+				)
+				});
 
 				const matbtn03 = document.getElementById("3");
 				matbtn03.addEventListener("click",function(){
