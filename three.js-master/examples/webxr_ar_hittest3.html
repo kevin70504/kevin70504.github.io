@@ -22,6 +22,8 @@
 		<span style="font-size:30px;cursor:pointer;position: absolute;" onclick="openNav()">&#9776; open</span>
 		
 		<button type="button" id="place-button">PLACE</button>
+		<button type="button" id="complete-button">Complete</button>
+
 		</div>
 
 
@@ -52,6 +54,8 @@
 
 			let texture,texture2,texture3,texture4,mesh;
 			let material;
+
+			let index = 0;
 
 			init();
 			animate();
@@ -150,6 +154,7 @@
 				const planegeo = new THREE.PlaneBufferGeometry(0.5,0.5);
 				material = new THREE.MeshBasicMaterial( { map:texture } );
 				mesh = new THREE.Mesh( planegeo, material );
+				mesh.visible = false;
 				scene.add( mesh );
 
 				/*function onSelect() {
@@ -207,13 +212,27 @@
 				//
 				const setbtn = document.getElementById("place-button");
 				setbtn.addEventListener("click",function(){
-					if ( reticle.visible ) {
+					if ( reticle.visible && index == 0 ) {
 						mesh.position.setFromMatrixPosition( reticle.matrix );
 						mesh.rotation.x = -(Math.PI / 2);
+						mesh.visible = true;
 					}
-					console.log("按鈕運作");
+					else if(reticle.visible && index == 1){
+						mesh = new THREE.Mesh( planegeo, material );
+						mesh.position.setFromMatrixPosition( reticle.matrix );
+						mesh.rotation.x = -(Math.PI / 2);
+						mesh.visible = true;
+						scene.add( mesh );
+						index = 0;
+					}
 				})
 
+				const combtn = document.getElementById("complete-button")
+				combtn.addEventListener("click",function(){
+					if(index == 0 ){
+						index++;
+					}
+				});
 				//
 
 				/*controller = renderer.xr.getController( 0 );
@@ -358,21 +377,6 @@
 				mesh.rotation.y += deltaX / 100;
 			}
 		}
-
-		/*function scaleObject(){
-			if(mesh && reticle.visible){
-				mesh.scale.x += deltaX / 100;
-				mesh.scale.y += deltaX / 100;
-				mesh.scale.z += deltaX / 100;
-
-				texture.repeat.x += deltaX / 100;
-        		texture.repeat.y += deltaX / 100;
-				material.map.repeat.x += deltaX / 100;
-				material.map.repeat.y += deltaX / 100;
-				texture.needsUpdate = true;
-				material.needsUpdate = true;
-			}
-		}*/
 
 		function scaleObject(){
 			if(mesh && reticle.visible){
