@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html> <!--告訴網站這個是網頁-->
+
+<html>
+
+<head>
+
+    <meta charset="utf-8"></meta>
+    <title>THREE.js_GetPointDistance</title>
+    <link rel="stylesheet" href="main.css">
+
+</head>
+
+<style>
+    body {
+        margin: 0;
+    }
+</style>
+
+<body>
+   <button type="button" id="crateMesh">CrateMesh</button>
+   <button type="button" id="getArray">GetArray</button>
+   <button type="button" id="uvplus">UV+1</button>
+   <button type="button" id="uvdis">UV-1</button>
+   <button type="button" id="text1">Tex1</button>
+   <button type="button" id="text2">Tex2</button>
+</body>
+<script src="../js/three.js"></script> <!--獲取three.js API-->
+<script>
+
+    //創建場景
+    const scene = new THREE.Scene();
+    //創建攝影機、視野(FOV)、綜橫比
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    //創建WebGL渲染器
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement)
+
+    let texture1,texture2;
+    const tex_Arr = [];
+    const Mat_Arr = [];
+
+    const loader = new THREE.TextureLoader();
+    texture1 = loader.load(
+    "marble_01_diff_1k.jpg",
+    function(texture){
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        texture.offset.set(0,0);
+        texture.repeat.set(2,2);
+    },
+    function(err){
+        console.log("An error happened");
+    });
+    texture2 = loader.load(
+    "brick_wall_003_diffuse_1k.jpg",
+    function(texture){
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        texture.offset.set(0,0);
+        texture.repeat.set(2,2);
+    },
+    function(err){
+        console.log("An error happened");
+    });
+
+    tex_Arr.push(texture1);
+    tex_Arr.push(texture2);
+
+    // 創建一個正方形Geometry
+    const geometry = new THREE.PlaneBufferGeometry(2,2);
+    //創建基礎材質球，顏色為綠色0x00ff00
+    const material = new THREE.MeshBasicMaterial({ map: tex_Arr[0] });
+    //創建網格Mesh
+    const cube = new THREE.Mesh(geometry, material);
+    cube.position.set(0,0,0);
+
+    Mat_Arr.push(material);
+
+    //攝影機的位置往z軸移動5單位
+    camera.position.z = 5;
+
+    const circleGeo = new THREE.CircleBufferGeometry(1,16);
+    const cirMat = new THREE.MeshBasicMaterial({color:0xff0000,wireframe:true});
+    const circleMesh = new THREE.Mesh(circleGeo,cirMat);
+    circleMesh.position.set(1,1,0);
+    scene.add(circleMesh);
+
+
+    const creatbtn = document.getElementById("crateMesh");
+    const getbtn = document.getElementById("getArray");
+    const upbtn = document.getElementById("uvplus");
+    const disbtn = document.getElementById("uvdis");
+    const textbtn01 = document.getElementById("text1");
+    const textbtn02 = document.getElementById("text2");
+
+
+    let i = 0;
+    let u = 0;
+    let a = 0.5;
+
+    creatbtn.addEventListener("click",() => {
+        i++;
+        u++;
+        const material1 = new THREE.MeshBasicMaterial({ map: tex_Arr[0] });
+        Mat_Arr.push(material1);
+        const cube = new THREE.Mesh(geometry,Mat_Arr[i]);
+        cube.position.set(a,0,0);
+        scene.add(cube);
+        a += 0.5;
+    });
+    getbtn.addEventListener("click",() => {
+        const material1 = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        Mat_Arr.push(material1);
+        console.log(Mat_Arr);  
+    });
+    upbtn.addEventListener("click",() => {
+        Mat_Arr[i].map.repeat.x += 0.1;
+        Mat_Arr[i].map.repeat.y += 0.1;    
+    });
+    disbtn.addEventListener("click",() => {
+        Mat_Arr[i].map.repeat.x -= 0.1;
+        Mat_Arr[i].map.repeat.y -= 0.1;    
+    });
+    textbtn01.addEventListener("click",() => {
+        Mat_Arr[i].map = texture1;
+        texture2.dispose();
+    });
+    textbtn02.addEventListener("click",() => {
+        Mat_Arr[i].map  = texture2;
+        texture1.dispose();
+    });
+
+
+
+
+
+    
+    //添加到場景座標
+    scene.add(cube);
+
+
+    //場景渲染出來
+    function animate() {
+        requestAnimationFrame(animate);
+
+        renderer.render(scene, camera);
+    };
+
+    animate();
+
+
+</script>
+
+</html>

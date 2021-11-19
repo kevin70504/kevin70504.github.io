@@ -1,0 +1,174 @@
+﻿<!DOCTYPE html> <!--告訴網站這個是網頁-->
+
+<html>
+
+<head>
+
+    <meta charset="utf-8"></meta>
+    <title>THREE.js_GetPointDistance</title>
+    <link rel="stylesheet" href="main.css">
+
+</head>
+
+<style>
+    body {
+        margin: 0;
+    }
+</style>
+
+<body>
+</body>
+
+<script type="module">
+
+    import * as THREE from '../js/three.module.js';
+    import { OrbitControls } from '../js/OrbitControls.js'
+
+    //創建場景
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xbfd1e5);
+
+    //創建攝影機、視野(FOV)、綜橫比
+    const camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 1500);
+    camera.position.set(-35, 70, 100);
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+    //創建WebGL渲染器
+    const renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    document.body.appendChild(renderer.domElement)
+
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    window.addEventListener('resize', onWindowResize);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+
+    //燈光
+    let hemiLight = new THREE.AmbientLight(0xffffff, 0.20);
+    scene.add(hemiLight);
+
+    //Add directional light
+    let dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight.position.set(-30, 50, -30);
+    scene.add(dirLight);
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.width = 2048;
+    dirLight.shadow.mapSize.height = 2048;
+    dirLight.shadow.camera.left = -70;
+    dirLight.shadow.camera.right = 70;
+    dirLight.shadow.camera.top = 70;
+    dirLight.shadow.camera.bottom = -70;
+
+    //場景渲染出來
+    function animate() {
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+    }
+
+    let material = new THREE.MeshPhongMaterial({ color: 0xDC143C });
+
+    function createFloor() {
+    let pos = { x: 0, y: -1, z: 3 };
+    let scale = { x: 100, y: 2, z: 100 };
+
+    let blockPlane = new THREE.Mesh(new THREE.BoxBufferGeometry(),
+    new THREE.MeshPhongMaterial({ color: 0xf9c834 }));
+    blockPlane.position.set(pos.x, pos.y, pos.z);
+    blockPlane.scale.set(scale.x, scale.y, scale.z);
+    blockPlane.castShadow = true;
+    blockPlane.receiveShadow = true;
+    scene.add(blockPlane);
+
+    blockPlane.userData.ground = true;
+    }
+
+    // box
+    function createBox() {
+    let scale = { x: 6, y: 6, z: 6 };
+    let pos = { x: 15, y: scale.y / 2, z: 15 };
+
+    let box = new THREE.Mesh(new THREE.BoxBufferGeometry(),material);
+    box.position.set(pos.x, pos.y, pos.z);
+    box.scale.set(scale.x, scale.y, scale.z);
+    box.castShadow = true;
+    box.receiveShadow = true;
+    scene.add(box);
+
+    box.userData.draggable = true;
+    box.userData.name = 'BOX';
+    }
+
+    function createSphere() {
+    let radius = 4;
+    let pos = { x: 15, y: radius, z: -15 };
+
+    let sphere = new THREE.Mesh(new THREE.SphereBufferGeometry(radius, 32, 32), 
+        new THREE.MeshPhongMaterial({ color: 0x43a1f4 }))
+    sphere.position.set(pos.x, pos.y, pos.z)
+    sphere.castShadow = true;
+    sphere.receiveShadow = true;
+    scene.add(sphere);
+
+    sphere.userData.draggable = true;
+    sphere.userData.name = 'SPHERE';
+    }
+
+    function createCylinder() {
+    let radius = 4;
+    let height = 6;
+    let pos = { x: -15, y: height / 2, z: 15 };
+
+    // threejs
+    let cylinder = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius, radius, height, 32), new THREE.MeshPhongMaterial({ color: 0x90ee90 }))
+    cylinder.position.set(pos.x, pos.y, pos.z)
+    cylinder.castShadow = true;
+    cylinder.receiveShadow = true;
+    scene.add(cylinder);
+
+    cylinder.userData.draggable = true;
+    cylinder.userData.name = 'CYLINDER';
+    }
+
+    const raycaster = new THREE.Raycaster();
+    const clickMouse = new THREE.Vector2();
+    const moveMouse = new THREE.Vector2();
+    var draggable = THREE.Object3D;
+    let target;
+
+    window.addEventListener("click",event =>{
+        //透過滑鼠點選的位置計算出 raycaster 所需要的點的位置，以螢幕中心為原點，值的範圍為-1到1.
+        clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+        // 透過滑鼠點的位置和當前相機的矩陣計算出 raycaster值
+        raycaster.setFromCamera(clickMouse,camera);
+        // 取得 raycaster 射線和所有物件相交的陣列集合
+        const found = raycaster.intersectObjects(scene.children);
+        if(found.length > 0 && found[0].object.userData.draggable){
+            draggable = found[0].object;
+            found[0].object.material.color.set(0x535353);
+            console.log("找到",draggable.userData.name);
+            if(draggable.userData.name == "SPHERE"){
+                
+            }
+        }
+    });
+
+
+    createFloor();
+    createBox();
+    createSphere();
+    createCylinder();
+
+    animate();
+
+
+</script>
+
+</html>
