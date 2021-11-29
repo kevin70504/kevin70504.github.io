@@ -14,9 +14,28 @@
     body {
         margin: 0;
     }
+    #Mode01{
+        position: absolute;
+        top: 100px;
+        right: 20px;
+        width: 100px;
+        height: 35px;
+    }
+    #text{
+        position: absolute;
+        top: 50px;
+        right: 600px;
+        color: black;
+    }
 </style>
 
 <body>
+    <button type="button" id="creatMesh">CreatMesh</button>
+    <button type="button" id="tex1">Tex1</button>
+    <button type="button" id="tex2">Tex2</button>
+    <button type="button" id="Mode01">Click Mode</button>
+    <div id="text">123</div>
+    
 </body>
 
 <script type="module">
@@ -71,7 +90,40 @@
         requestAnimationFrame(animate);
     }
 
-    let material = new THREE.MeshPhongMaterial({ color: 0xDC143C });
+    let texture1,texture2;
+    let mat_index = 0;
+    let mesh_index = 0;
+    const tex_Arr = [];
+    const Mat_Arr = [];
+    let Mesh_Arr =[];
+
+    const loader = new THREE.TextureLoader();
+    texture1 = loader.load(
+    "marble_01_diff_1k.jpg",
+    function(texture){
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        texture.offset.set(0,0);
+        texture.repeat.set(2,2);
+    },
+    function(err){
+        console.log("An error happened");
+    });
+    texture2 = loader.load(
+    "brick_wall_003_diffuse_1k.jpg",
+    function(texture){
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        texture.offset.set(0,0);
+        texture.repeat.set(2,2);
+    },
+    function(err){
+        console.log("An error happened");
+    });
+
+    tex_Arr.push(texture1);
+    tex_Arr.push(texture2);
+
+    let material = new THREE.MeshPhongMaterial({ map: tex_Arr[0] });
+    Mat_Arr.push(material);
 
     function createFloor() {
     let pos = { x: 0, y: -1, z: 3 };
@@ -93,7 +145,11 @@
     let scale = { x: 6, y: 6, z: 6 };
     let pos = { x: 15, y: scale.y / 2, z: 15 };
 
-    let box = new THREE.Mesh(new THREE.BoxBufferGeometry(),material);
+    let material2 = new THREE.MeshPhongMaterial({ map: tex_Arr[0] });
+    Mat_Arr.push(material2);
+    mat_index++;
+    let box = new THREE.Mesh(new THREE.BoxBufferGeometry(),Mat_Arr[mat_index]);
+
     box.position.set(pos.x, pos.y, pos.z);
     box.scale.set(scale.x, scale.y, scale.z);
     box.castShadow = true;
@@ -101,39 +157,61 @@
     scene.add(box);
 
     box.userData.draggable = true;
-    box.userData.name = 'BOX';
+    box.userData.name = 'BOX'+ mesh_index;
+
+    Mesh_Arr.push(box);
     }
 
-    function createSphere() {
-    let radius = 4;
-    let pos = { x: 15, y: radius, z: -15 };
+    const btn_CreatMesh = document.getElementById("creatMesh");
+    const btn_Tex1 = document.getElementById("tex1");
+    const btn_Tex2 = document.getElementById("tex2");
+    const btn_clickmode = document.getElementById("Mode01");
 
-    let sphere = new THREE.Mesh(new THREE.SphereBufferGeometry(radius, 32, 32), 
-        new THREE.MeshPhongMaterial({ color: 0x43a1f4 }))
-    sphere.position.set(pos.x, pos.y, pos.z)
-    sphere.castShadow = true;
-    sphere.receiveShadow = true;
-    scene.add(sphere);
+    let a = 10;
 
-    sphere.userData.draggable = true;
-    sphere.userData.name = 'SPHERE';
-    }
+    btn_CreatMesh.addEventListener("click",()=>{
+        mesh_index++;
+        a -= 8;
+        createBox();
+        Mesh_Arr[mesh_index].position.set(15,3,a);
+    });
 
-    function createCylinder() {
-    let radius = 4;
-    let height = 6;
-    let pos = { x: -15, y: height / 2, z: 15 };
+    btn_Tex1.addEventListener("click",()=>{
+        if(draggable.userData.name == Mesh_Arr[0].userData.name){
+            draggable.material.map = tex_Arr[0];
+            tex_Arr[1].dispose();
+        }
+        else if(draggable.userData.name == Mesh_Arr[1].userData.name){
+            draggable.material.map = tex_Arr[0];
+            tex_Arr[1].dispose();
+        }
+    });
 
-    // threejs
-    let cylinder = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius, radius, height, 32), new THREE.MeshPhongMaterial({ color: 0x90ee90 }))
-    cylinder.position.set(pos.x, pos.y, pos.z)
-    cylinder.castShadow = true;
-    cylinder.receiveShadow = true;
-    scene.add(cylinder);
+    btn_Tex2.addEventListener("click",()=>{
+        if(draggable.userData.name == Mesh_Arr[0].userData.name){
+            draggable.material.map = tex_Arr[1];
+            tex_Arr[0].dispose();
+        }
+        else if(draggable.userData.name == Mesh_Arr[1].userData.name){
+            draggable.material.map = tex_Arr[1];
+            tex_Arr[0].dispose();
+        }
+    });
 
-    cylinder.userData.draggable = true;
-    cylinder.userData.name = 'CYLINDER';
-    }
+    btn_clickmode.addEventListener("click",()=>{
+        const click_text = document.getElementById("text");
+        console.log(click_text);
+        click_text.textContent = "456";
+    });
+    
+
+
+
+
+
+
+
+    
 
     const raycaster = new THREE.Raycaster();
     const clickMouse = new THREE.Vector2();
@@ -152,19 +230,13 @@
         const found = raycaster.intersectObjects(scene.children);
         if(found.length > 0 && found[0].object.userData.draggable){
             draggable = found[0].object;
-            found[0].object.material.color.set(0x535353);
             console.log("找到",draggable.userData.name);
-            if(draggable.userData.name == "SPHERE"){
-                console.log("SPHERE")
-            }
         }
     });
 
 
     createFloor();
     createBox();
-    createSphere();
-    createCylinder();
 
     animate();
 

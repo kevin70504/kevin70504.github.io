@@ -1,0 +1,350 @@
+﻿<!DOCTYPE html> <!--告訴網站這個是網頁-->
+
+<html>
+
+<head>
+
+    <meta charset="utf-8"></meta>
+    <title>THREE.js_GetPointDistance</title>
+    <link rel="stylesheet" href="main.css">
+
+</head>
+
+<style>
+    body {
+        margin: 0;
+    }
+    #Mode01{
+        position: absolute;
+        top: 100px;
+        right: 20px;
+        width: 100px;
+        height: 35px;
+    }
+    #text{
+        position:absolute;
+        top: 50px;
+        left: calc(45%);
+        color: black;
+        background-color: white;
+        width: 140px;
+        text-align:center;
+        display: none;
+
+    }
+    #left{
+        position: absolute;
+        bottom: 50px;
+        left: calc(50%);
+        width: 70px;
+        height: 35px;
+        display: none;
+    }
+</style>
+</style>
+
+<body>
+    <button type="button" id="creatMesh">CreatMesh</button>
+    <button type="button" id="tex1">Tex1</button>
+    <button type="button" id="tex2">Tex2</button>
+    <button type="button" id="Mode01">Click Mode</button>
+    <button type="button" id="left">Change</button>
+    <button type="button" id="right">→</button>
+    <div id="text">Click Mode Open</div>
+    
+</body>
+
+<script type="module">
+
+    import * as THREE from '../js/three.module.js';
+    import { OrbitControls } from '../js/OrbitControls.js'
+
+    //創建場景
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xbfd1e5);
+
+    //創建攝影機、視野(FOV)、綜橫比
+    const camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 1500);
+    camera.position.set(-35, 70, 100);
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+    //創建WebGL渲染器
+    const renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    document.body.appendChild(renderer.domElement)
+
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    window.addEventListener('resize', onWindowResize);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+
+    //燈光
+    let hemiLight = new THREE.AmbientLight(0xffffff, 0.20);
+    scene.add(hemiLight);
+
+    //Add directional light
+    let dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight.position.set(-30, 50, -30);
+    scene.add(dirLight);
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.width = 2048;
+    dirLight.shadow.mapSize.height = 2048;
+    dirLight.shadow.camera.left = -70;
+    dirLight.shadow.camera.right = 70;
+    dirLight.shadow.camera.top = 70;
+    dirLight.shadow.camera.bottom = -70;
+
+    //場景渲染出來
+    function animate() {
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+    }
+
+    let texture1,texture2;
+    let mat_index = 0;
+    let mesh_index = 0;
+    const tex_Arr = [];
+    const Mat_Arr = [];
+    let Mesh_Arr =[];
+    let mode01_index = 0 ;
+    let target = THREE.Object3D;
+    let index = 0;
+
+    const loader = new THREE.TextureLoader();
+    texture1 = loader.load(
+    "marble_01_diff_1k.jpg",
+    function(texture){
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        texture.offset.set(0,0);
+        texture.repeat.set(2,2);
+    },
+    function(err){
+        console.log("An error happened");
+    });
+    texture2 = loader.load(
+    "brick_wall_003_diffuse_1k.jpg",
+    function(texture){
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        texture.offset.set(0,0);
+        texture.repeat.set(2,2);
+    },
+    function(err){
+        console.log("An error happened");
+    });
+
+    tex_Arr.push(texture1);
+    tex_Arr.push(texture2);
+
+    let material = new THREE.MeshPhongMaterial({ map: tex_Arr[0] });
+    Mat_Arr.push(material);
+
+    function createFloor() {
+    let pos = { x: 0, y: -1, z: 3 };
+    let scale = { x: 100, y: 2, z: 100 };
+
+    let blockPlane = new THREE.Mesh(new THREE.BoxBufferGeometry(),
+    new THREE.MeshPhongMaterial({ color: 0xf9c834 }));
+    blockPlane.position.set(pos.x, pos.y, pos.z);
+    blockPlane.scale.set(scale.x, scale.y, scale.z);
+    blockPlane.castShadow = true;
+    blockPlane.receiveShadow = true;
+    scene.add(blockPlane);
+
+    blockPlane.userData.ground = true;
+    }
+
+    // box
+    function createBox() {
+    let scale = { x: 6, y: 6, z: 6 };
+    let pos = { x: 15, y: scale.y / 2, z: 15 };
+
+    let material2 = new THREE.MeshPhongMaterial({ map: tex_Arr[0] });
+    Mat_Arr.push(material2);
+    mat_index++;
+    let box = new THREE.Mesh(new THREE.BoxBufferGeometry(),Mat_Arr[mat_index]);
+
+    box.position.set(pos.x, pos.y, pos.z);
+    box.scale.set(scale.x, scale.y, scale.z);
+    box.castShadow = true;
+    box.receiveShadow = true;
+    scene.add(box);
+
+    box.userData.draggable = true;
+    box.userData.name = 'BOX'+ mesh_index;
+
+    Mesh_Arr.push(box);
+    }
+    function createSphere() {
+    let radius = 4;
+    let pos = { x: 15, y: radius, z: -15 };
+
+    // sphere
+    let sphere = new THREE.Mesh(new THREE.SphereBufferGeometry(radius, 32, 32), 
+        new THREE.MeshPhongMaterial({ map:tex_Arr[0] }))
+    sphere.position.set(pos.x, pos.y, pos.z)
+    sphere.castShadow = true;
+    sphere.receiveShadow = true;
+    scene.add(sphere);
+
+    sphere.userData.draggable = true;
+    sphere.userData.name = 'SPHERE';
+
+    Mesh_Arr.push(sphere);
+    }
+
+    function createCylinder() {
+    let radius = 4;
+    let height = 6;
+    let pos = { x: -15, y: height / 2, z: 15 };
+
+    // cylinder
+    let cylinder = new THREE.Mesh(new THREE.CylinderBufferGeometry(radius, radius, height, 32), new THREE.MeshPhongMaterial({ map:tex_Arr[0] }))
+    cylinder.position.set(pos.x, pos.y, pos.z)
+    cylinder.castShadow = true;
+    cylinder.receiveShadow = true;
+    scene.add(cylinder);
+
+    cylinder.userData.draggable = true;
+    cylinder.userData.name = 'CYLINDER';
+
+    Mesh_Arr.push(cylinder);
+    }
+
+
+    const btn_CreatMesh = document.getElementById("creatMesh");
+    const btn_Tex1 = document.getElementById("tex1");
+    const btn_Tex2 = document.getElementById("tex2");
+    const btn_clickmode = document.getElementById("Mode01");
+    const btn_left = document.getElementById("left");
+    const btn_right = document.getElementById("right");
+
+    let a = 10;
+
+    btn_CreatMesh.addEventListener("click",()=>{
+        mesh_index++;
+        a -= 8;
+        createBox();
+        Mesh_Arr[mesh_index].position.set(15,3,a);
+    });
+
+    btn_Tex1.addEventListener("click",()=>{
+        if(target.userData.name == Mesh_Arr[0].userData.name){
+            target.material.map = tex_Arr[0];
+            tex_Arr[1].dispose();
+        }
+        else if(target.userData.name == Mesh_Arr[1].userData.name){
+            target.material.map = tex_Arr[0];
+            tex_Arr[1].dispose();
+        }
+    });
+
+    btn_Tex2.addEventListener("click",()=>{
+        if(target.userData.name == Mesh_Arr[0].userData.name){
+            target.material.map = tex_Arr[1];
+            tex_Arr[0].dispose();
+        }
+        else if(target.userData.name == Mesh_Arr[1].userData.name){
+            target.material.map = tex_Arr[1];
+            tex_Arr[0].dispose();
+        }
+    });
+
+    btn_clickmode.addEventListener("click",()=>{
+        const click_text = document.getElementById("text");
+        const btn_left = document.getElementById("left");
+        if(mode01_index==0){
+            mode01_index++;
+            Mesh_Arr[0].material.color.set(0x535353);
+            target = Mesh_Arr[index];
+            click_text.style.display = "block";
+            btn_left.style.display = "block";
+        }
+        else if(mode01_index==1){
+            mode01_index=0;
+            click_text.style.display = "none";
+            btn_left.style.display = "none";
+            for (let i = 0; i < Mesh_Arr.length; i++) {
+                Mesh_Arr[i].material.color.set(0xffffff);               
+            }
+        }
+    
+    });
+
+    btn_left.addEventListener("click",function(){
+        Mode01_ChangeHightLight(0, 1, 2);
+    });
+
+    function Mode01_ChangeHightLight(a,b,c){
+        if(index == 0 && mode01_index==1 && target.userData.name == Mesh_Arr[a].userData.name ){
+            index++
+            target = Mesh_Arr[index];
+            target.material.color.set(0x535353);
+        }
+        else if(index == 1 && mode01_index==1 && target.userData.name == Mesh_Arr[b].userData.name){
+            index++
+            target = Mesh_Arr[index];
+            target.material.color.set(0x535353);
+        }
+        else if(index == 2 && mode01_index==1 && target.userData.name == Mesh_Arr[c].userData.name){
+            index = 0;
+            target = Mesh_Arr[index];
+            target.material.color.set(0x535353);
+        }
+        if(target != Mesh_Arr[0]){
+            Mesh_Arr[0].material.color.set(0xffffff);    
+        }
+        if(target != Mesh_Arr[1]){
+            Mesh_Arr[1].material.color.set(0xffffff);    
+        }
+        if(target != Mesh_Arr[2]){
+            Mesh_Arr[2].material.color.set(0xffffff);    
+        }   
+    }
+    
+
+
+
+
+
+
+
+    
+
+    const raycaster = new THREE.Raycaster();
+    const clickMouse = new THREE.Vector2();
+    const moveMouse = new THREE.Vector2();
+    var draggable = THREE.Object3D;
+
+    /*window.addEventListener("click",event =>{
+        //透過滑鼠點選的位置計算出 raycaster 所需要的點的位置，以螢幕中心為原點，值的範圍為-1到1.
+        clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+        // 透過滑鼠點的位置和當前相機的矩陣計算出 raycaster值
+        raycaster.setFromCamera(clickMouse,camera);
+        // 取得 raycaster 射線和所有物件相交的陣列集合
+        const found = raycaster.intersectObjects(scene.children);
+        if(found.length > 0 && found[0].object.userData.draggable){
+            draggable = found[0].object;
+            console.log("找到",draggable.userData.name);
+        }
+    });*/
+
+
+    createFloor();
+    createBox();
+    createCylinder();
+    createSphere();
+
+    animate();
+
+
+</script>
+
+</html>

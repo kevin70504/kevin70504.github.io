@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>THREE.js_GetOtherValue</title>
+</head>
+<style>
+    body {
+        overflow: hidden;
+        margin: 0px;
+    }
+</style>
+<body>
+
+</body>
+
+<script type="module">
+    import * as THREE from '../js/three.module.js'
+    import { DragControls } from '../js/DragControls.js'
+    import { OrbitControls } from '../js/OrbitControls.js'
+    
+
+    let texture1,texture2;
+    let scene, camera, renderer, orbit, tControl, tControl2, tControl3, dControl;
+    let target = THREE.Object3D;
+
+    const loader = new THREE.TextureLoader();
+    texture1 = loader.load(
+    "marble_01_diff_1k.jpg",
+    function(texture){
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        texture.offset.set(0,0);
+        texture.repeat.set(2,2);
+    },
+    function(err){
+        console.log("An error happened");
+    });
+    texture2 = loader.load(
+    "brick_wall_003_diffuse_1k.jpg",
+    function(texture){
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        texture.offset.set(0,0);
+        texture.repeat.set(2,2);
+    },
+    function(err){
+        console.log("An error happened");
+    });
+
+    //創建場景
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xbfd1e5);
+
+    //創建攝影機、視野(FOV)、綜橫比
+    camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 1500);
+    camera.position.set(-35, 70, 100);
+    //camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+    //創建WebGL渲染器
+    //renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer = new THREE.WebGLRenderer();
+    //renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    document.body.appendChild(renderer.domElement)
+
+    //燈光
+    let hemiLight = new THREE.AmbientLight(0xffffff, 0.20);
+    scene.add(hemiLight);
+
+    //Add directional light
+    let dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight.position.set(-30, 50, -30);
+    scene.add(dirLight);
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.width = 2048;
+    dirLight.shadow.mapSize.height = 2048;
+    dirLight.shadow.camera.left = -70;
+    dirLight.shadow.camera.right = 70;
+    dirLight.shadow.camera.top = 70;
+    dirLight.shadow.camera.bottom = -70;
+
+
+    function createFloor() {
+    let pos = { x: 0, y: -1, z: 3 };
+    let scale = { x: 100, y: 2, z: 100 };
+
+    let blockPlane = new THREE.Mesh(new THREE.BoxBufferGeometry(),
+    new THREE.MeshPhongMaterial({ color: 0xf9c834 }));
+    blockPlane.position.set(pos.x, pos.y, pos.z);
+    blockPlane.scale.set(scale.x, scale.y, scale.z);
+    blockPlane.castShadow = true;
+    blockPlane.receiveShadow = true;
+    scene.add(blockPlane);
+
+    blockPlane.userData.ground = true;
+    }
+
+    const geometry  = new THREE.BoxBufferGeometry(6,6,6);
+    const material = new THREE.MeshPhongMaterial({ map: texture1 });
+
+    const box = new THREE.Mesh(geometry,material);
+    box.position.set(15,3,15);
+    scene.add(box);
+
+
+    scene.add(new THREE.GridHelper(10,20))
+
+    orbit = new OrbitControls(camera, renderer.domElement);
+    dControl = new DragControls([box],camera,renderer.domElement);
+    dControl.addEventListener("dragstart",()=>{
+        orbit.enabled = false;
+    });
+    dControl.addEventListener("dragend",()=>{
+        orbit.enabled = true;
+    });
+
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    window.addEventListener('resize', onWindowResize);
+
+    createFloor();
+    animate();
+
+    //場景渲染出來
+    function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+    }
+
+    
+</script>    
+</html>

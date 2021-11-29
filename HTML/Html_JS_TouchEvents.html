@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8"></meta> 
+    <title>HTML_HelloWorld</title>
+</head>
+<style>
+
+</style>
+<body>
+    <h1> TouchEvents </h1>
+
+    <p> 我是內文 </p>
+
+</body>
+<script>
+
+    let touch;
+    let x ;
+    let a;
+    let b;
+    window.document.querySelector("p").addEventListener("touchstart",ev,false); //抓取<p>的觸碰開始事件
+    //window.document.querySelector("p").addEventListener("touchend",f);
+    //window.document.querySelector("p").addEventListener("touchmove",f);
+    document.addEventListener("touchstart",(e)=>{
+        touch = e.touches[0].pageY;
+        console.log(touch);
+    },false);
+
+    function f(ev){
+        console.log(ev.touches,ev.type);
+    }
+
+    function ev(ev){
+        ev.stopPropagation(); //防止程式冒泡發生
+        touch = ev.touches[0].pageY;
+        console.log(ev.touches);
+    }
+
+    function e(e){
+        touch = e.touches[0].pageY;
+        console.log(e.touches);
+    }
+
+</script>
+</html>
