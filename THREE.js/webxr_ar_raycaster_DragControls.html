@@ -1,0 +1,194 @@
+<html lang="en">
+  <head>
+    <title>three.js ar - hit test</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <link type="text/css" rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <script></script>
+
+    <div id="content">
+      <p id="P">123154634</p>
+      <div id="container" style="position: fixed;"></div>
+      <button type="button" id="drog">Drog Mode</button>
+    </div>
+    
+    <script type="module">
+      import * as THREE from "../js/three.module.js";
+      import { ARButton } from "../js/ARButton.js";
+      import { DragControls } from "../js/DragControls.js"
+      let container;
+      let camera, scene, renderer;
+      let controller;
+
+      let touchDown, touchX, touchY, deltaX, deltaY;
+      
+      let model_index = 0,dControl;
+
+      let raycaster = new THREE.Raycaster();
+      let clickMouse = new THREE.Vector2();
+      let draggable = THREE.Object3D;
+      
+      let getp = document.querySelector("P");
+      
+
+      init();
+      animate();
+
+      function init() {
+        container = document.createElement("div");
+        //document.body.appendChild( container );
+        document.getElementById("container").appendChild(container);
+
+        scene = new THREE.Scene();
+
+        camera = new THREE.PerspectiveCamera(
+          70,
+          window.innerWidth / window.innerHeight,
+          0.01,
+          20
+        );
+
+        const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+        light.position.set(0.5, 1, 0.25);
+        scene.add(light);
+
+        //
+
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.xr.enabled = true;
+        container.appendChild(renderer.domElement);
+
+        //
+
+        let options = {
+          optionalFeatures: ["dom-overlay"]
+        };
+
+        options.domOverlay = { root: document.getElementById("content") };
+        document.body.appendChild(ARButton.createButton(renderer, options));
+
+        //
+
+        const geometry = new THREE.CylinderGeometry(
+          0.1,
+          0.1,
+          0.2,
+          32
+        ).translate(0, 0.1, 0);
+        const material = new THREE.MeshPhongMaterial({ color: 0x535353 });
+
+        const mesh = new THREE.Mesh(geometry, material);
+
+        mesh.position.set(0, -0.8, -3);
+        scene.add(mesh);
+        mesh.userData.draggable = true;
+        mesh.userData.name = "BOX";
+
+        function onSelect() {
+          const getp = document.querySelector("P");
+          getp.textContent = "456";
+        }
+
+        /*controller = renderer.xr.getController( 0 );
+				//controller.addEventListener( 'select', onSelect );
+
+				controller.addEventListener( 'selectstart',(e)=>{
+          const getp = document.querySelector("P");
+					getp.textContent = "456";
+				},false);
+        controller.addEventListener( 'selectend',(e)=>{
+          const getp = document.querySelector("P");
+					getp.textContent = "123456";
+				},false);
+
+				scene.add( controller );*/
+
+        //
+
+        const btn_drog_mode = document.querySelector("#drog");
+        btn_drog_mode.addEventListener("click",function(){
+          mode_control();
+        });
+        //
+
+        window.addEventListener("resize", onWindowResize, false);
+        
+        dControl = new DragControls([mesh],camera,renderer.domElement);
+        renderer.domElement.addEventListener("touchstart",e => {
+
+          
+            if(model_index == 0){
+              e.preventDefault();
+              touchDown = true;
+
+              touchX = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
+              touchY = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
+
+              clickMouse.x = touchX;
+              clickMouse.y = touchY;
+              
+              dControl.deactivate();
+              raycaster.setFromCamera(clickMouse, camera);
+
+              const found = raycaster.intersectObjects(scene.children);
+
+              if (found.length > 0 && found[0].object.userData.draggable) {
+                draggable = found[0].object;
+                getp.textContent = "找到" + draggable.userData.name;
+              }
+            }
+            else if(model_index == 1){
+              dControl.activate();
+            }
+          },
+          false);
+
+        //
+        renderer.domElement.addEventListener("touchend", e => {
+            e.preventDefault();
+            touchDown = false;
+            const getp = document.querySelector("P");
+          },
+          false);
+        
+        //
+        function mode_control(){
+            if (model_index == 0){
+              model_index++;
+              getp.textContent="模式"+model_index;
+            }
+            else{
+              model_index =0;
+              getp.textContent="模式"+model_index;
+            }
+          }
+
+        //
+      }
+
+      function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+
+      //
+
+      function animate() {
+        renderer.setAnimationLoop(render);
+      }
+
+      function render() {
+        renderer.render(scene, camera);
+      }
+    </script>
+  </body>
+</html>

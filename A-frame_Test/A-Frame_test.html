@@ -1,0 +1,46 @@
+<!doctype HTML>
+<html>
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<meta charset="utf-8" />
+<title>Models</title> 
+<script src="js/aframe.min.js"></script>
+<script src="js/aframe-ar.js"></script>
+<body style="margin: 0px; overflow: hidden;">
+<a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
+
+    <a-assets>
+        <audio id="123" src="./assets/Audio/Sunspots.ogg"></audio>
+    </a-assets>
+
+<a-marker type="pattern" url="data/kanji.patt">
+
+    <a-box id="box" position="0 0 0" width="1" height="1" depth="1" color="#FFF" sound="src:#123"></a-box>
+
+</a-marker>
+
+<a-entity camera></a-entity>
+<a-cursor></a-cursor>
+
+</a-scene>
+<script>
+    //const audio_1 = document.querySelector("#123");
+    const audio_2 = document.getElementById("123");
+    const getbox = document.getElementById("box");
+
+    getbox.addEventListener("mouseenter",function(){
+        console.log("滑鼠進入了");
+        getbox.components.sound.playSound();
+    });
+    getbox.addEventListener("mouseleave",()=>{
+        console.log("小夫離開了");
+        getbox.components.sound.pauseSound();
+    });   
+
+
+
+
+
+
+</script>
+</body>
+</html>
