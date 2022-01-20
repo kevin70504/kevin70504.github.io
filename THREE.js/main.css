@@ -42,3 +42,21 @@ body {
     .sidenav {padding-top: 15px;}
     .sidenav a {font-size: 18px;}
   }
+
+  #measured{
+    position: absolute;
+    top: 100px;
+    right: 20px;
+    width: 100px;
+    height: 35px;
+    display: block;
+  }
+
+  #place-button{
+    position: absolute;
+    bottom: 50px;
+    left: calc(45%);
+    width: 80px;
+    height: 35px;
+    display: block;
+  }

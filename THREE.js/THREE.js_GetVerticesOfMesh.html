@@ -9,10 +9,11 @@
 <style>
     body {
         margin: 0;
+        background-color: rgb(0, 0, 0);
     }
 </style>
 <body>
-    <button></button>
+    <button type="button"></button>
 </body>
 
 <script src = "../js/three.js"></script>
@@ -49,7 +50,7 @@
     const planegeometry = new THREE.PlaneBufferGeometry(0.5,0.5);
     const basicmaterial = new THREE.MeshBasicMaterial({color:0xffff00});
     const plane_s = new THREE.Mesh(planegeometry,basicmaterial);
-    plane_s.position.set(0,0,0);
+    //plane_s.position.set(0,0,0);
     scene.add(plane_s);
 
     const group = new THREE.Group();
@@ -66,21 +67,32 @@
     //獲取plane的位置數據 we want the position data
     var attribute = plane.geometry.attributes.position;
     // index is zero-based, so this the the 2nd vertex
-    //var index = 3; 
+    var index = 3; 
     //獲取x y z 座標extract the x,y,z coordinates
-    //tempVertex.fromBufferAttribute( attribute, index ); 
+    tempVertex.fromBufferAttribute( attribute, 3 ); 
     //應用於plane的矩陣變換apply the mesh's matrix transform
-    //tempVertex.applyMatrix4( plane.matrix );
-    //console.log(tempVertex);
+    tempVertex.applyMatrix4( plane.matrix );
+    console.log(tempVertex);
+    plane_s.position.set(1,-1,0);
 
-    for (let index = 0; index < 4; index++) {
+    //獲取頂點的位置
+    /*for (let index = 0; index < 4; index++) {
 
         tempVertex.fromBufferAttribute( attribute, index ); 
         tempVertex.applyMatrix4( plane.matrix );
         console.log("頂點 "+index+" 位於 ", tempVertex);
 
-    }
+    }*/
 
+    //獲取頂點0到頂點3的數值
+    /*const VertexA = new THREE.Vector3();
+    const VertexC = new THREE.Vector3();
+    VertexA.fromBufferAttribute( attribute, 0 );
+    VertexC.fromBufferAttribute( attribute, 3 );  
+    const VertorAToVertorC = VertexA.distanceTo(VertexC);
+    console.log(VertexA);
+    console.log(VertexC);
+    console.log(Math.round((VertorAToVertorC*10))/10);*/
 
 
     //渲染場景

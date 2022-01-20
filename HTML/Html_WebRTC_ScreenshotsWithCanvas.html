@@ -25,36 +25,23 @@
 const screenshotButton = document.querySelector("#screenshot-button");
 const img = document.querySelector("#screenshot img");
 const video = document.querySelector("#screenshot video");
-//const video = document.querySelector("video");
 const canvas = document.querySelector("canvas");
 const flipButton = document.querySelector("#flip-button");
 const front = false;
 
-/*screenshotButton.onclick = video.onclick = function () {
+screenshotButton.onclick = video.onclick = function () {
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
   
-  const w =window.open("","");
+  //const w =window.open("","");
   const img = new Image();
   const context = canvas.getContext('2d');
   // 渲染
-  //canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-  
-  drawImage(video, 0, 0);
+  canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
 
   img.src = canvas.toDataURL("image/png");
-  w.document.body.appendChild(img);
+  //w.document.body.appendChild(img);
   img.visible = false;
-};*/
-
-screenshotButton.onclick = function () {
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  const w =window.open("","");
-  // 渲染
-  //canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-  img.src = canvas.toDataURL("image/png");
-  w.document.body.appendChild(img);
 };
 
 

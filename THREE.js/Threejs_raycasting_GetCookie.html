@@ -1,0 +1,242 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>THREE.js_GetOtherValue</title>
+</head>
+<style>
+    body {
+        overflow: hidden;
+        margin: 0px;
+        background-color: #BFD1E5;
+    }
+</style>
+<body>
+    <button type="button" id="createbox">createbox</button>
+    <button type="button" id="save">Save</button>
+    <button type="button" id="load">Load</button>
+</body>
+<script type="module">
+    import * as THREE from '../js/three.module.js'
+    import { DragControls } from '../js/DragControls.js'
+    import { OrbitControls } from '../js/OrbitControls.js'
+    import { FontLoader} from '../js/FontLoader.js'
+ 
+    let texture1,texture2;
+    let scene, camera, renderer, orbit, tControl, tControl2, tControl3, dControl;
+    let target = THREE.Object3D;
+    let textmesh;
+
+    const loader = new THREE.TextureLoader();
+    texture1 = loader.load(
+    "marble_01_diff_1k.jpg",
+    function(texture){
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        texture.offset.set(0,0);
+        texture.repeat.set(2,2);
+    },
+    function(err){
+        console.log("An error happened");
+    });
+
+    //創建場景
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xbfd1e5);
+
+    //創建攝影機、視野(FOV)、綜橫比
+    camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 1500);
+    camera.position.set(-90, 70, 0);
+    //camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+    //創建WebGL渲染器
+    //renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer = new THREE.WebGLRenderer();
+    //renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    document.body.appendChild(renderer.domElement)
+
+    //燈光
+    let hemiLight = new THREE.AmbientLight(0xffffff, 0.20);
+    scene.add(hemiLight);
+
+    //Add directional light
+    let dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight.position.set(-30, 50, -30);
+    scene.add(dirLight);
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.width = 2048;
+    dirLight.shadow.mapSize.height = 2048;
+    dirLight.shadow.camera.left = -70;
+    dirLight.shadow.camera.right = 70;
+    dirLight.shadow.camera.top = 70;
+    dirLight.shadow.camera.bottom = -70;
+
+
+    function createFloor() {
+    let pos = { x: 0, y: -1, z: 3 };
+    let scale = { x: 100, y: 2, z: 100 };
+
+    let blockPlane = new THREE.Mesh(new THREE.BoxBufferGeometry(),
+    new THREE.MeshPhongMaterial({ color: 0xf9c834 }));
+    blockPlane.position.set(pos.x, pos.y, pos.z);
+    blockPlane.scale.set(scale.x, scale.y, scale.z);
+    blockPlane.castShadow = true;
+    blockPlane.receiveShadow = true;
+    scene.add(blockPlane);
+
+    blockPlane.userData.ground = true;
+    }
+
+    const geometry  = new THREE.PlaneBufferGeometry(6,6).rotateX( - Math.PI / 2 );
+    const material = new THREE.MeshPhongMaterial({ map: texture1 });
+    const material2 = new THREE.MeshPhongMaterial({color: 0xFFBDB9B9});
+
+    let currentY = 0;
+
+    orbit = new OrbitControls(camera, renderer.domElement);
+
+    const raycaster = new THREE.Raycaster();
+    const clickMouse = new THREE.Vector2();
+    const moveMouse = new THREE.Vector2();
+    var draggable = THREE.Object3D;
+
+    window.addEventListener("click",event =>{
+        //透過滑鼠點選的位置計算出 raycaster 所需要的點的位置，以螢幕中心為原點，值的範圍為-1到1.
+        clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+        // 透過滑鼠點的位置和當前相機的矩陣計算出 raycaster值
+        raycaster.setFromCamera(clickMouse,camera);
+        // 取得 raycaster 射線和所有物件相交的陣列集合
+        const found = raycaster.intersectObjects(scene.children);
+        if(found.length > 0 && found[0].object.userData.draggable){
+            draggable = found[0].object;
+            console.log("找到",draggable.userData.name);
+            dControl = new DragControls([draggable],camera,renderer.domElement);
+            dControl.addEventListener("dragstart",function(event){
+                orbit.enabled = false;
+                raycaster.enabled = false;
+                currentY = event.object.position.y;
+            });
+            dControl.addEventListener("drag",function(event){
+                event.object.position.y = currentY;
+                event.object.parent.children[1].position.setFromMatrixPosition( event.object.matrix );
+                event.object.parent.children[1].position.y += 0.02;
+                /*if(event.object.position.z <= 0){
+                    event.object.position.z = 0;
+                }*/
+            });
+            dControl.addEventListener("dragend",function(event){
+                orbit.enabled = true;
+                raycaster.enabled = false;
+                console.log(event.object.parent);
+            });
+        }
+    });
+
+    let plane_geo = new THREE.PlaneBufferGeometry(90,1);
+    const line_limit = new THREE.Mesh(plane_geo.rotateX( - Math.PI / 2 ),new THREE.MeshBasicMaterial());
+    line_limit.position.set(0,0.1,0);
+    scene.add(line_limit);
+    line_limit.visible = false;
+
+    //cookie
+    let loadedMesh;
+
+    const btn_save = document.querySelector("#save").addEventListener("click",function(){
+        saveObject();
+    });
+    const btn_load = document.querySelector("#load").addEventListener("click",function(){
+        loadObject();
+    });
+
+    function saveObject(){
+        const result = draggable.parent.toJSON();
+        localStorage.setItem("json",JSON.stringify(result));
+        console.log(draggable.parent);
+    }
+
+    function loadObject(){
+        scene.remove(loadedMesh);
+
+        const json = localStorage.getItem("json");
+        if(json){
+            const loadedGeometry =JSON.parse(json); 
+            const loader = new THREE.ObjectLoader();
+
+            loadedMesh = loader.parse(loadedGeometry);
+            //loadedMesh = texloader.parse(loadedGeometry);
+            console.log(loadedMesh.children[0].position.z);
+            console.log(loadedMesh.children[1].position.z);
+            //loadedMesh.position.set(0.5,0,0);
+            console.log(loadedMesh.children[1]);
+            loadedMesh.children[0].rotateX( - Math.PI / 2 )
+            scene.add(loadedMesh);
+        }
+    }
+
+    //
+
+    const btn_createbox = document.querySelector("#createbox").addEventListener("click",function(){
+        const objectGroup = new THREE.Group();
+        objectGroup.position.set(0,0.1,0);
+        scene.add(objectGroup); 
+
+        const box = new THREE.Mesh(geometry,material2);
+        box.userData.draggable = true;
+        box.userData.name = 'BOX'+ 1;
+        box.position.set(0,0,0);
+        objectGroup.add(box);
+
+        const fontloader = new FontLoader();
+                fontloader.load( './fonts/helvetiker_regular.typeface.json', function ( font ) {
+                const color = 0x006699;
+                const matLite = new THREE.MeshBasicMaterial( {
+                    color: color,
+                    transparent: true,
+                    opacity: 0.8,
+                    side: THREE.DoubleSide
+                } );
+                const meshSize = "tilessize ";
+                const message = meshSize;
+                const shapes = font.generateShapes( message, 1 );
+
+                const geometry = new THREE.ShapeGeometry( shapes );
+                geometry.computeBoundingBox();
+                const xMid = - 0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x );
+                geometry.translate( xMid, 0, 0 );
+                // make shape ( N.B. edge view not visible )
+                textmesh = new THREE.Mesh( geometry, matLite );
+                textmesh.position.set(0,0.1,0);
+				//textmesh.position.set(-0.25,0.01,0.25);
+				textmesh.rotateX( -Math.PI/2 );
+                textmesh.rotateZ( -Math.PI/2 );
+                objectGroup.add(textmesh);
+                } );
+    });
+
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    window.addEventListener('resize', onWindowResize);
+
+    createFloor();
+    animate();
+
+    //場景渲染出來
+    function animate() {
+        requestAnimationFrame(animate);
+        render();
+    }
+
+    function render(){
+        renderer.render(scene, camera);
+    }
+
+    
+</script>    
+</html>

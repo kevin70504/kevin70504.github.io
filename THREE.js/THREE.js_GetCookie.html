@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html> <!--告訴網站這個是網頁-->
+
+<html>
+
+<head>
+
+    <meta charset="utf-8"></meta>
+    <title>THREE.js_Demo</title>
+
+</head>
+
+<style>
+    body{
+        margin: 0px;
+        background-color: #000000;
+    }
+</style>
+
+<body>
+    <script src="../js/three.js"></script><!--獲取three.js API-->
+    <button type="button" id="save">Save</button>
+    <button type="button" id="load">Load</button>
+</body>
+
+<script>
+    //創建場景
+    const scene = new THREE.Scene();
+    //創建攝影機、視野(FOV)、綜橫比
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    //創建WebGL渲染器
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // 創建一個正方形Geometry
+    const geometry = new THREE.BoxGeometry();
+    //創建基礎材質球，顏色為綠色0x00ff00
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    //創建網格Mesh
+    const cube = new THREE.Mesh(geometry, material);
+
+    //攝影機的位置往z軸移動5單位
+    camera.position.z = 5;
+
+    cube.position.set(-1,0,0);
+    //添加到場景座標
+    //scene.add(cube);
+
+    //場景渲染出來
+    function animate() {
+        requestAnimationFrame(animate);
+
+        renderer.render(scene, camera);
+    };
+
+    const btn_save = document.querySelector("#save").addEventListener("click",function(){
+        saveObject();
+    });
+    const btn_load = document.querySelector("#load").addEventListener("click",function(){
+        loadObject();
+    });
+
+
+    animate();
+
+    const group = new THREE.Group();
+
+    let loadedMesh;
+    scene.remove(loadedMesh);
+
+    //cookie
+    function saveObject(){
+        const result = cube.toJSON();
+        localStorage.setItem("json",JSON.stringify(result));
+    }
+
+    function loadObject(){
+        scene.remove(loadedMesh);
+
+        const json = localStorage.getItem("json");
+        if(json){
+            const loadedGeometry =JSON.parse(json); 
+            const loader = new THREE.ObjectLoader();
+
+            loadedMesh = loader.parse(loadedGeometry);
+            //loadedMesh.position.set(0.5,0,0);
+            scene.add(loadedMesh);
+        }
+    }
+
+</script>
+
+</html>

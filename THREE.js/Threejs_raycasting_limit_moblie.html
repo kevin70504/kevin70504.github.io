@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>THREE.js_GetOtherValue</title>
+</head>
+<style>
+    body {
+        overflow: hidden;
+        margin: 0px;
+    }
+</style>
+<body>
+    <button id="createbox">createbox</button>
+</body>
+
+<script type="module">
+    import * as THREE from '../js/three.module.js'
+    import { DragControls } from '../js/DragControls.js'
+    import { OrbitControls } from '../js/OrbitControls.js'
+    
+
+    let texture1,texture2;
+    let scene, camera, renderer, orbit, tControl, tControl2, tControl3, dControl;
+    let touchDown, touchX, touchY, deltaX, deltaY;
+    let target = THREE.Object3D;
+
+    //創建場景
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xbfd1e5);
+
+    //創建攝影機、視野(FOV)、綜橫比
+    camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 1500);
+    camera.position.set(-90, 70, 0);
+    //camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+    //創建WebGL渲染器
+    //renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer = new THREE.WebGLRenderer();
+    //renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    document.body.appendChild(renderer.domElement)
+
+    //燈光
+    let hemiLight = new THREE.AmbientLight(0xffffff, 0.20);
+    scene.add(hemiLight);
+
+    //Add directional light
+    let dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight.position.set(-30, 50, -30);
+    scene.add(dirLight);
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.width = 2048;
+    dirLight.shadow.mapSize.height = 2048;
+    dirLight.shadow.camera.left = -70;
+    dirLight.shadow.camera.right = 70;
+    dirLight.shadow.camera.top = 70;
+    dirLight.shadow.camera.bottom = -70;
+
+
+    function createFloor() {
+    let pos = { x: 0, y: -1, z: 3 };
+    let scale = { x: 100, y: 2, z: 100 };
+
+    let blockPlane = new THREE.Mesh(new THREE.BoxBufferGeometry(),
+    new THREE.MeshPhongMaterial({ color: 0xf9c834 }));
+    blockPlane.position.set(pos.x, pos.y, pos.z);
+    blockPlane.scale.set(scale.x, scale.y, scale.z);
+    blockPlane.castShadow = true;
+    blockPlane.receiveShadow = true;
+    scene.add(blockPlane);
+
+    blockPlane.userData.ground = true;
+    }
+
+    const geometry  = new THREE.BoxBufferGeometry(6,6,6);
+    const material = new THREE.MeshPhongMaterial();
+
+    let currentY = 0;
+
+    orbit = new OrbitControls(camera, renderer.domElement);
+
+    const raycaster = new THREE.Raycaster();
+    const clickMouse = new THREE.Vector2();
+    const moveMouse = new THREE.Vector2();
+    var draggable = THREE.Object3D;
+
+    renderer.domElement.addEventListener("touchstart",e => {
+
+    e.preventDefault();
+    //touchDown = true;
+
+    touchX = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
+    touchY = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
+
+    clickMouse.x = touchX;
+    clickMouse.y = touchY;
+    
+    raycaster.setFromCamera(clickMouse, camera);
+
+    const found = raycaster.intersectObjects(scene.children);
+
+    if (found.length > 0 && found[0].object.userData.draggable) {
+        draggable = found[0].object;
+        dControl = new DragControls([draggable],camera,renderer.domElement);
+            dControl.addEventListener("dragstart",function(event){
+                orbit.enabled = false;
+                currentY = draggable.position.y;
+            });
+            dControl.addEventListener("drag",function(event){
+                draggable.position.y = currentY;
+            });
+            dControl.addEventListener("dragend",function(event){
+                orbit.enabled = true;
+                console.log();
+                if(draggable.position.z <= -15){
+                    draggable.position.z = -15;
+                }
+            });
+    }
+    },
+    false);
+
+    let plane_geo = new THREE.PlaneBufferGeometry(90,1);
+    const line_limit = new THREE.Mesh(plane_geo.rotateX( - Math.PI / 2 ),new THREE.MeshBasicMaterial());
+    line_limit.position.set(0,0.1,0);
+    scene.add(line_limit);
+    //line_limit.visible = false;
+
+    const btn_createbox = document.querySelector("#createbox").addEventListener("click",function(){
+        const box = new THREE.Mesh(geometry,material);
+        box.userData.draggable = true;
+        box.userData.name = 'BOX'+ 1;
+        box.position.set(0,0,0);
+
+        const axesHelper = new THREE.AxesHelper( 10 );
+        box.add(axesHelper);
+
+        const box_group = new THREE.Group();
+        box_group.position.set(0,3,15);
+        box_group.add(box);
+        scene.add(box_group);
+    });
+
+
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    window.addEventListener('resize', onWindowResize);
+
+    createFloor();
+    animate();
+
+    //場景渲染出來
+    function animate() {
+        requestAnimationFrame(animate);
+        render();
+    }
+
+    function render(){
+        renderer.render(scene, camera);
+    }
+
+    
+</script>    
+</html>

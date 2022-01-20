@@ -44,8 +44,8 @@
     //攝影機的位置往z軸移動5單位
     camera.position.z = 5;
 
-    const A = new THREE.Vector3(0,0,0);
-    const B = new THREE.Vector3(5,5,5);
+    const A = new THREE.Vector3(-1,1,0);
+    const B = new THREE.Vector3(1,1,0);
 
     const line = new THREE.Line3(A,B);
     const lineCenter = new THREE.Vector3(0,0,0);
@@ -62,7 +62,7 @@
     const circleGeo = new THREE.CircleBufferGeometry(1,16);
     const cirMat = new THREE.MeshBasicMaterial({color:0xff0000,wireframe:true});
     const circleMesh = new THREE.Mesh(circleGeo,cirMat);
-    circleMesh.position.set(1,1,0);
+    circleMesh.position.set(-1,1,0);
     scene.add(circleMesh);
 
     const circleCenter = new THREE.Vector3();

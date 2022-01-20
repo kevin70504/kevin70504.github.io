@@ -272,7 +272,7 @@ class App{
         } );
         const message3 = "This use tiles";
         //const message2 = "This use "+ message +" tiles";
-        const shapes = font.generateShapes( message, 0.1 );
+        const shapes = font.generateShapes( message, 0.05 );
 
         const geometry = new THREE.ShapeGeometry( shapes );
         geometry.computeBoundingBox();

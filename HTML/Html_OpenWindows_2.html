@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8"></meta> 
+    <title>HTML_OpenWindow</title>
+</head>
+<body>
+
+    <div>
+        <button id="Open">Open</button>
+        <button id="Close" type="button">Close</button>
+        <a href="javascript:window.opener='x';window.close();">Close</a>
+    </div>
+
+</body>
+<script>
+
+const openbtn = document.querySelector("#Open");
+const closebtn = document.querySelector("#Close");
+
+
+let mytab;
+
+openbtn.addEventListener("click",() => {
+    //mytab = window.open("","_blank");
+    mytab = window.open('', '_self', '');
+});
+
+closebtn.addEventListener("click",() => {
+    window.opener='x';
+    window.open('','_parent','');
+    window.close();
+});
+
+/*
+closebtn.addEventListener("click",() => {
+    if (mytab) mytab.close();
+});
+*/
+
+
+
+
+</script>
+</html>

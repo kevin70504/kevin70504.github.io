@@ -72,42 +72,26 @@
 
 				//
 
-				const geometry = new THREE.CylinderGeometry( 0.1, 0.1, 0.2, 32 ).translate( 0, 0.1, 0 );
-				const box_geo = new THREE.BoxBufferGeometry(0.6,0.1,0.1);
-				const box_geo2 = new THREE.BoxBufferGeometry(0.1,0.1,0.1);
+				//const geometry = new THREE.CylinderGeometry( 0.1, 0.1, 0.2, 32 ).translate( 0, 0.1, 0 );
 				const getp = document.querySelector("#p");
 				worldposition = new THREE.Vector3();
 
-				console.log(reticle_target);
+				const plane_geo = new THREE.PlaneBufferGeometry(0.5,0.5);
 
-				const box_1 = new THREE.Mesh(box_geo2,new THREE.MeshBasicMaterial());
-				//scene.add(box_1);
-
-				const plane_geo = new THREE.PlaneBufferGeometry(0.6,0.1);
-
-				const mesh_plane = new THREE.Mesh(plane_geo,new THREE.MeshBasicMaterial());
-				mesh_plane.rotateX( - Math.PI / 2 );
-				//scene.add(mesh_plane);
-
-				Mesh_box = new THREE.Mesh(box_geo2,new THREE.MeshBasicMaterial());
-				scene.add(Mesh_box);
+				const mesh_plane = new THREE.Mesh(plane_geo,new THREE.MeshBasicMaterial()).rotateX( - Math.PI / 2 );
+                mesh_plane.position.set(-0.25,0,0.25);
+                const plane_group = new THREE.Group();
+                plane_group.add(mesh_plane);
+				scene.add(plane_group);
 				
-				getp.textContent = 
 
 				function onSelect() {
 
 					if ( reticle.visible ) {
 
 						//mesh.position.setFromMatrixPosition( reticle.matrix );
-						reticle.getWorldPosition(worldposition);
-						index ++ ;
-						posY = worldposition.y;
-						console.log("設定的y值"+ posY );
+                        plane_group.position.setFromMatrixPosition( reticle.matrix );
 						
-					}
-					else if(Mesh_box.visible){
-						box_1.position.set(worldposition.x,posY,worldposition.z);
-						scene.add(box_1);
 					}
 
 				}
@@ -124,18 +108,15 @@
 				let ring = new THREE.RingBufferGeometry(0.045, 0.05, 32).rotateX(- Math.PI / 2);
 				let dot = new THREE.CircleBufferGeometry(0.005, 32).rotateX(- Math.PI / 2);
 
-				reticle = new THREE.Mesh(
+				/*reticle = new THREE.Mesh(
 					plane_geo.rotateX( - Math.PI / 2 ),
 					new THREE.MeshBasicMaterial()
-				);
+				);*/
 
-				reticle2 = new THREE.Mesh(
+				reticle = new THREE.Mesh(
 				BufferGeometryUtils.mergeBufferGeometries([ring, dot]),
 				new THREE.MeshBasicMaterial()
 				);
-
-				reticle2.visible = false;
-				scene.add( reticle2 );
 
 				reticle.matrixAutoUpdate = false;
 				reticle.visible = false;
@@ -205,17 +186,8 @@
 							reticle.matrix.fromArray( hit.getPose( referenceSpace ).transform.matrix );
 							reticle.getWorldPosition(worldposition);
 
-							if(index == 0){
-								reticle.visible = true;
-							}
-							else if(index > 0){
-								reticle.visible = false;
-								reticle2.visible = true;
-								reticle2.position.x = worldposition.x;
-								reticle2.position.y = posY;
-								reticle2.position.z = worldposition.z;
-
-							}
+							reticle.visible = true;
+						
 
 						} else {
 
