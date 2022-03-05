@@ -1,0 +1,289 @@
+<html lang="en">
+  <head>
+    <title>three.js ar - hit test</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <link type="text/css" rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <script></script>
+
+    <div id="content">
+      <p id="P">123154634</p>
+      <div id="container" style="position: fixed;"></div>
+      <button type="button" class="sampleButton" id="drog">Drog Mode</button>
+      <button type="button" class="sampleButton" id="createbox">createbox</button>
+      <button type="button" class="sampleButton" id="save">Save</button>
+      <button type="button" class="sampleButton" id="load">Load</button>
+    </div>
+    
+    <script type="module">
+        import * as THREE from "../js/three.module.js";
+        import { ARButton } from "../js/ARButton.js";
+        import { DragControls } from "../js/DragControls.js"
+        import { FontLoader} from '../js/FontLoader.js'
+        import { GLTFExporter} from '../js/GLTFExporter.js'
+        import { GLTFLoader } from '../js/GLTFLoader.js'
+        let container;
+        let camera, scene, renderer;
+        let controller;
+
+        let texture1;
+
+        let touchDown, touchX, touchY, deltaX, deltaY;
+        
+        let model_index = 0,dControl;
+
+        let raycaster = new THREE.Raycaster();
+        let clickMouse = new THREE.Vector2();
+        let draggable = THREE.Object3D;
+        let textmesh;
+        
+        let getp = document.querySelector("P");
+
+        const loader = new THREE.TextureLoader();
+        texture1 = loader.load(
+        "marble_01_diff_1k.jpg",
+        function(texture){
+            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+            texture.encoding = THREE.sRGBEncoding;
+            texture.offset.set(0,0);
+            texture.repeat.set(2,2);
+        },
+        function(err){
+            console.log("An error happened");
+        });
+      
+
+      init();
+      animate();
+
+      function init() {
+        container = document.createElement("div");
+        //document.body.appendChild( container );
+        document.getElementById("container").appendChild(container);
+
+        scene = new THREE.Scene();
+
+        camera = new THREE.PerspectiveCamera(
+          70,
+          window.innerWidth / window.innerHeight,
+          0.01,
+          20
+        );
+
+        const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+        light.position.set(0.5, 1, 0.25);
+        scene.add(light);
+
+        //
+
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.xr.enabled = true;
+        container.appendChild(renderer.domElement);
+
+        //
+
+        let options = {
+          optionalFeatures: ["dom-overlay"]
+        };
+
+        options.domOverlay = { root: document.getElementById("content") };
+        document.body.appendChild(ARButton.createButton(renderer, options));
+
+        //
+
+        const geometry  = new THREE.PlaneBufferGeometry(6,6).rotateX( - Math.PI / 2 );
+        const material = new THREE.MeshBasicMaterial({ map: texture1 });
+
+        let currentY = 0;
+
+        function onSelect() {
+          const getp = document.querySelector("P");
+          getp.textContent = "456";
+        }
+
+        /*controller = renderer.xr.getController( 0 );
+				//controller.addEventListener( 'select', onSelect );
+
+				controller.addEventListener( 'selectstart',(e)=>{
+          const getp = document.querySelector("P");
+					getp.textContent = "456";
+				},false);
+        controller.addEventListener( 'selectend',(e)=>{
+          const getp = document.querySelector("P");
+					getp.textContent = "123456";
+				},false);
+
+				scene.add( controller );*/
+
+        //
+
+        const btn_drog_mode = document.querySelector("#drog");
+        btn_drog_mode.addEventListener("click",function(){
+          mode_control();
+        });
+        //
+        const btn_createbox = document.querySelector("#createbox").addEventListener("click",function(){
+            objectGroup = new THREE.Group();
+            objectGroup.position.set(0,0.1,0);
+            scene.add(objectGroup); 
+
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.userData.draggable = true;
+            mesh.userData.name = 'BOX'+ 1;
+            mesh.userData.export = false;
+            mesh.position.set(0, 0, 0);
+            objectGroup.add(mesh);
+
+            const fontloader = new FontLoader();
+                fontloader.load( './fonts/helvetiker_regular.typeface.json', function ( font ) {
+                const color = 0x006699;
+                const matLite = new THREE.MeshBasicMaterial( {
+                    color: color,
+                    transparent: true,
+                    opacity: 0.8,
+                    side: THREE.DoubleSide
+                } );
+                const meshSize = "tilessize ";
+                const message = meshSize;
+                const shapes = font.generateShapes( message, 1 );
+
+                const geometry = new THREE.ShapeGeometry( shapes );
+                geometry.computeBoundingBox();
+                const xMid = - 0.5 * ( geometry.boundingBox.max.x - geometry.boundingBox.min.x );
+                geometry.translate( xMid, 0, 0 );
+                // make shape ( N.B. edge view not visible )
+                textmesh = new THREE.Mesh( geometry, matLite );
+                textmesh.position.set(0,0.1,0);
+				//textmesh.position.set(-0.25,0.01,0.25);
+				textmesh.rotateX( -Math.PI/2 );
+                textmesh.rotateZ( -Math.PI/2 );
+                objectGroup.add(textmesh);
+                } );
+        });
+        //
+
+        window.addEventListener("resize", onWindowResize, false);
+        
+        renderer.domElement.addEventListener("touchstart",event => {
+        e.preventDefault();
+        touchX = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
+        touchY = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
+
+        clickMouse.x = touchX;
+        clickMouse.y = touchY;
+
+        // 透過滑鼠點的位置和當前相機的矩陣計算出 raycaster值
+        raycaster.setFromCamera(clickMouse,camera);
+        // 取得 raycaster 射線和所有物件相交的陣列集合
+        const found = raycaster.intersectObjects(scene.children);
+        if(found.length > 0 && found[0].object.userData.draggable){
+            draggable = found[0].object;
+            //console.log("找到",draggable.userData.name);
+            dControl = new DragControls([draggable],camera,renderer.domElement);
+            dControl.addEventListener("dragstart",function(event){
+                currentY = event.object.position.y;
+            });
+            dControl.addEventListener("drag",function(event){
+                event.object.position.y = currentY;
+                if(event.object.userData.export == false){
+                    console.log(1);
+                    event.object.parent.children[1].position.setFromMatrixPosition( event.object.matrix );
+                    event.object.parent.children[1].position.y += 0.02;
+                    /*if(event.object.position.z <= 0){
+                        event.object.position.z = 0;
+                    }*/
+                }
+                else if(event.object.userData.export == true){
+                    console.log("2");
+                    event.object.parent.children[0].position.setFromMatrixPosition( event.object.matrix );
+                    event.object.parent.children[0].position.y += 0.02;
+                }
+
+            });
+        }
+
+          
+        });
+
+        //
+        renderer.domElement.addEventListener("touchend", e => {
+            e.preventDefault();
+            touchDown = false;
+            const getp = document.querySelector("P");
+          },
+          false);
+        
+        //
+    const btn_save = document.querySelector("#save").addEventListener("click",function(){
+        exportScene(scene);
+    });
+    const btn_load = document.querySelector("#load").addEventListener("click",function(){
+        importScene(scene);
+    });
+
+    function exportScene (input){
+        const exporter = new GLTFExporter();
+
+        exporter.parse(input,function(result){
+            localStorage.setItem("scene",JSON.stringify(result, null, 2));
+        });
+    }
+
+    function importScene(input){
+
+        const sceneLoader = new GLTFLoader();
+
+        const json = localStorage.getItem('scene');
+
+        sceneLoader.parse(json, '.', function(obj){
+                    //scene.add( obj.scene );
+                    for (let index = 1; index < obj.scene.children.length-1; index++) {
+                        obj.scene.children[index].children[1].userData.export = true;
+                        console.log(obj.scene.children[index].children[1]+"完成");
+                    }
+                    scene.add( obj.scene );
+                    scene.background = new THREE.Color(0xbfd1e5);
+                });
+            }
+        //
+        function mode_control(){
+            if (model_index == 0){
+              model_index++;
+              getp.textContent="模式"+model_index;
+            }
+            else{
+              model_index =0;
+              getp.textContent="模式"+model_index;
+            }
+          }
+
+        //
+      }
+
+      function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+
+      //
+
+      function animate() {
+        renderer.setAnimationLoop(render);
+      }
+
+      function render() {
+        renderer.render(scene, camera);
+      }
+    </script>
+  </body>
+</html>

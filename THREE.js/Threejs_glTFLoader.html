@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>THREE.js_glTFLoader</title>
+</head>
+    <style>
+        body {
+            overflow: hidden;
+            margin: 0px;
+        }
+    </style>
+        <body>
+            <div id="container"></div>
+        </body>
+    <script type="module">
+    import * as THREE from '../js/three.module.js'
+    import { OrbitControls } from '../js/OrbitControls.js'
+    import { GLTFLoader } from '../js/GLTFLoader.js'
+    
+    /*
+        此範本為如何在THREE.js中使用glTFLoader讀取glTF檔
+    */
+
+    //環境設置 Environment Setting
+    let container;
+    let scene, camera, renderer;
+    //控制器 controller
+    let orbit;
+
+    init();
+    animate();
+
+        function init(){
+
+        //創建場景
+        container = document.getElementById( 'container' );
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xbfd1e5);
+
+        //創建攝影機、視野(FOV)、綜橫比
+        camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1500);
+        camera.position.set(-90, 70, 0);
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+        //創建WebGL渲染器
+        renderer = new THREE.WebGLRenderer({antialias: true});
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight)
+        renderer.shadowMap.enabled = true;
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        container.appendChild( renderer.domElement );
+
+        //添加環境光 HemisphereLight
+        const hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.2 );
+        hemiLight.position.set( 0, 20, 0 );
+        scene.add(hemiLight);
+        
+        //環境光輔助器
+        const hemiLightHelper = new THREE.HemisphereLightHelper( hemiLight, 5 );
+		scene.add( hemiLightHelper );
+
+        //添加平行光 Add directional light
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(-30, 50, -30);
+        dirLight.castShadow = true;
+        dirLight.shadow.mapSize.width = 2048;
+        dirLight.shadow.mapSize.height = 2048;
+        dirLight.shadow.camera.left = -70;
+        dirLight.shadow.camera.right = 70;
+        dirLight.shadow.camera.top = 70;
+        dirLight.shadow.camera.bottom = -70;
+        scene.add(dirLight);
+
+        //平行光輔助器
+        const DirectionalLightHelper = new THREE.DirectionalLightHelper( dirLight, 5 );
+        scene.add( DirectionalLightHelper );
+
+        window.addEventListener('resize', onWindowResize);
+
+        createFloor();
+
+        orbit = new OrbitControls(camera, renderer.domElement);
+
+        //gltfloader
+        const gltfLoader = new GLTFLoader().setPath("../models/");
+        const treeData = gltfLoader.load("tree.gltf",function(gltf){
+            const model = gltf.scene;
+            scene.add(model)
+
+            //以一個object3D物件作為第一個參數的函數
+            model.traverse( function ( object ) {
+            
+            //如果變數model是物件的話，將陰影功能設為true
+            if ( object.isMesh ) object.castShadow = true;
+
+            } );
+        });
+        
+        } 
+        
+
+    //
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function createFloor() {
+    let pos = { x: 0, y: -1, z: 3 };
+    let scale = { x: 100, y: 2, z: 100 };
+
+    let blockPlane = new THREE.Mesh(new THREE.BoxBufferGeometry(),
+    new THREE.MeshPhongMaterial({ color: 0xf9c834 }));
+    blockPlane.position.set(pos.x, pos.y, pos.z);
+    blockPlane.scale.set(scale.x, scale.y, scale.z);
+    blockPlane.castShadow = true;
+    blockPlane.receiveShadow = true;
+    scene.add(blockPlane);
+
+    blockPlane.userData.ground = true;
+    }
+
+    //場景渲染出來
+    function animate() {
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+    }
+ 
+    </script>    
+</html>

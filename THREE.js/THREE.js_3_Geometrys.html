@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>THREE.js Geometry</title>
+</head>
+<style>
+    body {
+        margin: 0;
+    }
+</style>
+<body>
+    <script type="module">
+
+        import * as THREE from '../js/three.module.js'
+
+        /*
+            此範本為THREE.js 創建預設Geometry
+        */
+
+        let scene,camera,renderer;
+        let cube;
+
+        init();
+        animate();
+
+        function init(){
+
+            //創建場景
+            scene = new THREE.Scene();
+            // 創建攝影機，視野(FOV)、縱橫比
+            camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
+            //讓攝影機的位置移動y軸2點,z軸5點
+            camera.position.set(0,2,5);
+            // 創建WebGL渲染器
+            renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            // 創建環境燈光HemisphereLight
+            // 環境燈光(天空顏色,地板顏色,燈光強度)
+            // HemisphereLight(skyColor,groundColor,intensity)
+            const light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+            scene.add( light );
+
+            // https://threejs.org/docs/#api/en/geometries/BoxGeometry
+            // https://threejs.org/docs/#api/zh/geometries/BoxGeometry
+
+            //創建Geometry幾何
+            const geometry = new THREE.BoxGeometry();
+            // 方塊(寬,高,深) 預設為1
+            // BoxGeometry(width,height,depth) 
+            const boxBuffergeometry = new THREE.BoxBufferGeometry();
+
+            // 平面(寬,高) 預設為1
+            // PlaneGeometry(width,height)
+            const planeBuffergeometry = new THREE.PlaneBufferGeometry(8,8);
+
+            // 球型(半徑,水平分段,垂直分段)
+            // SphereGeometry(radius,widthSegments,heightSegments)
+            const sphereBuffergeometry = new THREE.SphereBufferGeometry(0.5,32,16);
+
+            // 圓柱(頂部半徑,底部半徑,高度,周圍分段數)
+            // CylinderGeometry(radiusTop,radiusBottom,height,radialSegments)
+            const cylinderBuffergeometry = new THREE.CylinderGeometry(0.5,0.5,2,16);
+
+            //創建材質material
+            const material_Box = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
+            const material_Plane = new THREE.MeshPhongMaterial({ color: 0xBDBDFF });
+            const material_Sphere = new THREE.MeshPhongMaterial({ color: 0xE06666 });
+            const material_cylinder = new THREE.MeshPhongMaterial({ color: 0x9FC5E8 });
+
+            //創建網格Mesh
+            const cubeBufferMesh = new THREE.Mesh(boxBuffergeometry,material_Box);
+            cubeBufferMesh.position.set(0,0,0);
+
+            const planeBufferMesh = new THREE.Mesh(planeBuffergeometry,material_Plane);
+            planeBufferMesh.position.set(0,-0.5,0);
+            planeBufferMesh.rotation.x = -(Math.PI/2);
+
+            const sphereBufferMesh = new THREE.Mesh(sphereBuffergeometry,material_Sphere);
+            sphereBufferMesh.position.set(-1.5,0,0);
+
+            const cylinderBufferMesh = new THREE.Mesh(cylinderBuffergeometry,material_cylinder);
+            cubeBufferMesh.position.set(1.5,0,0);
+
+            //添加到場景內
+            scene.add(cubeBufferMesh);
+            scene.add(planeBufferMesh);
+            scene.add(sphereBufferMesh);
+            scene.add(cylinderBufferMesh);
+
+        }
+
+        //渲染場景
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        };
+
+    </script>
+</body>
+
+</html>

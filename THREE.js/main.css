@@ -60,3 +60,15 @@ body {
     height: 35px;
     display: block;
   }
+  #save{
+    position: absolute;
+    top: 80px;
+  }
+  #load{
+    position: absolute;
+    top: 40px;
+  }
+  #delete{
+    position: absolute;
+    top: 120px;
+  }

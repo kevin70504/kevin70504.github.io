@@ -53,11 +53,12 @@
     const basicmaterial = new THREE.MeshBasicMaterial({color:0xffff00,wireframe:true,});
     const plane_s = new THREE.Mesh(planegeometry,basicmaterial);
     plane_s.position.set(0,0,0);
-    scene.add(plane_s);
+    //scene.add(plane_s);
 
     const geome = new THREE.BufferGeometry();
 
     const b = 1.0;
+    /*
     const vertices = new Float32Array( [
 	-0.0, -0.0,  0.0,
 	 0.0, -0.0,  0.0,
@@ -77,30 +78,50 @@
 		0,   1, 
 		0,   0
 	] );
+    
+    const vertices = new Float32Array( [
+	-0.5, -0.5,  0.5, //頂點1
+	 0.5, -0.5,  0.5, //頂點2
+	 0.5,  0.5,  0.5, //頂點3
 
-    /*const vertices = new Float32Array( [
-	-0.5, -0.5,  0.5,
-	 0.5, -0.5,  0.5,
-	 0.5,  0.5,  0.5,
+	 0.5,  0.5,  0.5, //頂點4 跟頂點1相同
+    -0.5,  0.5,  0.5, //頂點5 和顶点3位置相同
+    -0.5, -0.5,  0.5  //頂點6
+    ] );
+    */
 
-	 0.5,  0.5,  0.5,
-    -0.5,  0.5,  0.5,
-    -0.5, -0.5,  0.5
-    ] );*/
+    const uvs = new Float32Array( [
+		0,   0,
+		1,   0, 
+		1,   1, 
+		0,   1, 
+	] );
+
+    const vertices = new Float32Array( [
+	-0.5, -0.5,  0.5, //頂點1
+	 0.5, -0.5,  0.5, //頂點2
+	 0.5,  0.5,  0.5, //頂點3
+    -0.5,  0.5,  0.5, //頂點4
+    ] );
 
 
     geome.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
     geome.setAttribute( 'uv', new THREE.BufferAttribute( uvs, 2 ) );
     const object = new THREE.Mesh(geome,basicmaterial2);
     object.position.set(0,0,0);
+    var indexes = new Uint16Array([0, 1, 2, 0, 2, 3,]);
+    geome.index = new THREE.BufferAttribute(indexes, 1);
     scene.add(object);
-
-    const group = new THREE.Group();
-    group.position.set(0,0,0);
-    //group.rotation.x = -90;
-    group.add(plane);
-    //把正方形添加到場景座標(0,0,0)
-    scene.add(group);
+    console.log(geome.index.array);
+    console.log(object.geometry.attributes.position);
+    console.log(object.geometry.attributes.position.array[0]);
+    object.geometry.attributes.position.array[0] = -1;
+    object.geometry.attributes.position.array[1] = -1;
+    object.geometry.attributes.position.array[2] = 1;
+    object.geometry.attributes.position.needsUpdate = true;
+    basicmaterial2.needsUpdate = true;
+    texture.needsUpdate = true;
+    
 
     //讓攝影機的位置移動z軸5點
     camera.position.z = 5;
@@ -118,11 +139,6 @@
     const GetX = plane.geometry.attributes.position.getX(3);
 
     plane_s.applyMatrix4( new THREE.Matrix4().makeTranslation(GetX,0,0));
-    console.log(GetX);
-
-    console.log(plane_s.position);
-
-    console.log(object);
 
     const btnclick = document.querySelector("#click");
 

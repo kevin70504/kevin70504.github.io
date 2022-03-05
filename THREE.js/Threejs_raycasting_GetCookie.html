@@ -16,6 +16,7 @@
     <button type="button" id="createbox">createbox</button>
     <button type="button" id="save">Save</button>
     <button type="button" id="load">Load</button>
+    <button type="button" id="delete">Delete</button>
 </body>
 <script type="module">
     import * as THREE from '../js/three.module.js'
@@ -113,7 +114,8 @@
         const found = raycaster.intersectObjects(scene.children);
         if(found.length > 0 && found[0].object.userData.draggable){
             draggable = found[0].object;
-            console.log("找到",draggable.userData.name);
+            //console.log("找到",draggable.userData.name);
+            console.log("找到",draggable);
             dControl = new DragControls([draggable],camera,renderer.domElement);
             dControl.addEventListener("dragstart",function(event){
                 orbit.enabled = false;
@@ -131,7 +133,6 @@
             dControl.addEventListener("dragend",function(event){
                 orbit.enabled = true;
                 raycaster.enabled = false;
-                console.log(event.object.parent);
             });
         }
     });
@@ -151,7 +152,25 @@
     const btn_load = document.querySelector("#load").addEventListener("click",function(){
         loadObject();
     });
+    const btn_delete = document.querySelector("#delete").addEventListener("click",function(){
+            if(draggable != undefined ){
+              DeleteTile(draggable);
+            }
+            else if(draggable == undefined ){
+              const getP = document.querySelector("P").textContent = "未點選目標";
+            }
+        });
 
+    function DeleteTile(Target){
+        if(Target.parent == null){
+          scene.remove(Target);
+          Target.geometry.dispose();
+          Target.material.dispose();
+        }
+        else{
+            scene.remove(Target.parent);
+        }
+    }
     function saveObject(){
         const result = draggable.parent.toJSON();
         localStorage.setItem("json",JSON.stringify(result));
@@ -167,11 +186,6 @@
             const loader = new THREE.ObjectLoader();
 
             loadedMesh = loader.parse(loadedGeometry);
-            //loadedMesh = texloader.parse(loadedGeometry);
-            console.log(loadedMesh.children[0].position.z);
-            console.log(loadedMesh.children[1].position.z);
-            //loadedMesh.position.set(0.5,0,0);
-            console.log(loadedMesh.children[1]);
             loadedMesh.children[0].rotateX( - Math.PI / 2 )
             scene.add(loadedMesh);
         }

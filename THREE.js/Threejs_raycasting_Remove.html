@@ -309,12 +309,16 @@
     var draggable = THREE.Object3D;
     let target;
 
-    window.addEventListener("click",event =>{
+    window.addEventListener("touchstart",event =>{
+        event.preventDefault();
         //透過滑鼠點選的位置計算出 raycaster 所需要的點的位置，以螢幕中心為原點，值的範圍為-1到1.
-        clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        //clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        //clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        //透過觸碰螢幕
+        clickMouse.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
+        clickMouse.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
 
-        // 透過滑鼠點的位置和當前相機的矩陣計算出 raycaster值
+        // 透過觸碰的位置和當前相機的矩陣計算出 raycaster值
         raycaster.setFromCamera(clickMouse,camera);
         // 取得 raycaster 射線和所有物件相交的陣列集合
         const found = raycaster.intersectObjects(scene.children);
@@ -323,7 +327,6 @@
             console.log("找到",draggable.userData.name);
         }
     });
-    scene.remove
 
     createFloor();
     createBox();

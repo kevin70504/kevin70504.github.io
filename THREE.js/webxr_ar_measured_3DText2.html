@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js ar - hit test</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<link type="text/css" rel="stylesheet" href="main.css">
+	</head>
+	<body>
+
+		<div id="content">
+			<p id="P">123154634</p>
+			<div id="container" style="position: fixed;"></div>
+            <button type="button" id="measured">Measured</button>
+		</div>
+
+		<script type="module">
+
+			import * as THREE from '../js/three.module.js';
+			import { ARButton } from './js/ARButton.js';
+            import { BufferGeometryUtils } from './js/BufferGeometryUtils.js';
+            import { FontLoader} from '../js/FontLoader.js';
+            import { TextGeometry} from '../js/TextGeometry.js';
+
+			let container;
+			let camera, scene, renderer;
+			let controller;
+
+			let reticle,box;
+
+			let hitTestSource = null;
+			let hitTestSourceRequested = false;
+
+			let Mesh_box,worldposition;
+            let Textmesh;
+            let workingVec3 = new THREE.Vector3();
+
+			let index = 0;
+
+			let posY = 0;
+
+			init();
+			animate();
+
+			function init() {
+
+				container = document.createElement( 'div' );
+				//document.body.appendChild( container );
+				document.getElementById("container").appendChild(container);
+
+				scene = new THREE.Scene();
+
+				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 20 );
+
+				const light = new THREE.HemisphereLight( 0xffffff, 0xbbbbff, 1 );
+				light.position.set( 0.5, 1, 0.25 );
+				scene.add( light );
+
+				//
+
+				renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.xr.enabled = true;
+				container.appendChild( renderer.domElement );
+
+				//
+
+				let options = {
+					requiredFeatures: [ 'hit-test' ],
+					optionalFeatures: ["dom-overlay"]
+				};
+
+				//document.body.appendChild( ARButton.createButton( renderer, { requiredFeatures: [ 'hit-test' ] } ) );
+				options.domOverlay = { root: document.getElementById("content") };
+                document.body.appendChild(ARButton.createButton(renderer, options));
+
+                //
+
+				const geometry = new THREE.CylinderGeometry( 0.1, 0.1, 0.2, 32 ).translate( 0, 0.1, 0 );
+				const box_geo = new THREE.BoxBufferGeometry(0.6,0.1,0.1);
+				const box_geo2 = new THREE.BoxBufferGeometry(0.1,0.1,0.1);
+				const getp = document.querySelector("p");
+				worldposition = new THREE.Vector3();
+
+				const plane_geo = new THREE.PlaneBufferGeometry(0.6,0.1);
+
+				const mesh_plane = new THREE.Mesh(plane_geo,new THREE.MeshBasicMaterial());
+				mesh_plane.rotateX( - Math.PI / 2 );
+
+				Mesh_box = new THREE.Mesh(box_geo2,new THREE.MeshBasicMaterial());   
+
+				let TextValue = {value1:"123",value2:"465",value3:"789"};
+				let TextIndex = 0;
+				let TextContent = TextValue.value1;
+				const btn_measured = document.querySelector("#measured").addEventListener("click",function(){
+					if(TextIndex === 0){
+						scene.remove(Textmesh); 
+						TextContent = TextValue.value1;
+						Fontladed();
+						TextIndex++;
+					}
+					else if(TextIndex === 1){
+						scene.remove(Textmesh); 
+						Textmesh.geometry.dispose;
+						Textmesh.material.dispose;
+						TextContent = TextValue.value2;
+						Fontladed();
+						TextIndex++;
+					}
+					else{
+						scene.remove(Textmesh); 
+						Textmesh.geometry.dispose;
+						Textmesh.material.dispose;
+						TextContent = TextValue.value3;
+						Fontladed();
+						TextIndex = 0;
+					}
+				});
+
+				function Fontladed(){
+					const Fontloader = new FontLoader();
+                	Fontloader.load("./fonts/helvetiker_regular.typeface.json",function(font){
+                        const textgeometry = new TextGeometry(TextContent,{
+                            font: font,
+                            size: 0.5,
+                            height: 0.1,
+                        });
+                    Textmesh = new THREE.Mesh(textgeometry,[
+                        new THREE.MeshBasicMaterial({color: 0xad4000}),
+                        new THREE.MeshBasicMaterial({color: 0x5c2301})
+                    ]);
+                    //Textmesh.rotateX( - Math.PI / 2 );
+                    Textmesh.position.set(0,0,-15);
+                    scene.add(Textmesh);  
+                    });
+				}
+
+
+				function onSelect() {
+
+                if ( reticle.visible ) {
+
+                    Textmesh.position.setFromMatrixPosition( reticle.matrix );
+                    Textmesh.position.x -= 0.5 ;
+                    console.log(Textmesh);
+                    
+                }
+                            
+            }
+
+				controller = renderer.xr.getController( 0 );
+				controller.addEventListener( 'select', onSelect );
+				scene.add( controller );
+        
+                let ring = new THREE.RingBufferGeometry(0.045, 0.05, 32).rotateX(- Math.PI / 2);
+                let dot = new THREE.CircleBufferGeometry(0.005, 32).rotateX(- Math.PI / 2);
+                reticle = new THREE.Mesh(
+                    BufferGeometryUtils.mergeBufferGeometries([ring, dot]),
+                    new THREE.MeshBasicMaterial()
+                );
+                reticle.matrixAutoUpdate = false;
+                reticle.visible = false;
+                scene.add( reticle );
+
+				//
+
+				window.addEventListener( 'resize', onWindowResize );
+
+			}
+
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			//
+
+            function initReticle() {
+            let ring = new THREE.RingBufferGeometry(0.045, 0.05, 32).rotateX(- Math.PI / 2);
+            let dot = new THREE.CircleBufferGeometry(0.005, 32).rotateX(- Math.PI / 2);
+            const reticle = new THREE.Mesh(
+                BufferGeometryUtils.mergeBufferGeometries([ring, dot]),
+                new THREE.MeshBasicMaterial()
+            );
+            reticle.matrixAutoUpdate = false;
+            reticle.visible = false;
+            return reticle;
+            }
+            
+            function initScene(){
+            this.reticle = this.initReticle();
+
+            this.scene.add( this.reticle );
+            }
+            //
+
+			function animate() {
+
+				renderer.setAnimationLoop( render );
+
+			}
+
+			function render( timestamp, frame ) {
+
+				if ( frame ) {
+
+					const referenceSpace = renderer.xr.getReferenceSpace();
+					const session = renderer.xr.getSession();
+
+					if ( hitTestSourceRequested === false ) {
+
+						session.requestReferenceSpace( 'viewer' ).then( function ( referenceSpace ) {
+
+							session.requestHitTestSource( { space: referenceSpace } ).then( function ( source ) {
+
+								hitTestSource = source;
+
+							} );
+
+						} );
+
+						session.addEventListener( 'end', function () {
+
+							hitTestSourceRequested = false;
+							hitTestSource = null;
+
+						} );
+
+						hitTestSourceRequested = true;
+
+					}
+
+					if ( hitTestSource ) {
+
+						const hitTestResults = frame.getHitTestResults( hitTestSource );
+
+						if ( hitTestResults.length ) {
+
+							const hit = hitTestResults[ 0 ];
+
+							reticle.matrix.fromArray( hit.getPose( referenceSpace ).transform.matrix );
+							reticle.getWorldPosition(worldposition);
+                            reticle.visible = true;
+                        
+						} else {
+
+							reticle.visible = false;
+
+						}
+
+					}
+
+				}
+    
+				renderer.render( scene, camera );
+
+			}
+
+		</script>
+	</body>
+</html>

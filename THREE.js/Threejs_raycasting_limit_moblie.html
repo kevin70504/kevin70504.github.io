@@ -25,6 +25,9 @@
     let scene, camera, renderer, orbit, tControl, tControl2, tControl3, dControl;
     let touchDown, touchX, touchY, deltaX, deltaY;
     let target = THREE.Object3D;
+    var draggable = THREE.Object3D;
+    let TargetVectorA = new THREE.Vector3();
+    let Target2VectorA = new THREE.Vector3();
 
     //創建場景
     scene = new THREE.Scene();
@@ -85,7 +88,6 @@
     const raycaster = new THREE.Raycaster();
     const clickMouse = new THREE.Vector2();
     const moveMouse = new THREE.Vector2();
-    var draggable = THREE.Object3D;
 
     renderer.domElement.addEventListener("touchstart",e => {
 
@@ -114,8 +116,9 @@
             });
             dControl.addEventListener("dragend",function(event){
                 orbit.enabled = true;
-                console.log();
-                if(draggable.position.z <= -15){
+                getVectorDistance(draggable,TargetVectorA,0);
+                console.log(TargetVectorA);
+                if(draggable.position.z < 0){
                     draggable.position.z = -15;
                 }
             });
@@ -127,6 +130,8 @@
     const line_limit = new THREE.Mesh(plane_geo.rotateX( - Math.PI / 2 ),new THREE.MeshBasicMaterial());
     line_limit.position.set(0,0.1,0);
     scene.add(line_limit);
+    getVectorDistance(line_limit,Target2VectorA,0);
+    console.log(Target2VectorA);
     //line_limit.visible = false;
 
     const btn_createbox = document.querySelector("#createbox").addEventListener("click",function(){
@@ -164,6 +169,15 @@
     function render(){
         renderer.render(scene, camera);
     }
+
+    function getVectorDistance(TargetObject,TargetValue,VectorA_Index,VectorB_Index,VectorC_Index){
+				//獲取plane 頂點0、頂點1、頂點2的數值
+                TargetValue = new THREE.Vector3();
+				const attribute = TargetObject.geometry.attributes.position;
+				TargetValue.fromBufferAttribute( attribute, VectorA_Index );
+				TargetValue.applyMatrix4( TargetObject.matrix );
+                TargetVectorA = TargetValue;
+			}
 
     
 </script>    

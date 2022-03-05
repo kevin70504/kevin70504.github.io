@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js ar - hit test</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<link type="text/css" rel="stylesheet" href="main.css">
+	</head>
+	<body>
+
+		<div id="content">
+			<p id="P">123154634</p>
+			<div id="container" style="position: fixed;"></div>
+		</div>
+
+		<script type="module">
+
+			import * as THREE from './js/three.module.js';
+			import { ARButton } from './js/ARButton.js';
+			import { BufferGeometryUtils } from './js/BufferGeometryUtils.js';
+            import { FontLoader } from "./js/FontLoader.js";
+
+			let container;
+			let camera, scene, renderer;
+			let controller;
+
+			let reticle,reticle2,box;
+
+			let hitTestSource = null;
+			let hitTestSourceRequested = false;
+
+            let setupStepLocateFloorY = 1,setupStepLocateFloorX = 2,setupStepLocateFloorZ = 3, setupStepLocateCenter = 4;
+            let setupStepCreateTile = 5,setupUpdatetile = 6;
+            let setupSteps = setupStepLocateFloorY;
+            let scanPointY,scanPointX,scanPointZ;
+            let scantarget_Y,scantarget_X,scantarget_Z;
+            let worldCenterLocation = new THREE.Vector3();
+            let worldYPosition = 0;
+            let worldXPosition = 0;
+            let worldZPosition = 0;
+            let worldCenterLocation_arry = [];
+            let currentLine;
+            let currentLine_arry = [];
+            let LastSellectedTile;
+            let AreaPoint3,AreaPoint4;
+            let PointAtoBXDis,PointBtoCZDis;
+            let tileText_arry =[];
+            let isLoadingFont = false;
+            let pointCenter,smallTilePointA,smallTilePointB,smallTilePointC;
+            let textPointA,textPointB;
+            let startUpdateTile =0;
+            let ObjectHightDistance,ObjectWidthDistance;
+
+			init();
+			animate();
+
+			function init() {
+
+				container = document.createElement( 'div' );
+				document.getElementById("container").appendChild(container);
+
+				scene = new THREE.Scene();
+
+				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 20 );
+
+				const light = new THREE.HemisphereLight( 0xffffff, 0xbbbbff, 1 );
+				light.position.set( 0.5, 1, 0.25 );
+				scene.add( light );
+
+				//
+
+				renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.xr.enabled = true;
+				container.appendChild( renderer.domElement );
+
+				//
+
+				let options = {
+					requiredFeatures: [ 'hit-test' ],
+					optionalFeatures: ["dom-overlay"]
+				};
+
+				options.domOverlay = { root: document.getElementById("content") };
+        		document.body.appendChild(ARButton.createButton(renderer, options));
+
+				//
+
+				const getp = document.querySelector("#p");
+
+                let scanPoint_geo = new THREE.SphereBufferGeometry(0.05,32,16);
+                let scanPoint_mat = new THREE.MeshBasicMaterial();
+                let scanPoint2_mat = new THREE.MeshBasicMaterial({color:0x323242});
+                let scanPoint3_mat = new THREE.MeshBasicMaterial({color:0x324232});
+                
+                scanPointY = new THREE.Mesh(scanPoint_geo,scanPoint_mat);
+                scanPointY.visible = false;
+                scene.add(scanPointY);
+                
+                scanPointX = new THREE.Mesh(scanPoint_geo,scanPoint2_mat);
+                scanPointX.visible = false;
+                scene.add(scanPointX);
+                
+                scanPointZ = new THREE.Mesh(scanPoint_geo,scanPoint3_mat);
+                scanPointZ.visible = false;
+                scene.add(scanPointZ);
+
+        
+
+				function onSelect() {
+
+                    if ( scantarget_Y.visible ) 
+                    {
+                        scantarget_Y.getWorldPosition(worldCenterLocation);
+                        const pt = new THREE.Vector3();
+                        pt.setFromMatrixPosition(scantarget_Y.matrix);
+                        worldCenterLocation_arry.push(pt);
+                        worldYPosition = worldCenterLocation.y;
+                        worldZPosition = worldCenterLocation.z;
+                        setupSteps = setupStepLocateFloorX;
+                        
+                        scanPointY.visible = true;
+                        scanPointY.position.setFromMatrixPosition( scantarget_Y.matrix );
+                    }
+                    else if ( scantarget_X.visible)
+                    {
+                        scantarget_X.getWorldPosition(worldCenterLocation);
+                        worldXPosition = worldCenterLocation.x;
+                        setupSteps = setupStepLocateFloorZ;
+                        scanPointX.visible = true;
+                        scanPointX.position.setFromMatrixPosition( scantarget_X.matrix );
+                        worldCenterLocation_arry.push(scanPointX.position);
+                        currentLine = initLine(worldCenterLocation_arry[0],worldCenterLocation_arry[1]);
+                        scene.add(currentLine);
+                        currentLine_arry.push(currentLine);
+                        
+                    }
+
+                    else if ( scantarget_Z.visible )
+                    {
+                        scantarget_Z.getWorldPosition(worldCenterLocation);
+                        worldZPosition = worldCenterLocation.z;
+                        //scanPointZ.visible = true;
+                        scanPointZ.position.setFromMatrixPosition( scantarget_Z.matrix );
+                        worldCenterLocation_arry.push(scanPointZ.position);
+                        currentLine = initLine(worldCenterLocation_arry[1],worldCenterLocation_arry[2]);
+                        scene.add(currentLine);
+                        currentLine_arry.push(currentLine);
+
+                        UpdateArea(worldCenterLocation_arry[1], worldCenterLocation_arry[0], worldCenterLocation_arry[1], 
+                        worldCenterLocation_arry[0],0.007,worldCenterLocation_arry[2]);
+  
+                        currentLine = initLine(worldCenterLocation_arry[2],AreaPoint3);
+                        scene.add(currentLine);
+                        currentLine_arry.push(currentLine);
+
+                        worldCenterLocation_arry.push(AreaPoint3);
+                        
+                        UpdateArea(worldCenterLocation_arry[1],worldCenterLocation_arry[2],worldCenterLocation_arry[1],
+                        worldCenterLocation_arry[2],0.005,worldCenterLocation_arry[0]);
+                        
+                        currentLine = initLine(worldCenterLocation_arry[0],AreaPoint4);
+                        scene.add(currentLine);
+                        currentLine_arry.push(currentLine);
+                        console.log(currentLine_arry);
+                        scantarget_Z.visible = false;
+                        setupSteps = setupStepCreateTile;
+                    }
+                    else if(setupSteps == setupStepCreateTile){
+                        AddTileButtonClicked();
+                        setupSteps = setupUpdatetile;
+                    }
+                    else if(setupSteps == setupUpdatetile){
+                        startUpdateTile = 1;
+                    }
+				}
+
+				controller = renderer.xr.getController( 0 );
+				controller.addEventListener( 'select', onSelect );
+				scene.add( controller );
+
+
+        		let ring = new THREE.RingBufferGeometry(0.045, 0.05, 32).rotateX(- Math.PI / 2);
+				let dot = new THREE.CircleBufferGeometry(0.005, 32).rotateX(- Math.PI / 2);
+
+                scantarget_Y = new THREE.Mesh(BufferGeometryUtils.mergeBufferGeometries([ring, dot]),new THREE.MeshBasicMaterial());
+                scantarget_Y.visible = false;
+                scantarget_Y.matrixAutoUpdate = false;
+                scene.add(scantarget_Y);
+                
+                scantarget_X = new THREE.Mesh(BufferGeometryUtils.mergeBufferGeometries([ring, dot]),new THREE.MeshBasicMaterial());
+                scantarget_X.visible = false;
+                scene.add(scantarget_X);
+                
+                scantarget_Z = new THREE.Mesh(BufferGeometryUtils.mergeBufferGeometries([ring, dot]),new THREE.MeshBasicMaterial());
+                scantarget_Z.visible = false;
+                scene.add(scantarget_Z);
+
+				//
+
+				window.addEventListener( 'resize', onWindowResize );
+
+			}
+
+            //
+            function LoadCubeTexture(TextureCubeAdress) 
+            {
+               const textureloader = new THREE.TextureLoader();
+
+               let returnTexture = textureloader.load(TextureCubeAdress,function (returnTexture) 
+                                         {
+                                            returnTexture.wrapS = returnTexture.wrapT =THREE.RepeatWrapping;
+                                            returnTexture.offset.set(0, 0);
+                                            returnTexture.repeat.set(2, 2);
+                                         },function (err) 
+                                           {        
+                                             console.log("ERROR: Failed to load Texture.");
+                                           }
+                                        );
+                return returnTexture;
+            }
+            //
+            function UpdataTiles(){
+                for (let index = 0; index < array.length; index++) {
+                    const element = array[index];
+                    
+                }
+                /*
+                LastSellectedTile.geometry.attributes.position.array[3] = worldCenterLocation_arry[1].x;
+                LastSellectedTile.geometry.attributes.position.array[5] = worldCenterLocation_arry[1].z;
+                LastSellectedTile.geometry.attributes.position.array[6] = worldCenterLocation_arry[2].x;
+                LastSellectedTile.geometry.attributes.position.array[8] = worldCenterLocation_arry[2].z;
+                LastSellectedTile.geometry.attributes.position.array[9] = worldCenterLocation_arry[3].x;
+                LastSellectedTile.geometry.attributes.position.array[11] = worldCenterLocation_arry[3].z;
+                LastSellectedTile.geometry.attributes.position.needsUpdate = true;
+                LastSellectedTile.material.map.repeat.x = 4;
+                LastSellectedTile.material.map.repeat.y = 4;
+                LastSellectedTile.material.needsUpdate = true;
+                */
+                /*
+                let _worldscale;
+                _worldscale = LastSellectedTile.scale;
+                if(!TileText) return;
+                TileText.scale.x =  1 / _worldscale.x;
+                TileText.scale.y =  1 / _worldscale.y;
+                TileText.scale.z =  1 / _worldscale.z;
+                */
+            }
+            //
+            function AddTileButtonClicked(){
+                const texture = LoadCubeTexture("https://cdn.glitch.me/b138d56c-40db-431d-8c8f-c55c76f583db%2FTiles01.jpeg?v=1638944482701");
+                getPointCenter(worldCenterLocation_arry[0],worldCenterLocation_arry[1]);
+                smallTilePointA = pointCenter;
+                getPointCenter(worldCenterLocation_arry[0],worldCenterLocation_arry[2]);
+                smallTilePointB = pointCenter;
+                getPointCenter(worldCenterLocation_arry[3],worldCenterLocation_arry[0]);
+                smallTilePointC = pointCenter;
+                const PlaneGeometry = new THREE.BufferGeometry();
+                const PlaneMaterial = new THREE.MeshBasicMaterial( { map:texture,side:THREE.DoubleSide } );
+                const vertices = new Float32Array( [
+                worldCenterLocation_arry[0].x,worldCenterLocation_arry[0].y,worldCenterLocation_arry[0].z, //頂點1
+                smallTilePointA.x,smallTilePointA.y,smallTilePointA.z, //頂點2
+                smallTilePointB.x,smallTilePointB.y,smallTilePointB.z, //頂點3
+                smallTilePointC.x,smallTilePointC.y,smallTilePointC.z, //頂點4
+                ] );
+                const uvs = new Float32Array( [
+                    0,   0,
+                    1,   0, 
+                    1,   1, 
+                    0,   1, 
+                ] );
+                var indexes = new Uint16Array([0, 1, 2, 0, 2, 3,]);
+                PlaneGeometry.index = new THREE.BufferAttribute(indexes, 1);
+                PlaneGeometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+                PlaneGeometry.setAttribute( 'uv', new THREE.BufferAttribute( uvs, 2 ) );
+                const PlaneMesh = new THREE.Mesh(PlaneGeometry,PlaneMaterial);
+                LastSellectedTile = PlaneMesh;
+                scene.add(LastSellectedTile);
+                //LastSellectedTile.children[0].position
+                console.log(LastSellectedTile.geometry.attributes.position.array);
+                console.log(worldCenterLocation_arry);
+                getVectorDistance(LastSellectedTile,0,1,2);
+                createTileText();
+                console.log(ObjectHightDistance);
+                console.log(ObjectWidthDistance);
+            }
+            //
+            function getVectorDistance(TargetObject,VectorA_Index,VectorB_Index,VectorC_Index){
+				//獲取plane 頂點0、頂點1、頂點2的數值
+				const PlaneVectorA = new THREE.Vector3();
+				const PlaneVectorB = new THREE.Vector3();
+				const PlaneVectorC = new THREE.Vector3();
+				const attribute = TargetObject.geometry.attributes.position;
+				PlaneVectorA.fromBufferAttribute( attribute, VectorA_Index );
+				PlaneVectorA.applyMatrix4( TargetObject.matrix );
+				PlaneVectorB.fromBufferAttribute( attribute, VectorB_Index );
+				PlaneVectorB.applyMatrix4( TargetObject.matrix );
+				PlaneVectorC.fromBufferAttribute( attribute, VectorC_Index );
+				PlaneVectorC.applyMatrix4( TargetObject.matrix );
+
+				//獲取頂點0到頂點1(寬度)的距離
+				const VectorWidthDistance = PlaneVectorA.distanceTo(PlaneVectorB);
+				ObjectHightDistance = Math.round((VectorWidthDistance*100));
+				//獲取頂點0到頂點2(高度)的距離
+				const VectorHightDistance = PlaneVectorA.distanceTo(PlaneVectorC);
+				ObjectWidthDistance = Math.round((VectorHightDistance*100));
+			}
+            //
+            function getPointCenter(PointA,PointB){
+                const line = new THREE.Line3(PointA,PointB);
+                const lineCenter = new THREE.Vector3(0,0,0);
+                line.getCenter(lineCenter);
+                pointCenter = lineCenter;
+            }
+            function createTileText()
+            {
+            if(!isLoadingFont)
+                {
+                isLoadingFont = true;
+                const fontloader = new FontLoader();
+                fontloader.load( './fonts/helvetiker_regular.typeface.json',fontloaded);   
+                }
+            }
+            //
+            function fontloaded(font)
+            {
+                isLoadingFont = false;
+            
+                scene.remove(tileText_arry);
+
+                getVectorDistance(LastSellectedTile,0,1,2);
+                
+                const color = 0x006699;
+                const matLite = new THREE.MeshBasicMaterial( 
+                {
+                    color: color,
+                    transparent: true,
+                    opacity: 0.4,
+                    side: THREE.DoubleSide
+                } );
+                
+                let _text_message = "This use " + Math.round(4) + " tile"
+                            + "\nHight is " + Math.round(ObjectHightDistance)  + " cm"
+                            + "\nWidth is " + Math.round(ObjectWidthDistance)  + " cm"
+                const shapes = font.generateShapes( _text_message, 0.02 );
+                const textgeometry = new THREE.ShapeGeometry( shapes );
+                textgeometry.computeBoundingBox();
+                const xMid = - 0.5 * ( textgeometry.boundingBox.max.x - textgeometry.boundingBox.min.x );
+                textgeometry.translate( xMid, 0, 0 );
+                // make shape ( N.B. edge view not visible )
+                const textmesh = new THREE.Mesh( textgeometry, matLite );
+                getPointCenter(worldCenterLocation_arry[0],smallTilePointB);
+                textPointA = pointCenter;
+                textmesh.position.set(textPointA.x,worldCenterLocation_arry[0].y +0.08,textPointA.z);
+                textmesh.rotateZ( -Math.PI/15 );
+                textmesh.rotateX( -Math.PI/2 );
+                textmesh.rotateX( -Math.PI/14 );
+                textmesh.userData.name = "textmesh";
+                LastSellectedTile.add(textmesh);
+                tileText_arry.push(textmesh);
+            }
+            //
+
+            function initLine(point1,point2) {
+                const lineMaterial = new THREE.LineBasicMaterial({
+                    color: 0xffffff,
+                    linewidth: 10,
+                    linecap: 'round'
+                });
+                const lineGeometry = new THREE.BufferGeometry().setFromPoints([point1,point2]);
+                return new THREE.Line(lineGeometry, lineMaterial);
+            }
+
+            //
+          
+            function UpdateArea(sourceA_X,sourceB_X,sourceA_Z,sourceB_Z,offset,target){
+                const twoPointsXDis = (sourceA_X.x - sourceB_X.x) - offset;  
+                const twoPointsZDis = sourceA_Z.z - sourceB_Z.z;
+                if(AreaPoint3 == null){
+                    AreaPoint3 = new THREE.Vector3(target.x - twoPointsXDis,worldYPosition,target.z - twoPointsZDis);
+                }
+                else{
+                    AreaPoint4 = new THREE.Vector3(target.x - twoPointsXDis,worldYPosition,target.z - twoPointsZDis);
+                }
+            }
+
+            //
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			//
+
+			function animate() {
+
+				renderer.setAnimationLoop( render );
+
+			}
+
+			function render( timestamp, frame ) {
+
+				if ( frame ) {
+
+                    if(startUpdateTile == 1){
+                        //UpdataTiles();
+                        if(LastSellectedTile.geometry.attributes.position.array[3] < worldCenterLocation_arry[1].x){
+                            LastSellectedTile.geometry.attributes.position.array[3] += 0.008;
+                            LastSellectedTile.geometry.attributes.position.array[5] = worldCenterLocation_arry[1].z;
+                            LastSellectedTile.geometry.attributes.position.needsUpdate = true;
+                        }
+                        if(LastSellectedTile.geometry.attributes.position.array[6] < worldCenterLocation_arry[2].x){
+                            LastSellectedTile.geometry.attributes.position.array[6] += 0.01;
+                            LastSellectedTile.geometry.attributes.position.array[8] = worldCenterLocation_arry[2].z;
+                            LastSellectedTile.geometry.attributes.position.needsUpdate = true;
+                        }
+                        if(LastSellectedTile.geometry.attributes.position.array[11] < worldCenterLocation_arry[3].z){
+                            LastSellectedTile.geometry.attributes.position.array[11] += 0.008;
+                            LastSellectedTile.geometry.attributes.position.array[9] = worldCenterLocation_arry[3].x;
+                            LastSellectedTile.geometry.attributes.position.needsUpdate = true;
+                        }
+                        else{
+                            LastSellectedTile.geometry.attributes.position.array[3] = worldCenterLocation_arry[1].x;
+                            LastSellectedTile.geometry.attributes.position.array[5] = worldCenterLocation_arry[1].z;
+                            LastSellectedTile.geometry.attributes.position.array[6] = worldCenterLocation_arry[2].x;
+                            LastSellectedTile.geometry.attributes.position.array[8] = worldCenterLocation_arry[2].z;
+                            LastSellectedTile.geometry.attributes.position.array[9] = worldCenterLocation_arry[3].x;
+                            LastSellectedTile.geometry.attributes.position.array[11] = worldCenterLocation_arry[3].z;
+                            LastSellectedTile.geometry.attributes.position.needsUpdate = true;
+                            getVectorDistance(LastSellectedTile,0,1,2);
+                            createTileText();
+                            scene.remove(scanPointY,scanPointX,scantarget_Z);
+                            for (let index = 0; index < currentLine_arry.length; index++) {
+                                scene.remove(currentLine_arry[index]);
+                            }
+                            startUpdateTile = 0;
+                        }
+                    }
+
+					const referenceSpace = renderer.xr.getReferenceSpace();
+					const session = renderer.xr.getSession();
+
+					if ( hitTestSourceRequested === false ) {
+
+						session.requestReferenceSpace( 'viewer' ).then( function ( referenceSpace ) {
+
+							session.requestHitTestSource( { space: referenceSpace } ).then( function ( source ) {
+
+								hitTestSource = source;
+
+							} );
+
+						} );
+
+						session.addEventListener( 'end', function () {
+
+							hitTestSourceRequested = false;
+							hitTestSource = null;
+
+						} );
+
+						hitTestSourceRequested = true;
+
+					}
+
+					if ( hitTestSource ) {
+
+						const hitTestResults = frame.getHitTestResults( hitTestSource );
+
+						if ( hitTestResults.length ) {
+
+							const hit = hitTestResults[ 0 ];
+
+							scantarget_Y.matrix.fromArray( hit.getPose( referenceSpace ).transform.matrix );
+                            scantarget_Y.getWorldPosition(worldCenterLocation);
+
+							if(setupSteps === setupStepLocateFloorY)
+                                {
+                                scantarget_Y.visible = true;
+                                }
+                            else if(setupSteps === setupStepLocateFloorX)
+                                {
+                                scantarget_X.visible = true;
+                                scantarget_Y.visible = false;
+                                scantarget_X.position.x = worldCenterLocation.x;
+                                scantarget_X.position.y = worldYPosition;
+                                scantarget_X.position.z = worldCenterLocation.z;
+                                
+                                }
+                            else if(setupSteps === setupStepLocateFloorZ)
+                                {
+                                scantarget_Z.visible = true;
+                                scantarget_X.visible = false;
+                                scantarget_Z.position.x = worldCenterLocation.x;
+                                scantarget_Z.position.y = worldYPosition;
+                                scantarget_Z.position.z = worldCenterLocation.z;
+                                /*
+                                const GetStep01Text = (document.querySelector("#step01_clickARBitton").style.display = "none"); // We hide this.
+                                const GetStep02Text = (document.querySelector("#step02_PlaceWallTarget").style.display = "block"); // And we whow this.
+                                document.getElementById("place-button").style.display = "block";
+                                */
+                                }
+						
+
+						} else {
+
+							scantarget_Y.visible = false;
+
+						}
+
+					}
+
+				}
+
+				renderer.render( scene, camera );
+
+			}
+
+		</script>
+	</body>
+</html>

@@ -128,11 +128,8 @@
               e.preventDefault();
               touchDown = true;
 
-              touchX = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
-              touchY = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
-
-              clickMouse.x = touchX;
-              clickMouse.y = touchY;
+              clickMouse.x= (e.touches[0].clientX / window.innerWidth) * 2 - 1;
+              clickMouse.y = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
               
               dControl.deactivate();
               raycaster.setFromCamera(clickMouse, camera);
