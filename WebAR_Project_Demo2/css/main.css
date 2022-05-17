@@ -1,0 +1,155 @@
+body {
+    font-family: "Lato", sans-serif;
+    background-color: #000000;
+    color: #ffffff;
+    overflow: hidden;
+    margin: 0px;
+  }
+  
+  .sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top:  0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+  }
+  
+  .sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+  }
+  
+  .sidenav a:hover {
+    color: #f1f1f1;
+  }
+  
+  .sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    font-size: 36px;
+    margin-left: 50px;
+  }
+
+  .sidenav img {
+    padding: 8px 8px 8px 32px;
+    width: 120px;
+  }
+  
+  
+  @media screen and (max-height: 395px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+  }
+
+  @media screen and (min-width: 320px){
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+    .sidenav img {width:60px;}
+    span{font-size:15px;}
+  }
+  @media screen and (min-width: 768px){
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+    .sidenav img {width:60px;}
+    span{font-size:30px;}
+  }
+  @media screen and (min-width: 1024px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+    .sidenav img {width:120px;}
+    span{font-size:30px;}
+  }
+
+  a {
+    color: #ffff00;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  button {
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+  
+  #info {
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    text-align: center;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: none;
+    z-index: 1; /* TODO Solve this in HTML */
+  }
+  
+  a, button, input, select {
+    pointer-events: auto;
+  }
+  
+  .dg.ac {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    z-index: 2 !important; /* TODO Solve this in HTML */
+  }
+  
+  #overlay {
+    position: absolute;
+    font-size: 16px;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background: rgba(0,0,0,0.7);
+  }
+  
+    #overlay button {
+      background: transparent;
+      border: 0;
+      border: 1px solid rgb(255, 255, 255);
+      border-radius: 4px;
+      color: #ffffff;
+      padding: 12px 18px;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+  
+  #notSupported {
+    width: 50%;
+    margin: auto;
+    background-color: #ff0000;
+    margin-top: 20px;
+    padding: 10px;
+  }
+
+  #placeObject{
+    position: absolute;
+    bottom: 20px;
+    left: calc(40%);
+    width: 120px;
+    height: 40px;
+    display: block;
+  }
