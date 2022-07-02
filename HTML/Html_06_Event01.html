@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>HTML_Evnet01</title>
+</head>
+<body>
+    <!-- 此範本介紹於HTML的事件偵測-->
+
+    <div id="btn">
+        <button>Click Me</button>
+    </div>
+    
+</body>
+
+<script>
+
+    // addEventListener: 事件偵測器。 原事件被執行的时候，後面绑定的事件照樣被執行
+    //  常見事件偵測
+    //  click 點擊
+    //  dblclick 快速點擊兩下
+    //  mouseenter 滑鼠進入
+    //  mouseleave 滑鼠離開
+    //  mouseup 滑鼠按下放開
+    //  mousedown 滑鼠按下
+
+    let btn = document.getElementById("btn");
+    btn.addEventListener("mousedown", function () {
+        console.log("按下按鈕了")
+    })
+
+</script>
+</html>

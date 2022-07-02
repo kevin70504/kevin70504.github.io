@@ -1,0 +1,11 @@
+h1  {
+    /* 邊框 */
+    border: 2px solid powderblue;
+    /* 文字與邊框之間的空格 */
+    padding: 30px;
+    /* 邊距 */
+    margin: 50px;
+}
+h2 {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
+h3 {font-size: 200%;}
+h4 {text-align: center;}
